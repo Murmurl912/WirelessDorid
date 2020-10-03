@@ -10,22 +10,26 @@
     <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    <FrameLayout android:layout_width="match_parent"
-                 android:layout_height="0dp"
-                 android:layout_weight="1">
-        <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-        />
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_height="wrap_content">
+        <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
-                android:layout_gravity="bottom|end"
-                app:srcCompat="@drawable/ic_add"/>
-    </FrameLayout>
+                android:id="@+id/tab_folders"
+                android:text="FOLDERS"/>
+        <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tab_contents"
+                android:text="Contents"/>
+    </com.google.android.material.tabs.TabLayout>
+
+    <fragment
+            android:id="@+id/nav_file_host_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/file_navigation"
+            android:name="androidx.navigation.fragment.NavHostFragment"/>
 
 
 </LinearLayout>

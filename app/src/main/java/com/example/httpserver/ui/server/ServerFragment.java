@@ -27,26 +27,7 @@ public class ServerFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root =  inflater.inflate(R.layout.fragment_server, container, false);
-        final ViewPager2 pager2 = root.findViewById(R.id.content);
         TabLayout layout = root.findViewById(R.id.tabs);
-        new TabLayoutMediator(layout, pager2, true, new TabLayoutMediator.TabConfigurationStrategy() {
-            @Override
-            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-
-            }
-        });
-        pager2.setAdapter(new FragmentStateAdapter(requireActivity()) {
-            @NonNull
-            @Override
-            public Fragment createFragment(int position) {
-                return null;
-            }
-
-            @Override
-            public int getItemCount() {
-                return 0;
-            }
-        });
         return root;
     }
 
