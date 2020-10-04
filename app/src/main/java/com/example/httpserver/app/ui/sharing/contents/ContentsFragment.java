@@ -1,4 +1,4 @@
-package com.example.httpserver.ui.filesharing;
+package com.example.httpserver.app.ui.sharing.contents;
 
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -10,24 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.example.httpserver.R;
 
-public class FolderFragment extends Fragment {
+public class ContentsFragment extends Fragment {
 
-    private FolderViewModel mViewModel;
+    private ContentsViewModel mViewModel;
 
-    public static FolderFragment newInstance() {
-        return new FolderFragment();
+    public static ContentsFragment newInstance() {
+        return new ContentsFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_folder, container, false);
+        return inflater.inflate(R.layout.fragment_contents, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(FolderViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(ContentsViewModel.class);
         // TODO: Use the ViewModel
     }
 

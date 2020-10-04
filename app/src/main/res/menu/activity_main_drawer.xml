@@ -9,8 +9,13 @@
                 android:icon="@drawable/ic_http"
                 android:title="Server"/>
         <item
-            android:id="@+id/nav_file"
+            android:id="@+id/nav_sharing"
             android:icon="@drawable/ic_share"
             android:title="File"/>
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item android:title="Exit"
+            android:icon="@drawable/ic_exit"/>
     </group>
 </menu>

@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".ui.server.ServerFragment">
+        tools:context=".app.ui.server.ServerFragment">
 
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
@@ -29,11 +29,12 @@
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                               android:text="Port"/>
-                    <EditText android:layout_width="0dp"
+                    <TextView android:layout_width="0dp"
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                               android:gravity="center_vertical"
-                              android:inputType="number"
+                              android:textIsSelectable="true"
+                              android:text="8080"
                               android:background="#ffffff"/>
                 </LinearLayout>
                 <LinearLayout android:layout_width="match_parent"
@@ -64,11 +65,12 @@
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                               android:text="Server Status"/>
-                    <EditText android:layout_width="0dp"
+                    <TextView android:layout_width="0dp"
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                               android:gravity="center_vertical"
-                              android:inputType="number"
+                              android:textIsSelectable="true"
+                              android:text="Stoppped"
                               android:background="#ffffff"/>
                 </LinearLayout>
 
@@ -83,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginVertical="20dp">
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -107,11 +109,11 @@
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                               android:text="Username"/>
-                    <EditText  android:layout_width="0dp"
+                    <TextView  android:layout_width="0dp"
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                                android:padding="@dimen/text_padding"
-                               android:inputType="textShortMessage"
+                               android:textIsSelectable="true"
                               android:gravity="center_vertical"
                               android:background="#ffffff"/>
                 </LinearLayout>
@@ -130,6 +132,8 @@
                     <EditText  android:layout_width="0dp"
                                android:layout_height="match_parent"
                                android:layout_weight="1"
+                               android:editable="false"
+                               android:textIsSelectable="true"
                                android:inputType="textPassword"
                                android:gravity="center_vertical"
                                android:padding="@dimen/text_padding"

@@ -1,4 +1,4 @@
-package com.example.httpserver.ui.filesharing;
+package com.example.httpserver.app.ui.sharing.contents;
 
 import androidx.lifecycle.ViewModel;
 

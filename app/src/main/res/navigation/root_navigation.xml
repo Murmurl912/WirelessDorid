@@ -4,9 +4,9 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/mobile_navigation"
             app:startDestination="@id/nav_server">
-    <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.ui.server.ServerFragment"
+    <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.app.ui.server.ServerFragment"
               android:label="Server" tools:layout="@layout/fragment_server"/>
-    <fragment android:id="@+id/nav_file"
-              android:name="com.example.httpserver.ui.filesharing.FileSharingFragment"
-              android:label="Sharing" tools:layout="@layout/fragment_file_sharing"/>
+    <fragment android:id="@+id/nav_sharing"
+              android:name="com.example.httpserver.app.ui.sharing.SharingFragment"
+              android:label="Sharing" tools:layout="@layout/fragment_sharing"/>
 </navigation>

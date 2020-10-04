@@ -5,14 +5,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
-        tools:context=".app.ui.sharing.folders.FoldersFragment">
+        tools:context=".app.ui.sharing.contents.ContentsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/folder_container"
+            android:id="@+id/contents_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_folder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -20,5 +21,4 @@
             android:src="@drawable/ic_add"
             app:fabSize="mini"
             android:clickable="true"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
