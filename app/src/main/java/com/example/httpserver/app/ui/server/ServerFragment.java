@@ -1,5 +1,6 @@
 package com.example.httpserver.app.ui.server;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -22,15 +23,13 @@ public class ServerFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View root =  inflater.inflate(R.layout.fragment_server, container, false);
-        TabLayout layout = root.findViewById(R.id.tabs);
-        return root;
+        return inflater.inflate(R.layout.fragment_server, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ServerViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(ServerViewModel.class);
         // TODO: Use the ViewModel
     }
 

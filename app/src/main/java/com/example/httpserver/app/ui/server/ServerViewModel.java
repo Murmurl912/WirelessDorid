@@ -4,4 +4,8 @@ import androidx.lifecycle.ViewModel;
 
 public class ServerViewModel extends ViewModel {
     // TODO: Implement the ViewModel
+
+    public ServerViewModel() {
+        super();
+    }
 }

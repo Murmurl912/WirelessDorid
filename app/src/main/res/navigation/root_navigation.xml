@@ -6,7 +6,11 @@
             app:startDestination="@id/nav_server">
     <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.app.ui.server.ServerFragment"
               android:label="Server" tools:layout="@layout/fragment_server"/>
-    <fragment android:id="@+id/nav_sharing"
-              android:name="com.example.httpserver.app.ui.sharing.SharingFragment"
-              android:label="Sharing" tools:layout="@layout/fragment_sharing"/>
+    <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.folders.FoldersFragment"
+              android:label="Folders" tools:layout="@layout/fragment_folders">
+        <action android:id="@+id/action_nav_folders_to_nav_folder" app:destination="@id/nav_folder"/>
+    </fragment>
+    <activity android:id="@+id/nav_folder"
+              android:name="com.example.httpserver.app.ui.folders.folder.FolderSettingActivity"
+              android:label="Folder"/>
 </navigation>
