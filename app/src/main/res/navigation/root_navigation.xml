@@ -10,7 +10,7 @@
               android:label="Folders" tools:layout="@layout/fragment_folders">
         <action android:id="@+id/action_nav_folders_to_nav_folder" app:destination="@id/nav_folder"/>
     </fragment>
-    <activity android:id="@+id/nav_folder"
-              android:name="com.example.httpserver.app.ui.folders.folder.FolderSettingActivity"
+    <fragment android:id="@+id/nav_folder"
+              android:name="com.example.httpserver.app.ui.folders.folder.FolderFragment"
               android:label="Folder"/>
 </navigation>

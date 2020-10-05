@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.httpserver.R;
 import com.example.httpserver.app.adapter.FolderAdapter;
-import com.example.httpserver.app.ui.folders.folder.FolderSettingActivity;
 
 import java.util.function.BiConsumer;
 
