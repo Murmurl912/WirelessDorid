@@ -1,16 +1,13 @@
-package com.example.httpserver.app.adapter;
+package com.example.httpserver.app.ui.adapter;
 
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.lifecycle.ComputableLiveData;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.httpserver.R;
-import com.example.httpserver.app.adapter.repository.entity.Folder;
+import com.example.httpserver.app.repository.entity.Folder;
 
 import java.util.ArrayList;
 import java.util.List;

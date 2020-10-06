@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-            android:id="@+id/app_bar_switch"
+            android:id="@+id/server_switch"
             android:title="Start Server"
             app:showAsAction="always"
             app:actionLayout="@layout/switch_item"/>

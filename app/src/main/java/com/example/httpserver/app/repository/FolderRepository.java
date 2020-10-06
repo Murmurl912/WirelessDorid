@@ -1,7 +1,7 @@
-package com.example.httpserver.app.adapter.repository;
+package com.example.httpserver.app.repository;
 
 import androidx.room.*;
-import com.example.httpserver.app.adapter.repository.entity.Folder;
+import com.example.httpserver.app.repository.entity.Folder;
 
 import java.util.List;
 
@@ -23,4 +23,12 @@ public interface FolderRepository {
 
     @Query("select * from folder where path = :path")
     public Folder get(String path);
+
+    default public void save(Folder folder) {
+        if(contain(folder.path)) {
+            update(folder);
+        } else {
+            add(folder);
+        }
+    }
 }

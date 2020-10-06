@@ -2,15 +2,35 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/mobile_navigation"
+            android:id="@+id/root_navigation"
             app:startDestination="@id/nav_server">
-    <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.app.ui.server.ServerFragment"
+    <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.app.ui.view.server.ServerFragment"
               android:label="Server" tools:layout="@layout/fragment_server"/>
-    <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.folders.FoldersFragment"
+    <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.view.folders.FoldersFragment"
               android:label="Folders" tools:layout="@layout/fragment_folders">
         <action android:id="@+id/action_nav_folders_to_nav_folder" app:destination="@id/nav_folder"/>
     </fragment>
     <fragment android:id="@+id/nav_folder"
-              android:name="com.example.httpserver.app.ui.folders.folder.FolderFragment"
-              android:label="Folder"/>
+              android:name="com.example.httpserver.app.ui.view.folders.folder.FolderFragment"
+              android:label="Folder"
+              tools:layout="@layout/fragment_folder">
+        <action android:id="@+id/action_nav_folder_to_editTextDialog"
+                app:destination="@id/nav_context_editor"/>
+        <action android:id="@+id/action_nav_folder_to_nav_path_chooser" app:destination="@id/nav_path_chooser"/>
+        <action android:id="@+id/action_nav_folder_to_nav_folders" app:destination="@id/nav_folders"/>
+    </fragment>
+    <dialog android:id="@+id/nav_context_editor"
+            android:name="com.example.httpserver.app.ui.view.folders.folder.EditTextDialog"
+            android:label="Set Context"
+            tools:layout="@layout/dialog_edit_text">
+        <action android:id="@+id/action_nav_context_editor_to_nav_folder"
+                app:popUpTo="@id/nav_folder"/>
+    </dialog>
+    <dialog android:id="@+id/nav_path_chooser"
+            android:name="com.example.httpserver.app.ui.view.folders.folder.PathChooseDialog"
+            android:label="Choose Path"
+            tools:layout="@layout/dialog_edit_text">
+        <action android:id="@+id/action_nav_path_chooser_to_nav_folder"
+                app:popUpTo="@id/nav_folder"/>
+    </dialog>
 </navigation>

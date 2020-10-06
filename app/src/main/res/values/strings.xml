@@ -25,4 +25,17 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="path">Path</string>
+    <string name="path_to_be_sharing">Path to be sharing</string>
+    <string name="access_control">Access Control</string>
+    <string name="read">Read</string>
+    <string name="allow_read_to_this_folder">Allow read to this folder</string>
+    <string name="allow_write_to_this_folder">Allow write to this folder</string>
+    <string name="write">Write</string>
+    <string name="apply_permission_to_subfolder">Apply permission to subfolder</string>
+    <string name="more">More</string>
+    <string name="delete">Delete</string>
+    <string name="reset_setting_of_this_entry_to_default">Reset setting of this entry to default</string>
 </resources>
