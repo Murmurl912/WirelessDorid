@@ -18,6 +18,11 @@ public class Configuration implements KeyValuePair<String, String> {
         value = "default";
     }
 
+    public Configuration(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     @Override
     public String key() {
         return key;

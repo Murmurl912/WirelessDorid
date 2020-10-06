@@ -25,8 +25,6 @@ public class ServerFragment extends NavigationFragment {
     private TextView username;
     private EditText password;
     private TextView totpPassword;
-    private Spinner totpKey;
-    private Spinner tlsCert;
 
     public static ServerFragment newInstance() {
         return new ServerFragment();
@@ -42,31 +40,7 @@ public class ServerFragment extends NavigationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         model = new ViewModelProvider(this).get(ServerViewModel.class);
-        model.config().thenAccept(config -> {
-           config.port.observe(getViewLifecycleOwner(), p -> {
-               port.setText(p);
-           });
-            config.address.observe(getViewLifecycleOwner(), a -> {
 
-            });
-            config.basic.observe(getViewLifecycleOwner(), b -> {
-                basic.setChecked(b);
-            });
-            config.totp.observe(getViewLifecycleOwner(), t -> {
-                totp.setChecked(t);
-            });
-            config.tls.observe(getViewLifecycleOwner(), t -> {
-                tls.setChecked(t);
-            });
-
-            config.username.observe(getViewLifecycleOwner(), u -> {
-                username.setText(u);
-            });
-            config.password.observe(getViewLifecycleOwner(), p -> {
-                password.setText(p);
-            });
-
-        });
     }
 
     @Override
@@ -84,8 +58,6 @@ public class ServerFragment extends NavigationFragment {
         username = view.findViewById(R.id.username);
         password = view.findViewById(R.id.password);
         totpPassword = view.findViewById(R.id.totp_password);
-        totpKey = view.findViewById(R.id.totp_key);
-        tlsCert = view.findViewById(R.id.tls_cert);
 
         setup();
     }

@@ -3,11 +3,12 @@ package com.example.httpserver.app.repository.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServerConfig implements Parcelable {
     public int port = 8080;
-    public String address = "localhost";
+    public String address = "all";
     public boolean basic = false;
     public boolean totp = true;
     public boolean tls = true;
@@ -55,6 +56,20 @@ public class ServerConfig implements Parcelable {
             return new ServerConfig[size];
         }
     };
+
+    public List<Configuration> to() {
+        ArrayList<Configuration> configurations = new ArrayList<>();
+        configurations.add(new Configuration("port", port + ""));
+        configurations.add(new Configuration("address", address));
+        configurations.add(new Configuration("basic", basic + ""));
+        configurations.add(new Configuration("totp", totp + ""));
+        configurations.add(new Configuration("tls", tls + ""));
+        configurations.add(new Configuration("key", key));
+        configurations.add(new Configuration("cert", cert));
+        configurations.add(new Configuration("username", username));
+        configurations.add(new Configuration("password", password));
+        return configurations;
+    }
 
     public static ServerConfig from(List<Configuration> configurations) {
         ServerConfig config = new ServerConfig();

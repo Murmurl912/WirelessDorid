@@ -23,4 +23,28 @@ public interface ConfigurationRepository {
 
     @Query("select * from configuration where `key` in (:keys)")
     public List<Configuration> select(String...keys);
+
+    @Query("select count(*) from configuration where `key` = :key")
+    public int contains(String key);
+
+    @Transaction
+    default public void save(Configuration...configurations) {
+        for (Configuration configuration : configurations) {
+            if(contains(configuration.key) > 0) {
+                update(configuration);
+            } else {
+                insert(configuration);
+            }
+        }
+    }
+
+    default public void save(List<Configuration> configurations) {
+        for (Configuration configuration : configurations) {
+            if(contains(configuration.key) > 0) {
+                update(configuration);
+            } else {
+                insert(configuration);
+            }
+        }
+    }
 }
