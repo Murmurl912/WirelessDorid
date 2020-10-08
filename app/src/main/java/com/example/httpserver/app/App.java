@@ -45,9 +45,9 @@ public class App extends Application{
     private void setup() {
         executor = Executors.newCachedThreadPool();
         config = new LiveServerConfig();
+        db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "app-database").build();
         executor.submit(()->{
-            db = Room.databaseBuilder(getApplicationContext(),
-                    AppDatabase.class, "app-database").build();
             List<Configuration> configs = db.configuration().select(ServerConfig.keys);
             config.assign(configs);
         });

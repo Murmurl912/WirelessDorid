@@ -151,13 +151,13 @@ public class ServerFragment extends NavigationFragment {
 
     private void setup() {
         basic.setOnClickListener(v -> {
-            model.set("basic", basic.isChecked());
+            model.config().set("basic", basic.isChecked());
         });
         totp.setOnClickListener(v -> {
-            model.set("totp", totp.isChecked());
+            model.config().set("totp", totp.isChecked());
         });
         tls.setOnClickListener(v -> {
-            model.set("tls", tls.isChecked());
+            model.config().set("tls", tls.isChecked());
         });
 
         action.setOnClickListener(v -> {
