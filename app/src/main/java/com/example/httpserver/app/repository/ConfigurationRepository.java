@@ -1,6 +1,12 @@
 package com.example.httpserver.app.repository;
 
-import androidx.room.*;
+import androidx.room.Dao;
+import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Transaction;
+import androidx.room.Update;
+
 import com.example.httpserver.app.repository.entity.Configuration;
 
 import java.util.List;

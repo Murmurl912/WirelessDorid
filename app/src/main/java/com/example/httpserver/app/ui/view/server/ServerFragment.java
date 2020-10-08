@@ -9,10 +9,12 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.ui.NavigationFragment;
