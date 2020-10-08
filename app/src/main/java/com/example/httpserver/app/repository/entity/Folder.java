@@ -18,6 +18,7 @@ public class Folder implements Parcelable {
     public boolean write = false;
     public boolean read = true;
     public boolean recursive = true;
+    public boolean share = true;
 
     public Folder() {
 
@@ -29,6 +30,7 @@ public class Folder implements Parcelable {
         write = in.readByte() != 0;
         read = in.readByte() != 0;
         recursive = in.readByte() != 0;
+        share = in.readByte() != 0;
     }
 
     public static final Creator<Folder> CREATOR = new Creator<Folder>() {
@@ -68,5 +70,6 @@ public class Folder implements Parcelable {
         dest.writeByte((byte) (write ? 1 : 0));
         dest.writeByte((byte) (read ? 1 : 0));
         dest.writeByte((byte) (recursive ? 1 : 0));
+        dest.writeByte((byte) (share ? 1 : 0));
     }
 }

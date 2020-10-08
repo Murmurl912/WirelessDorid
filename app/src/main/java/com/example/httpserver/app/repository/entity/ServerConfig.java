@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ServerConfig implements Parcelable {
     public int port = 8080;
-    public String address = "all";
+    public String address = "";
     public boolean basic = false;
     public boolean totp = true;
     public boolean tls = true;

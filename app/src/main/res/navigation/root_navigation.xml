@@ -10,18 +10,18 @@
         <action android:id="@+id/action_nav_server_to_nav_loading" app:destination="@id/nav_loading"/>
     </fragment>
     <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.view.folders.FoldersFragment"
-              android:label="Folders" tools:layout="@layout/fragment_folders">
+              android:label="Directories" tools:layout="@layout/fragment_folders">
         <action android:id="@+id/action_nav_folders_to_nav_folder" app:destination="@id/nav_folder"/>
         <action android:id="@+id/action_nav_folders_to_nav_loading" app:destination="@id/nav_loading"/>
     </fragment>
     <fragment android:id="@+id/nav_folder"
               android:name="com.example.httpserver.app.ui.view.folders.folder.FolderFragment"
-              android:label="Folder"
+              android:label="Directory"
               tools:layout="@layout/fragment_folder">
         <action android:id="@+id/action_nav_folder_to_editTextDialog"
                 app:destination="@id/nav_context_editor"/>
         <action android:id="@+id/action_nav_folder_to_nav_path_chooser" app:destination="@id/nav_path_chooser"/>
-        <action android:id="@+id/action_nav_folder_to_nav_folders" app:destination="@id/nav_folders"/>
+        <action android:id="@+id/action_nav_folder_to_nav_folders" app:popUpTo="@id/nav_folders"/>
         <action android:id="@+id/action_nav_folder_to_nav_loading" app:destination="@id/nav_loading"/>
     </fragment>
     <dialog android:id="@+id/nav_context_editor"

@@ -225,6 +225,63 @@
                     android:paddingTop="16dip"
                     android:paddingBottom="16dip">
 
+                <TextView android:id="@+id/enable_title"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:singleLine="true"
+                          android:text="Share"
+                          android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                <TextView android:id="@+id/share_summary"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_below="@id/enable_title"
+                          android:layout_alignStart="@id/enable_title"
+                          android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+                          android:textColor="?android:attr/textColorSecondary"
+                          android:maxLines="10"
+                          android:text="Enable sharing on this folder"/>
+
+            </RelativeLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="?attr/listPreferredItemPaddingStart"
+                android:minHeight="?android:attr/listPreferredItemHeight"
+                android:gravity="center_vertical"
+                android:paddingStart="?attr/listPreferredItemPaddingStart"
+                android:paddingEnd="?attr/listPreferredItemPaddingEnd"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:baselineAligned="false">
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="58dip"
+                    android:gravity="start|center_vertical"
+                    android:orientation="horizontal">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dip"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingTop="16dip"
+                    android:paddingBottom="16dip">
+
                 <TextView android:id="@+id/read_title"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -341,7 +398,7 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:singleLine="true"
-                          android:text="@string/write"
+                          android:text="Apply"
                           android:textAppearance="?android:attr/textAppearanceListItem" />
 
                 <TextView android:id="@+id/subfolder_summary"
@@ -404,6 +461,7 @@
             </RelativeLayout>
         </LinearLayout>
         <LinearLayout
+                android:id="@+id/delete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="?attr/listPreferredItemPaddingStart"
@@ -434,57 +492,7 @@
                     android:paddingTop="16dip"
                     android:paddingBottom="16dip">
 
-                <TextView android:id="@+id/reset"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:singleLine="true"
-                          android:text="@string/delete"
-                          android:textAppearance="?android:attr/textAppearanceListItem" />
-
-                <TextView android:id="@+id/reset_summary"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_below="@id/reset"
-                          android:layout_alignStart="@id/reset"
-                          android:textAppearance="?android:attr/textAppearanceListItemSecondary"
-                          android:textColor="?android:attr/textColorSecondary"
-                          android:maxLines="10"
-                          android:text="@string/reset_setting_of_this_entry_to_default"/>
-
-            </RelativeLayout>
-        </LinearLayout>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="?attr/listPreferredItemPaddingStart"
-                android:minHeight="?android:attr/listPreferredItemHeight"
-                android:gravity="center_vertical"
-                android:paddingStart="?attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?attr/listPreferredItemPaddingEnd"
-                android:clickable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:baselineAligned="false">
-
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:minWidth="58dip"
-                    android:gravity="start|center_vertical"
-                    android:orientation="horizontal">
-                <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dip"/>
-            </LinearLayout>
-
-            <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingTop="16dip"
-                    android:paddingBottom="16dip">
-
-                <TextView android:id="@+id/delete"
+                <TextView android:id="@+id/delete_title"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:singleLine="true"
@@ -494,8 +502,8 @@
                 <TextView android:id="@+id/delte_summary"
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:layout_below="@id/delete"
-                          android:layout_alignStart="@id/delete"
+                          android:layout_below="@id/delete_title"
+                          android:layout_alignStart="@id/delete_title"
                           android:textAppearance="?android:attr/textAppearanceListItemSecondary"
                           android:textColor="?android:attr/textColorSecondary"
                           android:maxLines="10"

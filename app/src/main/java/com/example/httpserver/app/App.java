@@ -3,12 +3,16 @@ package com.example.httpserver.app;
 import android.app.Application;
 import android.content.Intent;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
 import com.example.httpserver.app.database.AppDatabase;
+import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.HttpService;
+import com.koushikdutta.async.future.Continuation;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -40,14 +44,12 @@ public class App extends Application{
 
     private void setup() {
         executor = Executors.newCachedThreadPool();
+        config = new LiveServerConfig();
         executor.submit(()->{
             db = Room.databaseBuilder(getApplicationContext(),
                     AppDatabase.class, "app-database").build();
-            config = LiveServerConfig
-                    .from(ServerConfig
-                            .from(db.configuration().select(ServerConfig.keys))
-                    );
-            config.set("status", "stopped");
+            List<Configuration> configs = db.configuration().select(ServerConfig.keys);
+            config.assign(configs);
         });
     }
 

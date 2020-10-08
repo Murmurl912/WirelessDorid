@@ -31,7 +31,7 @@ public class FoldersFragment extends NavigationFragment {
     private final BiConsumer<View, FolderAdapter.FolderViewHolder> handler = (view, holder) -> {
         NavController controller = Navigation.findNavController(view);
         Bundle bundle = new Bundle();
-        bundle.putString("path", holder.folder.path);
+        bundle.putParcelable("folder", holder.folder);
         controller.navigate(R.id.nav_folder, bundle);
     };
 

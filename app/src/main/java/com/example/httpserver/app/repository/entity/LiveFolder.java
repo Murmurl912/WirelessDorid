@@ -10,6 +10,7 @@ public class LiveFolder {
     public final MutableLiveData<Boolean> write = new MutableLiveData<>(false);
     public final MutableLiveData<Boolean> read = new MutableLiveData<>(true);
     public final MutableLiveData<Boolean> recursive = new MutableLiveData<>(true);
+    public final MutableLiveData<Boolean> share = new MutableLiveData<>(true);
 
     protected LiveFolder(Folder folder) {
         path.postValue(folder.path);
@@ -17,6 +18,7 @@ public class LiveFolder {
         write.postValue(folder.write);
         read.postValue(folder.read);
         recursive.postValue(folder.recursive);
+        share.postValue(folder.share);
     }
 
     public Folder toFolder(Folder folder) {
@@ -26,6 +28,7 @@ public class LiveFolder {
         folder.read = Objects.requireNonNull(read.getValue());
         folder.write = Objects.requireNonNull(write.getValue());
         folder.recursive = Objects.requireNonNull(recursive.getValue());
+        folder.share = Objects.requireNonNull(share.getValue());
         return folder;
     }
 

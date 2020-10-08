@@ -101,6 +101,65 @@ public class LiveServerConfig {
         });
     }
 
+    public Object get(String key) {
+        switch (key) {
+            case "port":
+                return port.getValue();
+            case "address":
+                return address.getValue();
+            case "status":
+                return status.getValue();
+            case "basic":
+                return basic.getValue();
+            case "totp":
+                return totp.getValue();
+            case "tls":
+                return tls.getValue();
+            case "username":
+                return username.getValue();
+            case "password":
+                return password.getValue();
+        }
+        return null;
+    }
+
+    public void assign(List<Configuration> configurations) {
+        for (Configuration configuration : configurations) {
+            String value = configuration.value;
+            switch (configuration.key) {
+                case "port":
+                    port.postValue(Integer.parseInt(value));
+                    break;
+                case "address":
+                    address.postValue(value);
+                    break;
+                case "basic":
+                    basic.postValue(Boolean.parseBoolean(value));
+                    break;
+                case "totp":
+                    totp.postValue(Boolean.parseBoolean(value));
+                    break;
+                case "tls":
+                    tls.postValue(Boolean.parseBoolean(value));
+                    break;
+                case "totp_key":
+                    key.postValue(value);
+                    break;
+                case "tls_cert":
+                    cert.postValue(value);
+                    break;
+                case "username":
+                    username.postValue(value);
+                    break;
+                case "password":
+                    password.postValue(value);
+                    break;
+                case "status":
+                    status.postValue(value);
+            }
+        }
+    }
+
     public LiveData<Integer> port() {
         return port;
     }

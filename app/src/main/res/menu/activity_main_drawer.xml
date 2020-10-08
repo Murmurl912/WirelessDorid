@@ -10,12 +10,8 @@
                 android:title="Server"/>
         <item
             android:id="@+id/nav_folders"
-            android:icon="@drawable/ic_folder"
-            android:title="File"/>
-        <item
-            android:id="@+id/nav_filesytem"
             android:icon="@drawable/ic_storage"
-            android:title="File System"/>
+            android:title="Directory"/>
     </group>
 
     <group android:checkableBehavior="single">

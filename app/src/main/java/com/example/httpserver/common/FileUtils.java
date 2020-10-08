@@ -7,16 +7,22 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.preference.AndroidResources;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Utils for dealing with Storage Access Framework URIs.
@@ -50,6 +56,7 @@ public class FileUtils {
             Log.e(TAG, "getAbsolutePathFromTreeUri: called on unsupported API level");
             return null;
         }
+        
         if (treeUri == null) {
             Log.w(TAG, "getAbsolutePathFromTreeUri: called with treeUri == null");
             return null;
@@ -84,6 +91,26 @@ public class FileUtils {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private static String getMountPath(String id, Context context) {
+
+        StorageManager mStorageManager =
+                (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        List<StorageVolume> storageVolumeList = mStorageManager.getStorageVolumes();
+        for(StorageVolume volume : storageVolumeList) {
+            String uuid  = volume.getUuid();
+            if(!Objects.equals(uuid, id)) {
+                continue;
+            }
+            boolean primary = volume.isPrimary();
+            boolean removable = volume.isRemovable();
+            String result = volume.getDirectory().getAbsolutePath().toString();
+            Log.d(TAG, "Volume: " + id + ", path: " + result);
+            return result;
+        }
+        return "";
+    }
+
     @SuppressLint("ObsoleteSdkInt")
     @TargetApi(21)
     private static String getVolumePath(final String volumeId, Context context) {
@@ -101,6 +128,10 @@ public class FileUtils {
                 Log.v(TAG, "getVolumePath: isDownloadsVolume");
                 // Reading the environment var avoids hard coding the case of the "downloads" folder.
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+            }
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                return getMountPath(volumeId, context);
             }
 
             StorageManager mStorageManager =
@@ -136,7 +167,7 @@ public class FileUtils {
             Log.w(TAG, "getVolumePath exception", e);
         }
         Log.e(TAG, "getVolumePath failed for volumeId='" + volumeId + "'");
-        return null;
+        return "";
     }
 
     /**

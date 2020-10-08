@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,6 +41,8 @@ public class FolderFragment extends NavigationFragment {
     private SwitchMaterial read;
     private SwitchMaterial write;
     private SwitchMaterial subfolder;
+    private SwitchMaterial share;
+    private View delete;
 
     public static FolderFragment newInstance() {
         return new FolderFragment();
@@ -94,6 +97,9 @@ public class FolderFragment extends NavigationFragment {
         read = view.findViewById(R.id.read);
         write = view.findViewById(R.id.write);
         subfolder = view.findViewById(R.id.subfolder);
+        share = view.findViewById(R.id.share);
+
+        delete = view.findViewById(R.id.delete);
 
         read.setOnClickListener(v -> {
             onSwitchRead(read.isChecked());
@@ -105,6 +111,12 @@ public class FolderFragment extends NavigationFragment {
             onSwitchRecursive(subfolder.isChecked());
         });
 
+        share.setOnClickListener(v -> {
+
+        });
+        delete.setOnClickListener(v -> {
+            onDelete();
+        });
     }
 
 
@@ -142,6 +154,9 @@ public class FolderFragment extends NavigationFragment {
         model.folder().recursive.observe(getViewLifecycleOwner(), b -> {
             subfolder.setChecked(b);
         });
+        model.folder().share.observe(getViewLifecycleOwner(), b -> {
+            subfolder.setChecked(b);
+        });
     }
 
     private void onSetContext(String context) {
@@ -169,6 +184,10 @@ public class FolderFragment extends NavigationFragment {
 
     }
 
+    private void onSwitchShare(boolean share) {
+        model.folder().share.postValue(share);
+    }
+
     private void onSave() {
         Folder folder = model.folder().toFolder(null);
         if("".equals(folder.path)) {
@@ -176,6 +195,7 @@ public class FolderFragment extends NavigationFragment {
             error("Path is empty");
             return;
         }
+
         Path path = Paths.get(folder.path);
         if(!Files.exists(path) || !Files.isDirectory(path)) {
             error("Path is not found or is not a directory");
@@ -194,6 +214,10 @@ public class FolderFragment extends NavigationFragment {
 
     private void onCancel() {
         back(getView());
+    }
+
+    private void onDelete() {
+        alert();
     }
 
     @Override
@@ -229,6 +253,23 @@ public class FolderFragment extends NavigationFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void alert() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext()).setMessage("Are you sure to delete this folder").create();
+        dialog.setTitle("Delete " + model.folder().name.getValue());
+
+        dialog.setCancelable(false);
+        dialog.setButton(BUTTON_POSITIVE, "DELETE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                App.app().executor().submit(()->{
+                    App.app().db().folder().remove(model.folder().toFolder(null));
+                    requireActivity().runOnUiThread(()->back(getView()));
+                });
             }
         });
         dialog.show();
