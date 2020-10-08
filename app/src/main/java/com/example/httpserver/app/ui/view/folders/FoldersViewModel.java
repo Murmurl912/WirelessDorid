@@ -18,8 +18,8 @@ public class FoldersViewModel extends ViewModel {
     }
 
     public LiveData<List<Folder>> folders() {
-        App.executor.submit(()-> {
-            folders.postValue(App.db().folder().get());
+        App.app().executor().submit(()-> {
+            folders.postValue(App.app().db().folder().get());
         });
         return folders;
     }

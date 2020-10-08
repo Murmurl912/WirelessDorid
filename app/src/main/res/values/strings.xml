@@ -38,4 +38,14 @@
     <string name="more">More</string>
     <string name="delete">Delete</string>
     <string name="reset_setting_of_this_entry_to_default">Reset setting of this entry to default</string>
+    <string name="enable_tls">Enable TLS</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="enable_basic_authentication">Enable Basic Authentication</string>
+    <string name="enable_totp">Enable TOTP</string>
+    <string name="start_server">Start Server</string>
+    <string name="stopped">Stopped</string>
+    <string name="server_status">Server Status</string>
+    <string name="address">Address</string>
+    <string name="port">Port</string>
 </resources>

@@ -2,9 +2,7 @@ package com.example.httpserver.app.repository;
 
 import androidx.room.*;
 import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.app.repository.entity.ServerConfig;
 
-import java.util.Collection;
 import java.util.List;
 
 @Dao

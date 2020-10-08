@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.httpserver.R;
+import com.example.httpserver.common.FileUtils;
 
 
 public class PathChooseDialog extends EditTextDialog {
@@ -31,7 +32,8 @@ public class PathChooseDialog extends EditTextDialog {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
-            text.setText(uri.toString());
+            String path = FileUtils.getAbsolutePathFromTreeUri(requireContext(), uri);
+            text.setText(path);
         }
     }
 }

@@ -3,21 +3,23 @@ package com.example.httpserver.app.ui.view.folders.folder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
-import android.provider.DocumentsContract;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
-import androidx.lifecycle.ViewModelProvider;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Folder;
 import com.example.httpserver.app.ui.NavigationFragment;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
@@ -167,17 +169,20 @@ public class FolderFragment extends NavigationFragment {
             error("Path is empty");
             return;
         }
-        Uri uri = Uri.parse(folder.path);
-        if(!DocumentsContract.isTreeUri(uri)) {
-            error("Path is invalid");
+        Path path = Paths.get(folder.path);
+        if(!Files.exists(path) || !Files.isDirectory(path)) {
+            error("Path is not found or is not a directory");
             return;
         };
 
-        App.executor.submit(()->{
-            App.db().folder().save(folder);
+        App.app().executor().submit(()->{
+            try {
+                App.app().db().folder().save(folder);
+                requireActivity().runOnUiThread(()->back(getView()));
+            } catch (Exception e) {
+                error("Path may already added");
+            }
         });
-
-        back(getView());
     }
 
     private void onCancel() {

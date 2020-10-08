@@ -3,21 +3,21 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".app.ui.view.server.ServerFragment">
 
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:orientation="vertical"
-                  android:focusable="true">
+                  android:orientation="vertical">
         <androidx.cardview.widget.CardView
-                android:focusable="true"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp">
             <LinearLayout
-                    android:focusable="true"
+
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -26,22 +26,19 @@
                               android:orientation="horizontal"
                               android:minWidth="48dp"
                               android:minHeight="48dp"
-                              android:focusable="true">
+                >
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="match_parent"
                               android:gravity="center_vertical"
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                              android:text="Port"
-                              android:focusable="true"/>
+                              android:text="@string/port"
+                    />
                     <TextView android:layout_width="0dp"
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                               android:gravity="center_vertical"
-                              android:textIsSelectable="true"
-                              android:text="8080"
                               android:background="#ffffff"
-                              android:focusable="true"
                               android:id="@+id/port"/>
                 </LinearLayout>
                 <LinearLayout android:layout_width="match_parent"
@@ -49,19 +46,19 @@
                               android:orientation="horizontal"
                               android:minWidth="48dp"
                               android:minHeight="48dp"
-                              android:focusable="true">
+                >
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="match_parent"
                               android:gravity="center_vertical"
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                              android:text="Address"
-                              android:focusable="true"/>
+                              android:text="@string/address"
+                    />
                     <Spinner  android:layout_width="0dp"
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                               android:gravity="center_vertical"
-                              android:focusable="true"
+
                               android:id="@+id/address"/>
                 </LinearLayout>
                 <LinearLayout android:layout_width="match_parent"
@@ -69,21 +66,21 @@
                               android:orientation="horizontal"
                               android:minWidth="48dp"
                               android:minHeight="48dp"
-                              android:focusable="true">
+                >
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="match_parent"
                               android:gravity="center_vertical"
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                              android:text="Server Status"
-                              android:focusable="true"/>
+                              android:text="@string/server_status"
+                    />
                     <TextView android:layout_width="0dp"
                               android:layout_height="match_parent"
                               android:layout_weight="1"
                               android:gravity="center_vertical"
                               android:textIsSelectable="true"
-                              android:text="Stopped"
-                              android:focusable="true"
+                              android:text="@string/stopped"
+
                               android:id="@+id/status"/>
                 </LinearLayout>
                 <View
@@ -94,13 +91,14 @@
                 <Button android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.AppCompat.Button.Borderless"
-                        android:text="Start Server"
-                        android:focusable="true"
+                        android:textAllCaps="false"
+                        android:text="@string/start_server"
+
                         android:id="@+id/server_action"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
-                android:focusable="true"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
@@ -108,25 +106,24 @@
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="true">
+                    android:layout_height="wrap_content">
                 <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:background="?attr/selectableItemBackground"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
                         android:minWidth="48dp"
                         android:padding="@dimen/text_padding"
-                        android:focusable="true"
-                        android:text="Enable TOTP"
+                        android:text="@string/enable_totp"
                         android:id="@+id/totp"/>
                 <TextView
-                        android:focusable="true"
                         android:orientation="horizontal"
-                        android:textIsSelectable="true"
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/totp_password"
+                        android:clickable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display3"/>
                 <ProgressBar
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -134,7 +131,7 @@
                         android:layout_height="match_parent"
                         android:id="@+id/totp_progress"
                         android:padding="@dimen/text_padding"
-                        android:focusable="true"/>
+                />
                 <View
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
@@ -148,63 +145,60 @@
                         android:minWidth="48dp"
                         android:padding="@dimen/text_padding"
                         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                        android:text="Enable Basic Authentication"
+                        android:text="@string/enable_basic_authentication"
                         android:id="@+id/basic"
-                        android:focusable="true"/>
+                />
                 <LinearLayout android:layout_width="match_parent"
                               android:layout_height="wrap_content"
                               android:orientation="horizontal"
                               android:minWidth="48dp"
                               android:minHeight="48dp"
-                              android:focusable="true">
+                              android:clickable="true"
+                              android:background="?attr/selectableItemBackground">
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="match_parent"
                               android:gravity="center_vertical"
                               android:padding="@dimen/text_padding"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                              android:text="Username"
-                              android:focusable="true"/>
+                              android:text="@string/username"
+                              android:id="@+id/username_label"/>
                     <TextView  android:layout_width="0dp"
-                               android:focusable="true"
                                android:layout_height="match_parent"
                                android:layout_weight="1"
                                android:padding="@dimen/text_padding"
-                               android:textIsSelectable="true"
+                               android:clickable="true"
                                android:gravity="center_vertical"
                                android:id="@+id/username"/>
                 </LinearLayout>
                 <LinearLayout
-                        android:focusable="true"
+                        android:clickable="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-
+                        android:background="?attr/selectableItemBackground"
                         android:minWidth="48dp"
                         android:minHeight="48dp">
                     <TextView android:layout_width="wrap_content"
                               android:layout_height="match_parent"
                               android:gravity="center_vertical"
                               android:padding="@dimen/text_padding"
+                              android:id="@+id/password_label"
                               android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                              android:text="Password"
-                              android:focusable="true"/>
-                    <EditText  android:layout_width="0dp"
+                              android:text="@string/password"
+                    />
+                    <TextView  android:layout_width="0dp"
                                android:layout_height="match_parent"
                                android:layout_weight="1"
-                               android:textIsSelectable="true"
-                               android:inputType="textPassword"
                                android:gravity="center_vertical"
                                android:padding="@dimen/text_padding"
-                               android:background="#ffffff"
-                               android:focusable="true"
-                               android:editable="false"
+                               android:clickable="true"
                                android:id="@+id/password"/>
                     <ImageButton android:layout_width="wrap_content"
                                  android:layout_height="match_parent"
                                  android:src="@drawable/ic_eye"
                                  android:paddingHorizontal="20dp"
                                  android:minWidth="0dp"
-                                  style="@style/Widget.AppCompat.Button.Borderless"/>
+                                 style="@style/Widget.AppCompat.Button.Borderless"/>
                 </LinearLayout>
                 <View
                         android:id="@+id/divider2"
@@ -219,9 +213,10 @@
                         android:minWidth="48dp"
                         android:padding="@dimen/text_padding"
                         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                        android:text="Enable TLS"
+                        android:text="@string/enable_tls"
                         android:id="@+id/tls"
-                        android:focusable="true"/>
+                        android:background="?attr/selectableItemBackground"
+                />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>

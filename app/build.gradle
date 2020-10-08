@@ -29,6 +29,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    packagingOptions {
+
+    }
 }
 
 dependencies {
@@ -47,7 +50,13 @@ dependencies {
 
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:2.2.5"
-    
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+
+    // https://mvnrepository.com/artifact/com.sun.net.httpserver/http
+    implementation group: 'com.sun.net.httpserver', name: 'http', version: '20070405'
+
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

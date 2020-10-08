@@ -1,7 +1,8 @@
 package com.example.httpserver.app.ui;
 
 import android.os.Bundle;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.example.httpserver.R;
@@ -31,8 +32,24 @@ public class NavigationFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.main_menu, menu);
         SwitchMaterial server = (menu.findItem(R.id.server_switch).getActionView().findViewById(R.id.server_switch_button));
-        if(server != null)
-            App.serverRunning.observe(getViewLifecycleOwner(), server::setChecked);
+        if(server != null) {
+            App.app().config().status().observe(getViewLifecycleOwner(), status -> {
+                switch (status) {
+                    case "running":
+                        server.setChecked(true);
+                        break;
+                    case "stopped":
+                        server.setChecked(false);
+                        break;
+                    default:
+                        server.setChecked(false);
+                }
+            });
+
+            server.setOnClickListener(v -> {
+                App.app().config().set("status", server.isChecked() ? "running" : "stopped");
+            });
+        }
     }
 
 

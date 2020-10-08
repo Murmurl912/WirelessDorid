@@ -16,6 +16,7 @@ public class ServerConfig implements Parcelable {
     public String cert = "default";
     public String username = "";
     public String password = "";
+    public String status = "stopped";
 
     public static final String[] keys = {
             "port",
@@ -26,7 +27,8 @@ public class ServerConfig implements Parcelable {
             "totp_key",
             "tls_cert",
             "username",
-            "password"
+            "password",
+            "status"
     };
 
     public ServerConfig() {
@@ -43,6 +45,7 @@ public class ServerConfig implements Parcelable {
         cert = in.readString();
         username = in.readString();
         password = in.readString();
+        status = in.readString();
     }
 
     public static final Creator<ServerConfig> CREATOR = new Creator<ServerConfig>() {
@@ -68,6 +71,7 @@ public class ServerConfig implements Parcelable {
         configurations.add(new Configuration("cert", cert));
         configurations.add(new Configuration("username", username));
         configurations.add(new Configuration("password", password));
+        configurations.add(new Configuration("status", status));
         return configurations;
     }
 
@@ -103,12 +107,13 @@ public class ServerConfig implements Parcelable {
                 case "password":
                     config.password = value;
                     break;
+                case "status":
+                    config.status = value;
             }
         }
 
         return config;
     }
-
 
     @Override
     public int describeContents() {
@@ -126,5 +131,6 @@ public class ServerConfig implements Parcelable {
         dest.writeString(cert);
         dest.writeString(username);
         dest.writeString(password);
+        dest.writeString(status);
     }
 }
