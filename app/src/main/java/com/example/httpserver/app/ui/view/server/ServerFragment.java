@@ -164,10 +164,8 @@ public class ServerFragment extends NavigationFragment {
             LiveServerConfig config = App.app().config();
             if("running".equals(config.status().getValue())) {
                 App.app().stop();
-                config.set("status", "stopped");
-            } else {
+            } else if("stopped".equals(config.status().getValue())) {
                 App.app().start();
-                config.set("status", "running");
             }
         });
 

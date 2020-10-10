@@ -10,7 +10,7 @@ import com.example.httpserver.app.database.AppDatabase;
 import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.HttpService;
-import com.koushikdutta.async.future.Continuation;
+
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +48,7 @@ public class App extends Application{
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "app-database").build();
         executor.submit(()->{
+            db.configuration().save(new Configuration("status", "stopped"));
             List<Configuration> configs = db.configuration().select(ServerConfig.keys);
             config.assign(configs);
         });
