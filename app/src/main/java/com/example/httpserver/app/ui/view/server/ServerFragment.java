@@ -2,9 +2,7 @@ package com.example.httpserver.app.ui.view.server;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 
 import androidx.annotation.NonNull;
@@ -147,6 +145,11 @@ public class ServerFragment extends NavigationFragment {
         usernameLabel = view.findViewById(R.id.username_label);
 
         setup();
+    }
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.server_menu, menu);
     }
 
     private void setup() {

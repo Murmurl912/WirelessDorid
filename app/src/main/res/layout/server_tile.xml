@@ -1,0 +1,194 @@
+<androidx.cardview.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/server_tile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical">
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="Status"
+            />
+            <TextView android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:id="@+id/status"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="@string/url"
+            />
+            <TextView android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:id="@+id/url"/>
+            <ImageButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:src="@drawable/ic_qr"
+                         style="?attr/buttonBarButtonStyle"
+                         android:id="@+id/url_qr"
+                         android:contentDescription="@string/show_qr_code"/>
+        </LinearLayout>
+
+        <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+        />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="@string/port"
+            />
+            <TextView android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:background="#ffffff"
+                      android:id="@+id/port"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="@string/address"/>
+            <Spinner android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:id="@+id/addresses"/>
+        </LinearLayout>
+
+        <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+        />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="@string/username"
+            />
+            <TextView android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:id="@+id/username"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="@string/password"
+            />
+            <TextView android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:id="@+id/password"/>
+            <ImageButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:src="@drawable/ic_eye"
+                         style="?attr/buttonBarButtonStyle"
+                         android:id="@+id/show_password"
+                         android:contentDescription="@string/show_password"/>
+        </LinearLayout>
+
+        <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+        />
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:minWidth="48dp"
+                      android:minHeight="48dp"
+                      android:id="@+id/pin_container">
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:gravity="center_vertical"
+                      android:padding="@dimen/text_padding"
+                      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                      android:text="@string/pin"
+            />
+            <TextView android:layout_width="0dp"
+                      android:layout_height="match_parent"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:id="@+id/pin"/>
+            <ProgressBar android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:paddingHorizontal="8dp"
+                         android:id="@+id/pin_progress"
+                        />
+        </LinearLayout>
+
+        <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+        />
+
+        <Button android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/start_server"
+                android:id="@+id/start"
+                style="?attr/buttonBarButtonStyle"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

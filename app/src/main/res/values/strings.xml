@@ -49,4 +49,10 @@
     <string name="address">Address</string>
     <string name="port">Port</string>
     <string name="reset_to_default">Reset</string>
+    <string name="show_qr_code">show qr code</string>
+    <string name="url">URL</string>
+    <string name="address">Address</string>
+    <string name="username">Username</string>
+    <string name="show_password">Show password</string>
+    <string name="pin">PIN</string>
 </resources>
