@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -29,11 +30,18 @@ public class TinyWebServer implements WebServer {
     private static final int STATE_ERROR = -1;
     private Exception error;
 
+    private final BiConsumer<Integer, Exception> DEFAULT_LISTENER = new BiConsumer<Integer, Exception>() {
+        @Override
+        public void accept(Integer integer, Exception exception) {
+
+        }
+    };
+    private BiConsumer<Integer, Exception> listener = DEFAULT_LISTENER;
+
     private final Router<BiFunction<NanoHTTPD.IHTTPSession, Map<String, String>, NanoHTTPD.Response>> router;
 
-    public TinyWebServer(ServerConfig config) {
+    public TinyWebServer() {
         this.router = new Router<>();
-        this.config = config;
     }
 
     public void setConfig(ServerConfig config) {
@@ -44,7 +52,7 @@ public class TinyWebServer implements WebServer {
         if(server != null) {
             server.stop();
         }
-        server = new HttpServer(config.port);
+        server = new HttpServer(8080);
     }
 
     @Override
@@ -55,17 +63,21 @@ public class TinyWebServer implements WebServer {
                 init();
                 break;
             case STATE_STOPPED:
+                init();
                 break;
             default:
                 throw new IllegalStateException();
         }
         state = STATE_STARTING;
+        listener.accept(state, null);
         try {
             server.start(DEFAULT_TIMEOUT);
             state = STATE_RUNNING;
+            listener.accept(state, null);
         } catch (IOException e) {
             error = e;
             state = STATE_ERROR;
+            listener.accept(state, e);
         }
     }
 
@@ -80,12 +92,15 @@ public class TinyWebServer implements WebServer {
                 throw new IllegalStateException();
         }
         state = STATE_STOPPING;
+        listener.accept(state, null);
         try {
             server.stop();
             state = STATE_STOPPED;
+            listener.accept(state, null);
         } catch (Exception e) {
             error = e;
             state = STATE_ERROR;
+            listener.accept(state, null);
         }
     }
 
@@ -102,10 +117,6 @@ public class TinyWebServer implements WebServer {
             super(port);
         }
 
-        public HttpServer(String hostname, int port) {
-            super(hostname, port);
-        }
-
         @Override
         public Response serve(IHTTPSession session) {
             String uri = session.getUri();
@@ -118,6 +129,18 @@ public class TinyWebServer implements WebServer {
             }
             return route.handler.apply(session, pathVariables);
         }
+    }
+
+    public void setServerListener(BiConsumer<Integer, Exception> listener) {
+        this.listener = listener == null ? DEFAULT_LISTENER : listener;
+    }
+
+    public void removeServerListener() {
+        this.listener = DEFAULT_LISTENER;
+    }
+
+    public static NanoHTTPD.Response response(String message) {
+        return NanoHTTPD.newFixedLengthResponse(message);
     }
 
 }

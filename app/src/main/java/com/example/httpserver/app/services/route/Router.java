@@ -35,8 +35,9 @@ public class Router<Handler> {
         return route;
     }
 
-    public void add(Route<Handler> route) {
+    public Router<Handler> add(Route<Handler> route) {
         routes.add(route);
+        return this;
     }
 
     public void remove(Route<Handler> route) {
@@ -51,7 +52,7 @@ public class Router<Handler> {
         return null;
     }
 
-    public static class Route<Handler> {
+    public static class Route<Handler> implements Comparable<Route<Handler>> {
 
         public final HttpMethod method;
         public final PathPattern pattern;
@@ -84,12 +85,16 @@ public class Router<Handler> {
             return Objects.hash(method, pattern);
         }
 
-        public static Route<?> of(String method, String uri, Object handler) {
+        public static <T> Route<T> of(String method, String uri, T handler) {
             HttpMethod m = HttpMethod.resolve(method);
             PathPattern p = DEFAULT_PATH_PARSER.parse(uri);
 
             return new Route<>(handler, m, p);
         }
 
+        @Override
+        public int compareTo(Route<Handler> o) {
+            return pattern.compareTo(o.pattern);
+        }
     }
 }

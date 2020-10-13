@@ -5,12 +5,27 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.example.httpserver.app.App;
+import com.example.httpserver.app.repository.entity.ServerConfig;
+import com.example.httpserver.app.services.route.Router;
+import fi.iki.elonen.NanoHTTPD;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class HttpService extends Service {
 
-    private WebHttpServer server;
+    private TinyWebServer server;
+    private BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
+        @Override
+        public void accept(Integer integer, Exception exception) {
+            switch (integer) {
+
+            }
+        }
+    };
 
     public HttpService() {
 
@@ -26,20 +41,25 @@ public class HttpService extends Service {
         App.app().executor().submit(()->{
             try {
                 App.app().serverStatus().postValue("starting");
+                ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
+                server.setConfig(config);
+                server.router()
+                        .add(Router.Route.of("GET", "/api/time", (session, map) -> TinyWebServer.response(new Date().toString())))
+                        .add(Router.Route.of("GET", "/**", (session, map) -> TinyWebServer.response(map.toString())));
                 server.start();
                 App.app().serverStatus().postValue("running");
-            } catch (IOException e) {
+            } catch (Exception e) {
                 App.app().serverStatus().postValue("error");
             }
         });
         return START_NOT_STICKY;
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
-        server = new WebHttpServer();
+        server = new TinyWebServer();
+        server.setServerListener(listener);
     }
 
     @Override
@@ -52,5 +72,6 @@ public class HttpService extends Service {
         });
         super.onDestroy();
     }
+
 
 }
