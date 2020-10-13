@@ -19,8 +19,8 @@ import java.util.concurrent.Executors;
 public class App extends Application{
 
     private AppDatabase db;
-    private LiveServerConfig config;
     private ExecutorService executor;
+    private MutableLiveData<String> serverStatus;
 
     private static App app;
     public static App app() {
@@ -43,15 +43,11 @@ public class App extends Application{
     }
 
     private void setup() {
+        serverStatus = new MutableLiveData<>("stopped");
         executor = Executors.newCachedThreadPool();
-        config = new LiveServerConfig();
         db = Room.databaseBuilder(getApplicationContext(),
                 AppDatabase.class, "app-database").build();
-        executor.submit(()->{
-            db.configuration().save(new Configuration("status", "stopped"));
-            List<Configuration> configs = db.configuration().select(ServerConfig.keys);
-            config.assign(configs);
-        });
+
     }
 
     public AppDatabase db() {
@@ -62,8 +58,8 @@ public class App extends Application{
         return executor;
     }
 
-    public LiveServerConfig config() {
-        return config;
+    public MutableLiveData<String> serverStatus() {
+        return serverStatus;
     }
 
     public void start() {

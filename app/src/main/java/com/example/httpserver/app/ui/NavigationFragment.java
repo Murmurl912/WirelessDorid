@@ -1,5 +1,6 @@
 package com.example.httpserver.app.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
+import com.example.httpserver.app.services.HttpService;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public abstract class NavigationFragment extends Fragment {
@@ -35,21 +37,24 @@ public abstract class NavigationFragment extends Fragment {
         inflater.inflate(R.menu.main_menu, menu);
         SwitchMaterial server = (menu.findItem(R.id.server_switch).getActionView().findViewById(R.id.server_switch_button));
         if(server != null) {
-            App.app().config().status().observe(getViewLifecycleOwner(), status -> {
+            App.app().serverStatus().observe(getViewLifecycleOwner(), status -> {
                 switch (status) {
                     case "running":
                         server.setChecked(true);
                         break;
                     case "stopped":
-                        server.setChecked(false);
-                        break;
                     default:
                         server.setChecked(false);
                 }
             });
 
             server.setOnClickListener(v -> {
-                App.app().config().set("status", server.isChecked() ? "running" : "stopped");
+                boolean checked = server.isChecked();
+                if(checked) {
+                    requireActivity().stopService(new Intent(requireContext(), HttpService.class));
+                } else {
+                    requireActivity().startService(new Intent(requireContext(), HttpService.class));
+                }
             });
         }
     }

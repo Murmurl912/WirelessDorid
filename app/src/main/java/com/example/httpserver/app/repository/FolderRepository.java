@@ -29,6 +29,15 @@ public interface FolderRepository {
     @Query("select * from folder where path = :path")
     public Folder get(String path);
 
+    @Query("select * from folder where name = :name")
+    public Folder getByName(String name);
+
+    @Query("select folder.name from folder")
+    public List<String> names();
+
+    @Query("select count(name) from folder where name = :name")
+    public boolean containName(String name);
+
     default public void save(Folder folder) {
         if(contain(folder.path)) {
             update(folder);

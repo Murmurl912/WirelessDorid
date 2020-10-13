@@ -95,10 +95,10 @@ public abstract class AbstractFileServiceProvider implements FileService {
     }
 
     @Override
-    public Path create(Path path, String proxy) {
+    public Path touch(Path path) {
         auth();
         canWrite(path);
-        return service.create(path, proxy);
+        return service.touch(path);
     }
 
     @Override
@@ -116,10 +116,10 @@ public abstract class AbstractFileServiceProvider implements FileService {
     }
 
     @Override
-    public Map<String, String> meta(Path path, String proxy) {
+    public Map<String, String> meta(Path path) {
         auth();
         canRead(path);
-        return service.meta(path, proxy);
+        return service.meta(path);
     }
 
     @Override

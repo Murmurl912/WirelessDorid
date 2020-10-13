@@ -6,13 +6,15 @@
             app:startDestination="@id/nav_server">
     <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.app.ui.view.server.ServerFragment"
               android:label="Server" tools:layout="@layout/fragment_server">
-        <action android:id="@+id/action_nav_server_to_nav_basic_authen" app:destination="@id/nav_basic_auth"/>
-        <action android:id="@+id/action_nav_server_to_nav_loading" app:destination="@id/nav_loading"/>
+        <action android:id="@+id/action_nav_server_to_nav_basic_authen"
+                app:destination="@id/nav_auth"/>
+        <action android:id="@+id/action_nav_server_to_nav_http_server_config"
+                app:destination="@id/nav_http_server_config"/>
     </fragment>
     <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.view.folders.FoldersFragment"
               android:label="Directories" tools:layout="@layout/fragment_folders">
-        <action android:id="@+id/action_nav_folders_to_nav_folder" app:destination="@id/nav_folder"/>
-        <action android:id="@+id/action_nav_folders_to_nav_loading" app:destination="@id/nav_loading"/>
+        <action android:id="@+id/action_nav_folders_to_nav_folder"
+                app:destination="@id/nav_folder"/>
     </fragment>
     <fragment android:id="@+id/nav_folder"
               android:name="com.example.httpserver.app.ui.view.folders.folder.FolderFragment"
@@ -20,12 +22,14 @@
               tools:layout="@layout/fragment_folder">
         <action android:id="@+id/action_nav_folder_to_editTextDialog"
                 app:destination="@id/nav_context_editor"/>
-        <action android:id="@+id/action_nav_folder_to_nav_path_chooser" app:destination="@id/nav_path_chooser"/>
-        <action android:id="@+id/action_nav_folder_to_nav_folders" app:popUpTo="@id/nav_folders"/>
-        <action android:id="@+id/action_nav_folder_to_nav_loading" app:destination="@id/nav_loading"/>
+        <action android:id="@+id/action_nav_folder_to_nav_path_chooser"
+                app:destination="@id/nav_path_chooser"/>
+        <action android:id="@+id/action_nav_folder_to_nav_folders"
+                app:popUpToInclusive="true"
+                app:popUpTo="@id/nav_folders"/>
     </fragment>
     <dialog android:id="@+id/nav_context_editor"
-            android:name="com.example.httpserver.app.ui.view.folders.folder.EditTextDialog"
+            android:name="com.example.httpserver.app.ui.view.folders.folder.ContextDialog"
             android:label="Set Context"
             tools:layout="@layout/dialog_edit_text">
         <action android:id="@+id/action_nav_context_editor_to_nav_folder"
@@ -38,20 +42,15 @@
         <action android:id="@+id/action_nav_path_chooser_to_nav_folder"
                 app:popUpTo="@id/nav_folder"/>
     </dialog>
-    <dialog android:id="@+id/nav_basic_auth"
-              android:name="com.example.httpserver.app.ui.view.server.BasicAuthenticationDialog"
+    <dialog android:id="@+id/nav_auth"
+              android:name="com.example.httpserver.app.ui.view.server.WebSecurityDialog"
               android:label="BasicAuthenticationDialog">
         <action android:id="@+id/action_nav_basic_authen_to_nav_server"
                 app:popUpTo="@id/nav_server"/>
     </dialog>
-    <dialog android:id="@+id/nav_loading" android:name="com.example.httpserver.app.ui.view.AppLoadingDialog"
-            android:label="AppLoadingDialog">
-        <action android:id="@+id/action_nav_loading_to_nav_server" app:popUpTo="@id/nav_server"/>
-        <action android:id="@+id/action_nav_loading_to_nav_folders" app:popUpTo="@id/nav_folders"/>
-        <action android:id="@+id/action_nav_loading_to_nav_folder" app:popUpTo="@id/nav_folder"/>
+    <dialog android:id="@+id/nav_http_server_config" android:name="com.example.httpserver.app.ui.view.server.WebServerDialog"
+            android:label="WebServerDialog">
+        <action android:id="@+id/action_nav_http_server_config_to_nav_server"
+                app:popUpTo="@id/nav_server"/>
     </dialog>
-    <fragment android:id="@+id/nav_filesytem"
-              android:name="com.example.httpserver.app.ui.view.system.FileSystemFragment"
-              android:label="fragment_file_system"
-              tools:layout="@layout/fragment_file_system"/>
 </navigation>

@@ -2,7 +2,9 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/server_tile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical">
@@ -17,15 +19,25 @@
                       android:gravity="center_vertical"
                       android:padding="@dimen/text_padding"
                       android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                      android:text="Status"
+                      android:text="HTTP Status"
             />
             <TextView android:layout_width="0dp"
                       android:layout_height="match_parent"
                       android:layout_weight="1"
                       android:gravity="center_vertical"
                       android:id="@+id/status"/>
+            <ImageButton android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:src="@drawable/ic_gray"
+                         style="?attr/buttonBarButtonStyle"
+                         android:id="@+id/status_icon"
+                         android:contentDescription="@string/status"/>
         </LinearLayout>
-
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+        />
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"
@@ -36,7 +48,7 @@
                       android:gravity="center_vertical"
                       android:padding="@dimen/text_padding"
                       android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                      android:text="@string/url"
+                      android:text="@string/http_url"
             />
             <TextView android:layout_width="0dp"
                       android:layout_height="match_parent"
@@ -50,7 +62,6 @@
                          android:id="@+id/url_qr"
                          android:contentDescription="@string/show_qr_code"/>
         </LinearLayout>
-
         <View
                 android:id="@+id/divider3"
                 android:layout_width="match_parent"
@@ -170,10 +181,13 @@
                       android:gravity="center_vertical"
                       android:id="@+id/pin"/>
             <ProgressBar android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
+                         android:layout_height="match_parent"
                          android:paddingHorizontal="8dp"
                          android:id="@+id/pin_progress"
-                        />
+                         android:progress="3000"
+                         android:max="3000"
+                         style="?android:attr/progressBarStyleHorizontal"
+                         android:min="0"/>
         </LinearLayout>
 
         <View
@@ -186,7 +200,7 @@
         <Button android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/start_server"
-                android:id="@+id/start"
+                android:id="@+id/action"
                 style="?attr/buttonBarButtonStyle"/>
 
     </LinearLayout>

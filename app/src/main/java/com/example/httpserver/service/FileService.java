@@ -17,13 +17,15 @@ public interface FileService {
 
     public Path copy(Path path, Path destination, String proxy);
 
-    public Path create(Path path, String proxy);
+    public Path mkdir(Path path);
+
+    public Path touch(Path path);
 
     public Path create(Path path, InputStream stream, String proxy);
 
     public void read(Path path, OutputStream stream);
 
-    public Map<String, String> meta(Path path, String proxy);
+    public Map<String, String> meta(Path path);
 
     public Set<Path> dir(Path path);
 

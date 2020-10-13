@@ -99,13 +99,14 @@ public class FileUtils {
         List<StorageVolume> storageVolumeList = mStorageManager.getStorageVolumes();
         for(StorageVolume volume : storageVolumeList) {
             String uuid  = volume.getUuid();
-            if(!Objects.equals(uuid, id)) {
-                continue;
-            }
+
             boolean primary = volume.isPrimary();
             boolean removable = volume.isRemovable();
             String result = volume.getDirectory().getAbsolutePath().toString();
-            Log.d(TAG, "Volume: " + id + ", path: " + result);
+            Log.d(TAG, "Volume: " + id + ", path: " + result + ", name: " + volume.getMediaStoreVolumeName());
+            if(!Objects.equals(uuid, id)) {
+                continue;
+            }
             return result;
         }
         return "";
@@ -214,6 +215,7 @@ public class FileUtils {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static String getVolumeIdFromTreeUri(final Uri treeUri) {
         final String docId = DocumentsContract.getTreeDocumentId(treeUri);
+
         final String[] split = docId.split(":");
         if (split.length > 0) {
             return split[0];

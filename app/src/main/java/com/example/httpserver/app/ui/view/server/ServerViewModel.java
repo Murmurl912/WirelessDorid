@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.LiveServerConfig;
+import com.example.httpserver.app.repository.entity.ServerConfig;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -22,23 +23,82 @@ import static java.net.NetworkInterface.getNetworkInterfaces;
 
 public class ServerViewModel extends ViewModel {
 
+    private MutableLiveData<String> password;
+    private MutableLiveData<String> username;
+    private MutableLiveData<String> url;
+    private MutableLiveData<String> port;
+    private MutableLiveData<String> address;
+    private MutableLiveData<String> pin;
+    private MutableLiveData<Integer> progress;
+    private MutableLiveData<Boolean> totp;
+
     public ServerViewModel() {
-
+        password = new MutableLiveData<>();
+        username = new MutableLiveData<>();
+        url = new MutableLiveData<>();
+        port = new MutableLiveData<>();
+        address = new MutableLiveData<>();
+        pin = new MutableLiveData<>();
+        progress = new MutableLiveData<>();
+        totp = new MutableLiveData<>();
     }
 
-    public LiveServerConfig config() {
-        return App.app().config();
+    public MutableLiveData<String> password() {
+        return password;
     }
 
-    public LiveData<List<String>> address() {
-        MutableLiveData<List<String>> address = new MutableLiveData<>();
+    public MutableLiveData<String> username() {
+        return username;
+    }
+
+    public MutableLiveData<String> url() {
+        return url;
+    }
+
+    public MutableLiveData<String> port() {
+        return port;
+    }
+
+    public MutableLiveData<String> address() {
+        return address;
+    }
+
+    public MutableLiveData<String> pin() {
+        return pin;
+    }
+
+    public MutableLiveData<Integer> progress() {
+        return progress;
+    }
+
+    public MutableLiveData<Boolean> totp() {
+        return totp;
+    }
+
+    public LiveData<List<String>> addresses() {
+        MutableLiveData<List<String>> addresses = new MutableLiveData<>();
 
         App.app().executor().submit(()->{
             List<String> networks = networks();
-            address.postValue(networks);
+            addresses.postValue(networks);
         });
 
-        return address;
+        return addresses;
+    }
+
+    public LiveData<Boolean> refresh() {
+        MutableLiveData<Boolean> result = new MutableLiveData<>();
+        App.app().executor().submit(()->{
+            ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
+            username.postValue(config.username);
+            password.postValue(config.password);
+            port.postValue(config.port + "");
+            address.postValue(config.address);
+            url.postValue("http://" + config.address + ":" + config.port + "/");
+            totp.postValue(config.totp);
+            result.postValue(true);
+        });
+        return result;
     }
 
     private List<String> networks() {
@@ -70,4 +130,5 @@ public class ServerViewModel extends ViewModel {
 
         return addresses;
     }
+
 }

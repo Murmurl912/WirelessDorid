@@ -3,7 +3,12 @@ package com.example.httpserver.app.ui.view.folders.folder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,19 +21,28 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Folder;
 import com.example.httpserver.app.ui.NavigationFragment;
+import com.example.httpserver.common.FileUtils;
+import com.example.httpserver.common.Utils;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.hbisoft.pickit.PickiT;
+import com.hbisoft.pickit.PickiTCallbacks;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 public class FolderFragment extends NavigationFragment {
@@ -43,6 +57,7 @@ public class FolderFragment extends NavigationFragment {
     private SwitchMaterial subfolder;
     private SwitchMaterial share;
     private View delete;
+
 
     public static FolderFragment newInstance() {
         return new FolderFragment();
@@ -60,37 +75,25 @@ public class FolderFragment extends NavigationFragment {
         model = new ViewModelProvider(requireActivity()).get(FolderViewModel.class);
         init();
         Bundle bundle = getArguments();
-        Log.d(TAG, "Bundle: " + bundle);
         if(bundle == null) {
             return;
         }
-        if(bundle.containsKey("title")) {
-            String title = bundle.getString("title");
-            switch (title) {
-                case "Choose Path":
-                    onSelectPath(bundle.getString("text"));
-                    break;
-                case "Set Context":
-                    onSetContext(bundle.getString("text"));
-                    break;
-            }
-            bundle.remove("title");
+        if(bundle.containsKey("context")) {
+            model.folder().name.postValue(bundle.getString("context"));
         }
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         view.findViewById(R.id.path_container).setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("title", "Choose Path");
-            bundle.putString("text", "");
-            Navigation.findNavController(v).navigate(R.id.nav_path_chooser, bundle);
+            startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), 0);
         });
         view.findViewById(R.id.context_container).setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString("title", "Set Context");
             bundle.putString("text", "");
-            Navigation.findNavController(v).navigate(R.id.nav_context_editor, bundle);
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.nav_context_editor, bundle);
         });
         pathSummary = view.findViewById(R.id.path_summary);
         labelSummary = view.findViewById(R.id.laebl_summary);
@@ -196,16 +199,16 @@ public class FolderFragment extends NavigationFragment {
             return;
         }
 
-        Path path = Paths.get(folder.path);
-        if(!Files.exists(path) || !Files.isDirectory(path)) {
-            error("Path is not found or is not a directory");
-            return;
-        };
+//        Path path = Paths.get(folder.path);
+//        if(!Files.exists(path) || !Files.isDirectory(path)) {
+//            error("Path is not found or is not a directory");
+//            return;
+//        };
 
         App.app().executor().submit(()->{
             try {
                 App.app().db().folder().save(folder);
-                requireActivity().runOnUiThread(()->back(getView()));
+                requireActivity().runOnUiThread(this::back);
             } catch (Exception e) {
                 error("Path may already added");
             }
@@ -213,7 +216,7 @@ public class FolderFragment extends NavigationFragment {
     }
 
     private void onCancel() {
-        back(getView());
+        back();
     }
 
     private void onDelete() {
@@ -241,8 +244,9 @@ public class FolderFragment extends NavigationFragment {
         inflater.inflate(R.menu.folder_menu, menu);
     }
 
-    private void back(View view) {
-        Navigation.findNavController(view).navigate(R.id.nav_folders);
+    private void back() {
+        NavController controller = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+        controller.navigate(R.id.nav_folders, null, new NavOptions.Builder().setPopUpTo(R.id.nav_folders, true).build());
     }
 
     private void error(String message) {
@@ -268,10 +272,18 @@ public class FolderFragment extends NavigationFragment {
             public void onClick(DialogInterface dialog, int which) {
                 App.app().executor().submit(()->{
                     App.app().db().folder().remove(model.folder().toFolder(null));
-                    requireActivity().runOnUiThread(()->back(getView()));
+                    requireActivity().runOnUiThread(()->back());
                 });
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
+            model.folder().path.postValue(Utils.path(requireContext(), data.getData()));
+        }
     }
 }

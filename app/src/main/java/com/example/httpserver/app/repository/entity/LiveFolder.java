@@ -1,5 +1,6 @@
 package com.example.httpserver.app.repository.entity;
 
+import android.widget.Button;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Objects;
@@ -24,11 +25,17 @@ public class LiveFolder {
     public Folder toFolder(Folder folder) {
         folder = folder == null ? new Folder() : folder;
         folder.name = name.getValue();
-        folder.path = Objects.requireNonNull(path.getValue());
-        folder.read = Objects.requireNonNull(read.getValue());
-        folder.write = Objects.requireNonNull(write.getValue());
-        folder.recursive = Objects.requireNonNull(recursive.getValue());
-        folder.share = Objects.requireNonNull(share.getValue());
+        String s = path.getValue();
+        folder.path = s == null ? "" : s;
+        Boolean b = read.getValue();
+        folder.read = b != null && b;
+        b = read.getValue();
+        folder.write = b != null && b;
+        b = write.getValue();
+        folder.recursive = b != null && b;
+        b = recursive.getValue();
+        folder.share = b != null && b;
+        b = share.getValue();
         return folder;
     }
 

@@ -4,16 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import android.widget.Toast;
 import com.example.httpserver.app.App;
-import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.server.NettyHttpServer;
 
 import java.io.IOException;
 
 public class HttpService extends Service {
 
-    private WebServer server;
+    private WebHttpServer server;
 
     public HttpService() {
 
@@ -28,11 +25,11 @@ public class HttpService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         App.app().executor().submit(()->{
             try {
-                App.app().config().set("status", "starting");
+                App.app().serverStatus().postValue("starting");
                 server.start();
-                App.app().config().set("status", "running");
+                App.app().serverStatus().postValue("running");
             } catch (IOException e) {
-                App.app().config().set("status", "error");
+                App.app().serverStatus().postValue("error");
             }
         });
         return START_NOT_STICKY;
@@ -42,15 +39,16 @@ public class HttpService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        server = new WebHttpServer();
     }
 
     @Override
     public void onDestroy() {
 
         App.app().executor().submit(()->{
-            App.app().config().set("status", "stopping");
+            App.app().serverStatus().postValue("stopping");
             server.stop();
-            App.app().config().set("status", "stopped");
+            App.app().serverStatus().postValue("stopped");
         });
         super.onDestroy();
     }
