@@ -26,7 +26,7 @@ public class ServerNotification {
                         .setContentTitle(title)
                         .setContentText(contentText)
                         .setContentIntent(contentIntent)
-                        .setSmallIcon(R.drawable.ic_notific_server_icon)
+                        .setSmallIcon(R.drawable.ic_server_icon)
                         .setTicker("Server Is Running")
                         .setWhen(when)
                         .setOngoing(true)

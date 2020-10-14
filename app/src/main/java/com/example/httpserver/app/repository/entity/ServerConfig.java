@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerConfig implements Parcelable {
-    public int http_port = 8080;
-    public int ftp_port = 6060;
+    public int http_port = DEFAULT_HTTP_PORT;
+    public int ftp_port = DEFAULT_FTP_PORT;
     public String address = "";
     public boolean http = true;
     public boolean ftp = false;
@@ -20,6 +20,9 @@ public class ServerConfig implements Parcelable {
     public String username = "";
     public String password = "";
     public String status = "stopped";
+
+    public static int DEFAULT_HTTP_PORT = 8080;
+    public static int DEFAULT_FTP_PORT = 6060;
 
     public static final String[] keys = {
             "http_port",

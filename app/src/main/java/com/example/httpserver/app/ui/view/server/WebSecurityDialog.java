@@ -79,20 +79,16 @@ public class WebSecurityDialog extends DialogFragment {
 
     private void onSave() {
         ArrayList<Configuration> configurations = new ArrayList<>();
-        if(basic.isChecked()) {
-            Configuration userConfig = new Configuration("username", username.getText().toString());
-            Configuration passConfig = new Configuration("password", password.getText().toString());
-            configurations.add(userConfig);
-            configurations.add(passConfig);
-        }
         Configuration tlsConfig = new Configuration("tls", Boolean.toString(tls.isChecked()));
         Configuration basicConfig = new Configuration("basic", Boolean.toString(tls.isChecked()));
         Configuration totpConfig = new Configuration("totp", Boolean.toString(tls.isChecked()));
+        Configuration userConfig = new Configuration("username", username.getText().toString());
+        Configuration passConfig = new Configuration("password", password.getText().toString());
+        configurations.add(userConfig);
+        configurations.add(passConfig);
         configurations.add(tlsConfig);
         configurations.add(basicConfig);
         configurations.add(totpConfig);
-        App.app().executor().submit(()->{
-            App.app().db().configuration().save(configurations);
-        });
+        App.app().executor().submit(()-> App.app().db().configuration().save(configurations));
     }
 }
