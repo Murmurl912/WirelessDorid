@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 final class DefaultPathContainer implements PathContainer {
-    private static final MultiValueMap<String, String> EMPTY_PARAMS = new LinkedMultiValueMap();
+    private static final MultiValueMap<String, String> EMPTY_PARAMS = new LinkedMultiValueMap<>();
     private static final PathContainer EMPTY_PATH = new DefaultPathContainer("", Collections.emptyList());
-    private static final Map<Character, DefaultSeparator> SEPARATORS = new HashMap(2);
+    private static final Map<Character, DefaultSeparator> SEPARATORS = new HashMap<>(2);
     private final String path;
     private final List<Element> elements;
 
@@ -33,7 +33,7 @@ final class DefaultPathContainer implements PathContainer {
         if (this == other) {
             return true;
         } else {
-            return !(other instanceof PathContainer) ? false : this.value().equals(((PathContainer)other).value());
+            return other instanceof PathContainer && this.value().equals(((PathContainer) other).value());
         }
     }
 
@@ -54,7 +54,7 @@ final class DefaultPathContainer implements PathContainer {
             if (separatorElement == null) {
                 throw new IllegalArgumentException("Unexpected separator: '" + separator + "'");
             } else {
-                List<Element> elements = new ArrayList();
+                List<Element> elements = new ArrayList<>();
                 int begin;
                 if (path.charAt(0) == separator) {
                     begin = 1;
@@ -99,7 +99,7 @@ final class DefaultPathContainer implements PathContainer {
     }
 
     private static MultiValueMap<String, String> parsePathParams(String input, Charset charset) {
-        MultiValueMap<String, String> result = new LinkedMultiValueMap();
+        MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
 
         int end;
         for(int begin = 1; begin < input.length(); begin = end + 1) {
@@ -124,8 +124,7 @@ final class DefaultPathContainer implements PathContainer {
                 String[] var6 = StringUtils.commaDelimitedListToStringArray(value);
                 int var7 = var6.length;
 
-                for(int var8 = 0; var8 < var7; ++var8) {
-                    String v = var6[var8];
+                for (String v : var6) {
                     name = StringUtils.uriDecode(name, charset);
                     if (StringUtils.hasText(name)) {
                         output.add(name, StringUtils.uriDecode(v, charset));
@@ -208,7 +207,7 @@ final class DefaultPathContainer implements PathContainer {
             if (this == other) {
                 return true;
             } else {
-                return !(other instanceof PathSegment) ? false : this.value().equals(((PathSegment)other).value());
+                return other instanceof PathSegment && this.value().equals(((PathSegment) other).value());
             }
         }
 

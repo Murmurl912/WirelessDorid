@@ -3,6 +3,7 @@ package com.example.httpserver.service;
 import androidx.documentfile.provider.DocumentFile;
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -152,8 +153,9 @@ public class AndroidFileService implements FileService {
 
     @Override
     public Path create(Path path, InputStream stream, String proxy) {
-        Condition.writable(path);
+        Condition.writable(path.getParent());
         if(Files.exists(path)) {
+            Condition.writable(path);
             if(PROXY_REPLACE.equals(proxy)) {
                 if(Files.isDirectory(path)) {
                     Condition.empty(path);
@@ -196,6 +198,17 @@ public class AndroidFileService implements FileService {
         }
     }
 
+    @Override
+    public InputStream read(Path path) {
+        Condition.readable(path);
+        Condition.file(path);
+
+        try {
+            return Files.newInputStream(path);
+        } catch (IOException e) {
+            throw new FileServiceException(e);
+        }
+    }
 
     @Override
     public Map<String, String> meta(Path path) {
@@ -205,6 +218,7 @@ public class AndroidFileService implements FileService {
         BasicFileAttributeView basicFileAttributeView = Files.getFileAttributeView(path, BasicFileAttributeView.class);
         try {
             BasicFileAttributes attributes = basicFileAttributeView.readAttributes();
+            String name = path.getFileName().toString();
             boolean hidden = Files.isHidden(path);
             boolean readable = Files.isReadable(path);
             boolean writable = Files.isWritable(path);
@@ -217,6 +231,7 @@ public class AndroidFileService implements FileService {
             boolean sybmoliclink = attributes.isSymbolicLink();
             boolean other = attributes.isOther();
             Map<String, String> map = new HashMap<String, String>();
+            map.put("name", name);
             map.put("hidden", String.valueOf(hidden));
             map.put("readable", String.valueOf(readable));
             map.put("writable", String.valueOf(writable));

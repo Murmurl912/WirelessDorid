@@ -6,10 +6,8 @@ import com.example.httpserver.app.repository.entity.Folder;
 import com.example.httpserver.app.repository.entity.LiveFolder;
 
 public class FolderViewModel extends ViewModel {
-    // TODO: Implement the ViewModel
 
     private LiveFolder folder;
-
     public FolderViewModel() {
         folder = LiveFolder.from(new Folder());
     }

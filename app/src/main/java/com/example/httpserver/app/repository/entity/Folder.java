@@ -12,9 +12,10 @@ import java.util.Objects;
 
 @Entity
 public class Folder implements Parcelable {
-    @NonNull
-    @PrimaryKey
-    public String path = "";
+
+    @PrimaryKey(autoGenerate = true)
+    public long id = -1L;
+    public String path;
     public String name;
     public boolean write = false;
     public boolean read = true;
@@ -26,6 +27,7 @@ public class Folder implements Parcelable {
     }
 
     protected Folder(Parcel in) {
+        id = in.readLong();
         path = in.readString();
         name = in.readString();
         write = in.readByte() != 0;
@@ -46,18 +48,6 @@ public class Folder implements Parcelable {
         }
     };
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Folder folder = (Folder) o;
-        return path.equals(folder.path);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(path);
-    }
 
     @Override
     public int describeContents() {
@@ -66,6 +56,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(path);
         dest.writeString(name);
         dest.writeByte((byte) (write ? 1 : 0));

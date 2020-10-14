@@ -47,6 +47,9 @@ dependencies {
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'org.nanohttpd:nanohttpd-webserver:2.3.1'
     implementation 'org.nanohttpd:nanohttpd-nanolets:2.3.1'
+    implementation 'org.nanohttpd:nanohttpd-apache-fileupload:2.3.1'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
     implementation 'com.koushikdutta.async:androidasync:3.0.9'
 
@@ -60,7 +63,7 @@ dependencies {
 //    implementation "androidx.room:room-rxjava2:2.2.5"
 
     // https://mvnrepository.com/artifact/commons-io/commons-io
-    implementation group: 'commons-io', name: 'commons-io', version: '20030203.000550'
+//    implementation group: 'commons-io', name: 'commons-io', version: '20030203.000550'
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -2,6 +2,7 @@ package com.example.httpserver.app.repository.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -13,6 +14,7 @@ public class Configuration implements KeyValuePair<String, String> {
     public String key;
     public String value;
 
+    @Ignore
     public Configuration() {
         key = "default";
         value = "default";

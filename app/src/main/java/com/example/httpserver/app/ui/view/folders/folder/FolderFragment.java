@@ -58,7 +58,6 @@ public class FolderFragment extends NavigationFragment {
     private SwitchMaterial share;
     private View delete;
 
-
     public static FolderFragment newInstance() {
         return new FolderFragment();
     }
@@ -74,14 +73,6 @@ public class FolderFragment extends NavigationFragment {
         super.onActivityCreated(savedInstanceState);
         model = new ViewModelProvider(requireActivity()).get(FolderViewModel.class);
         init();
-        Bundle bundle = getArguments();
-        if(bundle == null) {
-            return;
-        }
-        if(bundle.containsKey("context")) {
-            model.folder().name.postValue(bundle.getString("context"));
-        }
-
     }
 
     @Override
@@ -113,15 +104,13 @@ public class FolderFragment extends NavigationFragment {
         subfolder.setOnClickListener(v -> {
             onSwitchRecursive(subfolder.isChecked());
         });
-
         share.setOnClickListener(v -> {
-
+            onSwitchShare(share.isChecked());
         });
         delete.setOnClickListener(v -> {
             onDelete();
         });
     }
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -141,7 +130,11 @@ public class FolderFragment extends NavigationFragment {
             if(folder != null) {
                 model.folder(folder);
             }
+            if(bundle.containsKey("context")) {
+                onSetContext(bundle.getString("context"));
+            }
         }
+
         model.folder().name.observe(getViewLifecycleOwner(), s -> {
             labelSummary.setText(s);
         });
@@ -199,18 +192,18 @@ public class FolderFragment extends NavigationFragment {
             return;
         }
 
-//        Path path = Paths.get(folder.path);
-//        if(!Files.exists(path) || !Files.isDirectory(path)) {
-//            error("Path is not found or is not a directory");
-//            return;
-//        };
+        Path path = Paths.get(folder.path);
+        if(!Files.exists(path) || !Files.isDirectory(path)) {
+            error("Path is not found or is not a directory");
+            return;
+        };
 
         App.app().executor().submit(()->{
             try {
                 App.app().db().folder().save(folder);
                 requireActivity().runOnUiThread(this::back);
             } catch (Exception e) {
-                error("Path may already added");
+                error("Path or context may already added");
             }
         });
     }
@@ -267,15 +260,10 @@ public class FolderFragment extends NavigationFragment {
         dialog.setTitle("Delete " + model.folder().name.getValue());
 
         dialog.setCancelable(false);
-        dialog.setButton(BUTTON_POSITIVE, "DELETE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                App.app().executor().submit(()->{
-                    App.app().db().folder().remove(model.folder().toFolder(null));
-                    requireActivity().runOnUiThread(()->back());
-                });
-            }
-        });
+        dialog.setButton(BUTTON_POSITIVE, "DELETE", (dialog1, which) -> App.app().executor().submit(()->{
+            App.app().db().folder().remove(model.folder().toFolder(null));
+            requireActivity().runOnUiThread(this::back);
+        }));
         dialog.show();
     }
 
@@ -283,7 +271,7 @@ public class FolderFragment extends NavigationFragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
-            model.folder().path.postValue(Utils.path(requireContext(), data.getData()));
+            onSelectPath(Utils.path(requireContext(), data.getData()));
         }
     }
 }

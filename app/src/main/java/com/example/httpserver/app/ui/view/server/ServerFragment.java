@@ -13,6 +13,8 @@ import androidx.navigation.Navigation;
 
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
+import com.example.httpserver.app.repository.entity.Configuration;
+import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.HttpService;
 import com.example.httpserver.app.ui.NavigationFragment;
 
@@ -46,15 +48,19 @@ public class ServerFragment extends NavigationFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         model = new ViewModelProvider(this).get(ServerViewModel.class);
 
-        model.address().observe(getViewLifecycleOwner(), s -> {
-            model.addresses().observe(getViewLifecycleOwner(), list -> {
-                adapter.clear();
-                adapter.addAll(list);
-                addresses.setSelection(list.indexOf(s));
-                adapter.notifyDataSetChanged();
-            });
+        model.addresses().observe(getViewLifecycleOwner(), list -> {
+            String add = model.address().getValue();
+            int index = list.indexOf(add);
+            index = Math.max(index, 0);
+            adapter.clear();
+            adapter.addAll(list);
+            adapter.notifyDataSetChanged();
+            if(index > 0) {
+                addresses.setSelection(index);
+            }
         });
 
         model.password().observe(getViewLifecycleOwner(), s -> {
@@ -94,9 +100,11 @@ public class ServerFragment extends NavigationFragment {
             status.setText(s);
             statusIcon.setImageResource(id);
         });
+
         model.port().observe(getViewLifecycleOwner(), p -> {
-            port.setText(p);
+            port.setText(p + "");
         });
+
         model.totp().observe(getViewLifecycleOwner(), b -> {
            if(b == null || b) {
                model.progress().observe(getViewLifecycleOwner(), i -> {
@@ -137,12 +145,12 @@ public class ServerFragment extends NavigationFragment {
         pinContainer = view.findViewById(R.id.pin_container);
         viewPassword = view.findViewById(R.id.show_password);
         viewPassword.setOnTouchListener((v, event) -> {
-            if(event.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
+            if(event.getAction() == MotionEvent.ACTION_DOWN) {
                 password.setText(model.password().getValue());
                 return true;
             }
 
-            if(event.getAction() == MotionEvent.ACTION_BUTTON_RELEASE) {
+            if(event.getAction() == MotionEvent.ACTION_UP) {
                 password.setText(password.getText().toString().replaceAll(".", "*"));
                 return true;
             }
@@ -162,7 +170,26 @@ public class ServerFragment extends NavigationFragment {
                     break;
             }
         });
+
+        addresses.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String address = adapter.getItem(position);
+                model.address().postValue(address);
+
+                String port = model.port().getValue() + "";
+                if(address != null && !address.isEmpty() && !port.isEmpty()) {
+                    model.url().postValue("http://" + address + ":" + port + "/");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.clear();
@@ -173,8 +200,19 @@ public class ServerFragment extends NavigationFragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.security:
+                Bundle bundle = new Bundle();
+                ServerConfig config = new ServerConfig();
+                config.username = model.username().getValue();
+                config.password = model.password().getValue();
+                Boolean totp = model.totp().getValue();
+                Boolean tls = model.totp().getValue();
+                Boolean basic = model.basic().getValue();
+                config.totp = totp == null || totp;
+                config.tls = tls == null || tls;
+                config.basic = basic == null || basic;
+                bundle.putParcelable("server_config", config);
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                        .navigate(R.id.nav_auth);
+                        .navigate(R.id.nav_auth, bundle);
                 return true;
             case R.id.server:
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)

@@ -1,6 +1,7 @@
 package com.example.httpserver.service;
 
 
+import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
@@ -24,6 +25,8 @@ public interface FileService {
     public Path create(Path path, InputStream stream, String proxy);
 
     public void read(Path path, OutputStream stream);
+
+    public InputStream read(Path path);
 
     public Map<String, String> meta(Path path);
 

@@ -20,7 +20,7 @@ public class FoldersViewModel extends ViewModel {
 
     public LiveData<List<Folder>> folders() {
         App.app().executor().submit(()-> {
-            folders.postValue(App.app().db().folder().get());
+            folders.postValue(App.app().db().folder().gets());
         });
         return folders;
     }

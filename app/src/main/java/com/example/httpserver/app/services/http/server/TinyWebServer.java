@@ -20,12 +20,12 @@ public class TinyWebServer implements WebServer {
     private final static int DEFAULT_TIMEOUT = 4000;
     private volatile int state;
 
-    private static final int STATE_STOPPED = 0;
-    private static final int STATE_STARTING = 1;
-    private static final int STATE_RUNNING = 2;
-    private static final int STATE_STOPPING = 3;
-    private static final int STATE_ERROR = -1;
-    private Exception error;
+    public static final int STATE_STOPPED = 0;
+    public static final int STATE_STARTING = 1;
+    public static final int STATE_RUNNING = 2;
+    public static final int STATE_STOPPING = 3;
+    public static final int STATE_ERROR = -1;
+    public Exception error;
 
     private final BiConsumer<Integer, Exception> DEFAULT_LISTENER = new BiConsumer<Integer, Exception>() {
         @Override
@@ -141,4 +141,7 @@ public class TinyWebServer implements WebServer {
         return NanoHTTPD.newFixedLengthResponse(message);
     }
 
+    public static class ResponseBuilder {
+
+    }
 }
