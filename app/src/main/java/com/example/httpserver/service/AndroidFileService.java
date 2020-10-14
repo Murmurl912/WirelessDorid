@@ -28,13 +28,28 @@ public class AndroidFileService implements FileService {
         return move(path, path.resolve(name), proxy);
     }
 
+    /**
+     * move path
+     * @param path path to be moved
+     * @param destination move destination
+     * @param proxy proxy for conflicts
+     * @return new path of moved file
+     * @throws FileServiceNotFoundException when given path cannot be found
+     * @throws FileServiceUnreadableException when given path cannot be read
+     * @throws FileServiceUnwritableException when given destination's parent path cannot be write
+     * @throws FileServiceNotEmptyException when given destination exits and it's a directory, the given path is
+     * a file and replace proxy is supplied. an non empty dir cannot be replaced by a file.
+     * @throws FileServiceExistsException when destination exists and no replace proxy is supplied
+     * @throws FileServiceException when operation failed because of io
+     */
     @Override
     public Path move(Path path, Path destination, String proxy) {
         Condition.exist(path);
         Condition.readable(path);
-        Condition.writable(destination);
+        Condition.writable(destination.getParent());
 
         if(Files.exists(destination)) {
+            Condition.writable(destination);
             if(PROXY_REPLACE.equalsIgnoreCase(proxy)) {
 
                 if(!Files.isDirectory(path) && Files.isDirectory(destination)) {
@@ -44,10 +59,10 @@ public class AndroidFileService implements FileService {
                 try {
                     Files.move(path, destination, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException();
+                    throw new FileServiceException(e, path);
                 }
             } else {
-                throw new FileServiceExistsException();
+                throw new FileServiceExistsException(destination);
             }
         } else {
             try {
@@ -57,12 +72,23 @@ public class AndroidFileService implements FileService {
                     Files.move(path, destination);
                 }
             } catch (IOException e) {
-                throw new FileServiceException();
+                throw new FileServiceException(e, path);
             }
         }
         return destination;
     }
 
+    /**
+     * remove given path
+     * @param path path to be removed
+     * @param proxy remove proxy can be "recursive"
+     * @throws FileServiceNotFoundException when given path cannot be found
+     * @throws FileServiceUnwritableException when given path cannot be written
+     * @throws FileServiceUnreadableException when given path cannot be read
+     * @throws FileServiceNotEmptyException when given path is dir, recursive delete proxy is not supplied and dir is
+     * not empty
+     * @throws FileServiceException when io errors occurs
+     */
     @Override
     public void remove(Path path, String proxy) {
         Condition.exist(path);
@@ -76,29 +102,44 @@ public class AndroidFileService implements FileService {
                     if(PROXY_RECURSIVE.equalsIgnoreCase(proxy)) {
                         FileUtils.deleteDirectory(path.toFile());
                     } else {
-                        throw new FileServiceNotEmptyException();
+                        throw new FileServiceNotEmptyException(path);
                     }
                 }
             } catch (IOException e) {
-                throw new FileServiceException(e);
+                throw new FileServiceException(e, path);
             }
         } else {
             try {
                 Files.delete(path);
             } catch (IOException e) {
-                throw new FileServiceException();
+                throw new FileServiceException(e, path);
             }
         }
 
     }
 
+    /**
+     * copy file from given path to given destination
+     * @param path path to be copied
+     * @param destination destination path when copied
+     * @param proxy conflict proxy
+     * @return new path of copied path, which must equals to destination
+     * @throws FileServiceNotFoundException given source path cannot be found
+     * @throws FileServiceUnreadableException given source path cannot be read
+     * @throws FileServiceUnwritableException given destination's parent path cannot be write
+     * or destination cannot be written
+     * @throws FileServiceNotEmptyException given destination is a directory and cannot be replaced
+     * @throws FileServiceExistsException given destination existed and is replace proxy not supplied
+     * @throws FileServiceException io error occurs when copy file
+     */
     @Override
     public Path copy(Path path, Path destination, String proxy) {
         Condition.exist(path);
         Condition.readable(path);
-        Condition.writable(destination);
+        Condition.writable(destination.getParent());
 
         if(Files.exists(destination)) {
+            Condition.writable(destination);
             if(PROXY_REPLACE.equalsIgnoreCase(proxy)) {
 
                 if(!Files.isDirectory(path) && Files.isDirectory(destination)) {
@@ -108,10 +149,10 @@ public class AndroidFileService implements FileService {
                 try {
                     Files.copy(path, destination, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException();
+                    throw new FileServiceException(e, path);
                 }
             } else {
-                throw new FileServiceExistsException();
+                throw new FileServiceExistsException(path);
             }
         } else {
             try {
@@ -121,36 +162,62 @@ public class AndroidFileService implements FileService {
                     Files.copy(path, destination);
                 }
             } catch (IOException e) {
-                throw new FileServiceException();
+                throw new FileServiceException(e, path);
             }
         }
         return destination;
     }
 
+    /**
+     * create an empty file with given path
+     * @param path file path
+     * @return path of created file
+     * @throws FileServiceException if io errors occurs
+     * @throws FileServiceUnwritableException if parent path cannot be write
+     * @throws FileServiceExistsException if path already exists
+     */
     @Override
     public Path touch(Path path) {
-        Condition.writable(path);
+        Condition.writable(path.getParent());
         Condition.unexist(path);
         try {
             Files.createFile(path);
         } catch (IOException e) {
-            throw new FileServiceException(e);
+            throw new FileServiceException(e, path);
         }
         return path;
     }
 
+    /**
+     * create a new dir
+     * @param path dir path
+     * @return path of created dir
+     * @throws FileServiceUnwritableException parent path are not writable
+     * @throws FileServiceExistsException path already exists
+     * @throws FileServiceException io errors occurs
+     */
     @Override
     public Path mkdir(Path path) {
-        Condition.writable(path);
+        Condition.writable(path.getParent());
         Condition.unexist(path);
         try {
             Files.createDirectory(path);
         } catch (IOException e) {
-            throw new FileServiceException(e);
+            throw new FileServiceException(e, path);
         }
         return path;
     }
 
+    /**
+     * create or override file path with given input stream
+     * @param path path to be written
+     * @param stream data
+     * @param proxy conflicts proxy
+     * @return created path
+     * @throws FileServiceUnwritableException parent path or path itself cannot be written
+     * @throws FileServiceException if io error occurs
+     * @throws FileServiceExistsException if path already exits and replace proxy is not supplied
+     */
     @Override
     public Path create(Path path, InputStream stream, String proxy) {
         Condition.writable(path.getParent());
@@ -164,42 +231,62 @@ public class AndroidFileService implements FileService {
                 try {
                     Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException(e);
+                    throw new FileServiceException(e, path);
                 }
             } else {
-                throw new FileServiceExistsException();
+                throw new FileServiceExistsException(path);
             }
         } else {
             if(PROXY_REPLACE.equals(proxy)) {
                 try {
                     Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException(e);
+                    throw new FileServiceException(e, path);
                 }
             } else {
                 try {
                     Files.copy(stream, path);
                 } catch (IOException e) {
-                    throw new FileServiceException(e);
+                    throw new FileServiceException(e, path);
                 }
             }
         }
         return path;
     }
 
+    /**
+     * write a file path to a output stream
+     * @param path path to be read
+     * @param stream output stream
+     * @throws FileServiceUnreadableException cannot read path
+     * @throws FileServiceIsDirectoryException path is not a file
+     * @throws FileServiceNotFoundException path is not found
+     * @throws FileServiceException io errors
+     */
     @Override
-    public void read(Path path, OutputStream stream) {
+    public void write(Path path, OutputStream stream) {
+        Condition.exist(path);
         Condition.readable(path);
         Condition.file(path);
         try {
             Files.copy(path, stream);
         } catch (IOException e) {
-            throw new FileServiceException(e);
+            throw new FileServiceException(e, path);
         }
     }
 
+    /**
+     * read a path to a input stream
+     * @param path  path to be read
+     * @return input stream
+     * @throws FileServiceNotFoundException path not found
+     * @throws FileServiceUnreadableException path unreadable
+     * @throws FileServiceIsDirectoryException path is a directory
+     * @throws FileServiceNotFoundException io errors occurs
+     */
     @Override
     public InputStream read(Path path) {
+        Condition.exist(path);
         Condition.readable(path);
         Condition.file(path);
 
@@ -210,6 +297,14 @@ public class AndroidFileService implements FileService {
         }
     }
 
+    /**
+     * retrieve meta data
+     * @param path path
+     * @return map of meta data
+     * @throws FileServiceNotEmptyException not found
+     * @throws FileServiceUnreadableException cannot be read
+     * @throws FileServiceException io error
+     */
     @Override
     public Map<String, String> meta(Path path) {
         Condition.exist(path);
@@ -245,10 +340,19 @@ public class AndroidFileService implements FileService {
             map.put("other", String.valueOf(other));
             return map;
         } catch (IOException e) {
-            throw new FileServiceException(e);
+            throw new FileServiceException(e, path);
         }
     }
 
+    /**
+     * get files under a directory path
+     * @param path directory
+     * @return list of path
+     * @throws FileServiceExistsException path is not found
+     * @throws FileServiceUnreadableException path unreadable
+     * @throws FileServiceIsFileException path is a file;
+     * @throws FileServiceException io errors
+     */
     @Override
     public Set<Path> dir(Path path) {
         Condition.exist(path);
@@ -258,7 +362,7 @@ public class AndroidFileService implements FileService {
         try {
             return Files.list(path).collect(Collectors.toSet());
         } catch (IOException e) {
-            throw new FileServiceException(e);
+            throw new FileServiceException(e, path);
         }
     }
 
@@ -266,25 +370,25 @@ public class AndroidFileService implements FileService {
 
         public static void readable(Path path) {
             if(!Files.isReadable(path)) {
-                throw new FileServiceUnreadableException();
+                throw new FileServiceUnreadableException(path);
             }
         }
 
         public static void writable(Path path) {
             if(!Files.isWritable(path)) {
-                throw new FileServiceUnwritableException();
+                throw new FileServiceUnwritableException(path);
             }
         }
 
         public static void exist(Path path) {
             if(!Files.exists(path)) {
-                throw new FileServiceNotFoundException();
+                throw new FileServiceNotFoundException(path);
             }
         }
 
         public static void unexist(Path path) {
             if(Files.exists(path)) {
-                throw new FileServiceExistsException();
+                throw new FileServiceExistsException(path);
             }
         }
 
@@ -301,13 +405,13 @@ public class AndroidFileService implements FileService {
 
         public static void directory(Path path) {
             if(!Files.isDirectory(path)) {
-                throw new FileServiceIsFileException();
+                throw new FileServiceIsFileException(path);
             }
         }
 
         public static void file(Path path) {
             if(Files.isDirectory(path)) {
-                throw new FileServiceIsDirectoryException();
+                throw new FileServiceIsDirectoryException(path);
             }
         }
     }

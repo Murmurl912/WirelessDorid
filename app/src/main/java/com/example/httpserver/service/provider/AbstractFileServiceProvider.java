@@ -109,10 +109,10 @@ public abstract class AbstractFileServiceProvider implements FileService {
     }
 
     @Override
-    public void read(Path path, OutputStream stream) {
+    public void write(Path path, OutputStream stream) {
         auth();
         canRead(path);
-        service.read(path, stream);
+        service.write(path, stream);
     }
 
     @Override

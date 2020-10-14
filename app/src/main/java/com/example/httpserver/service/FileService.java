@@ -24,7 +24,7 @@ public interface FileService {
 
     public Path create(Path path, InputStream stream, String proxy);
 
-    public void read(Path path, OutputStream stream);
+    public void write(Path path, OutputStream stream);
 
     public InputStream read(Path path);
 

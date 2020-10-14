@@ -1,10 +1,17 @@
 package com.example.httpserver.app.services.http.server;
 
+import com.example.httpserver.app.App;
+import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.route.Router;
 import fi.iki.elonen.NanoHTTPD;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -49,7 +56,17 @@ public class TinyWebServer implements WebServer {
         if(server != null) {
             server.stop();
         }
-        server = new HttpServer(8080);
+        server = new HttpServer(config.http_port);
+//        if(config.tls) {
+//            try {
+//                SSLServerSocketFactory factory = (SSLServerSocketFactory)SSLServerSocketFactory.getDefault();
+//                server.makeSecure(factory, new String[]{"tls"});
+//            } catch (Exception e) {
+//                App.app().db().configuration().save(new Configuration("tls", "false"));
+//                config.tls = false;
+//            }
+//        }
+
     }
 
     @Override
