@@ -114,11 +114,9 @@ public class ServerViewModel extends ViewModel {
                         .getInetAddresses();
                 while (enumInetAddress.hasMoreElements()) {
                     InetAddress inetAddress = enumInetAddress.nextElement();
-                    if(!inetAddress.isSiteLocalAddress())
-                        continue;
                     if(inetAddress instanceof Inet6Address)
                         continue;
-                    if(inetAddress.isLinkLocalAddress())
+                    if(inetAddress.isLoopbackAddress())
                         continue;
                     addresses.add(inetAddress.getHostAddress());
                 }

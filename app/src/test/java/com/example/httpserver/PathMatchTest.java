@@ -1,13 +1,9 @@
 package com.example.httpserver;
 
-import com.example.httpserver.app.services.route.PathContainer;
-import com.example.httpserver.app.services.route.PathPattern;
-import com.example.httpserver.app.services.route.PathPatternParser;
+import com.example.httpserver.app.services.http.route.PathContainer;
+import com.example.httpserver.app.services.http.route.PathPattern;
+import com.example.httpserver.app.services.http.route.PathPatternParser;
 import org.junit.Test;
-
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class PathMatchTest {
 

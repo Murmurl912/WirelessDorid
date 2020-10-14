@@ -6,14 +6,11 @@ import android.os.IBinder;
 
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.ServerConfig;
-import com.example.httpserver.app.services.route.Router;
-import fi.iki.elonen.NanoHTTPD;
+import com.example.httpserver.app.services.http.server.TinyWebServer;
+import com.example.httpserver.app.services.http.route.Router;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 public class HttpService extends Service {
 
