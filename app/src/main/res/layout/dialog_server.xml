@@ -46,9 +46,22 @@
                   android:id="@+id/ftp_port"
                   android:minHeight="?android:attr/listPreferredItemHeight"
                   android:importantForAutofill="no"/>
-        <CheckBox android:layout_width="match_parent"
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+        <CheckBox android:layout_width="0dp"
+                  android:layout_weight="1"
                   android:layout_height="wrap_content"
+                  android:id="@+id/enable_ftp"
                   android:minHeight="?android:attr/listPreferredItemHeight"
                   android:text="Enable FTP"/>
+        <CheckBox android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/enable_http"
+                  android:minHeight="?android:attr/listPreferredItemHeight"
+                  android:text="Enable HTTP"/>
     </LinearLayout>
+
 </LinearLayout>

@@ -1,12 +1,10 @@
 package com.example.httpserver.app.ui.view.server;
 
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.httpserver.app.App;
-import com.example.httpserver.app.LiveServerConfig;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 
 import java.net.Inet6Address;
@@ -16,10 +14,6 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
-import static java.net.NetworkInterface.getNetworkInterfaces;
 
 public class ServerViewModel extends ViewModel {
 
@@ -100,9 +94,9 @@ public class ServerViewModel extends ViewModel {
             ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
             username.postValue(config.username);
             password.postValue(config.password);
-            port.postValue(config.port );
+            port.postValue(config.http_port);
             address.postValue(config.address);
-            url.postValue("http://" + config.address + ":" + config.port + "/");
+            url.postValue("http://" + config.address + ":" + config.http_port + "/");
             totp.postValue(config.totp);
             tls.postValue(config.tls);
             basic.postValue(config.basic);

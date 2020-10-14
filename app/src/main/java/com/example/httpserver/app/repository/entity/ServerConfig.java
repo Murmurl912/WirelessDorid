@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServerConfig implements Parcelable {
-    public int port = 8080;
+    public int http_port = 8080;
+    public int ftp_port = 6060;
     public String address = "";
+    public boolean http = true;
+    public boolean ftp = false;
     public boolean basic = false;
     public boolean totp = true;
     public boolean tls = true;
@@ -19,7 +22,10 @@ public class ServerConfig implements Parcelable {
     public String status = "stopped";
 
     public static final String[] keys = {
-            "port",
+            "http_port",
+            "ftp_port",
+            "http",
+            "ftp",
             "address",
             "basic",
             "totp",
@@ -36,8 +42,11 @@ public class ServerConfig implements Parcelable {
     }
 
     protected ServerConfig(Parcel in) {
-        port = in.readInt();
+        http_port = in.readInt();
+        ftp_port = in.readInt();
         address = in.readString();
+        http = in.readByte() != 0;
+        ftp = in.readByte() != 0;
         basic = in.readByte() != 0;
         totp = in.readByte() != 0;
         tls = in.readByte() != 0;
@@ -62,7 +71,10 @@ public class ServerConfig implements Parcelable {
 
     public List<Configuration> to() {
         ArrayList<Configuration> configurations = new ArrayList<>();
-        configurations.add(new Configuration("port", port + ""));
+        configurations.add(new Configuration("ftp", ftp + ""));
+        configurations.add(new Configuration("http", http + ""));
+        configurations.add(new Configuration("ftp_port", ftp_port + ""));
+        configurations.add(new Configuration("http_port", http_port + ""));
         configurations.add(new Configuration("address", address));
         configurations.add(new Configuration("basic", basic + ""));
         configurations.add(new Configuration("totp", totp + ""));
@@ -80,8 +92,16 @@ public class ServerConfig implements Parcelable {
         for (Configuration configuration : configurations) {
             String value = configuration.value;
             switch (configuration.key) {
-                case "port":
-                    config.port = Integer.parseInt(value);
+                case "http":
+                    config.http = Boolean.parseBoolean(value);
+                    break;
+                case "ftp":
+                    config.ftp = Boolean.parseBoolean(value);
+                    break;
+                case "ftp_port":
+                    config.ftp_port = Integer.parseInt(value);
+                case "http_port":
+                    config.http_port = Integer.parseInt(value);
                     break;
                 case "address":
                     config.address = value;
@@ -122,8 +142,11 @@ public class ServerConfig implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(port);
+        dest.writeInt(http_port);
+        dest.writeInt(ftp_port);
         dest.writeString(address);
+        dest.writeByte((byte) (http ? 1 : 0));
+        dest.writeByte((byte) (ftp ? 1 : 0));
         dest.writeByte((byte) (basic ? 1 : 0));
         dest.writeByte((byte) (totp ? 1 : 0));
         dest.writeByte((byte) (tls ? 1 : 0));
