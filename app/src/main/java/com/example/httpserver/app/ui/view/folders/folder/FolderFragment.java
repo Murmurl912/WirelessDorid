@@ -41,6 +41,8 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
@@ -197,6 +199,10 @@ public class FolderFragment extends NavigationFragment {
             error("Path is not found or is not a directory");
             return;
         };
+        if(!Pattern.matches("\\p{L}+", folder.name)) {
+            error("Context must be a valid identifier: " + folder.name);
+            return;
+        }
 
         App.app().executor().submit(()->{
             try {

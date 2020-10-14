@@ -1,5 +1,6 @@
 package com.example.httpserver.app.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -9,6 +10,8 @@ import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.handler.FileHandler;
 import com.example.httpserver.app.services.http.server.TinyWebServer;
 import com.example.httpserver.app.services.http.route.Router;
+import com.example.httpserver.app.ui.notifications.NotificationConstants;
+import com.example.httpserver.app.ui.notifications.ServerNotification;
 import com.example.httpserver.service.AndroidFileService;
 
 import java.util.Date;
@@ -63,6 +66,11 @@ public class HttpService extends Service {
                 App.app().serverStatus().postValue("error");
             }
         });
+
+        Notification notification =
+                ServerNotification.startNotification(getApplicationContext(), false);
+
+        startForeground(NotificationConstants.SERVER_ID, notification);
         return START_NOT_STICKY;
     }
 
