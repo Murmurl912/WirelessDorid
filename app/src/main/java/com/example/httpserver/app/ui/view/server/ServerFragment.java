@@ -78,6 +78,10 @@ public class ServerFragment extends NavigationFragment {
             username.setText(s);
         });
 
+        model.httpPort().observe(getViewLifecycleOwner(), s -> {
+            model.url().postValue("http://" + model.address().getValue() + ":" + model.httpPort().getValue() + "/");
+        });
+
         App.app().serverStatus().observe(getViewLifecycleOwner(), s -> {
             if(s == null) {
                 return;
@@ -88,14 +92,20 @@ public class ServerFragment extends NavigationFragment {
                 case "stopped":
                     action.setText(R.string.start_server);
                     id = R.drawable.ic_gray;
+                    strId = R.string.status_stopped;
                     break;
                 case "starting":
+                    id = R.string.status_starting;
+                    id = R.drawable.ic_yellow;
+                    break;
                 case "stopping":
                     id = R.drawable.ic_yellow;
+                    strId = R.string.status_stopping;
                     break;
                 case "running":
                     action.setText(R.string.stop_server);
                     id = R.drawable.ic_green;
+                    strId = R.string.status_running;
                     break;
             }
             status.setText(strId);

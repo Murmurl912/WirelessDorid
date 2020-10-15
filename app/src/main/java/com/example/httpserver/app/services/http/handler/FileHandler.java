@@ -68,7 +68,7 @@ public class FileHandler {
     public NanoHTTPD.Response put(NanoHTTPD.IHTTPSession session, Map<String, String> pathVariable) {
 
         Map<String, List<String>> parameters = session.getParameters();
-        List<String> proxies = parameters.get("proxies");
+        List<String> proxies = parameters.get("proxy");
         String proxy = "";
         if(proxies != null && !proxies.isEmpty()) {
             proxy = proxies.get(0);
@@ -94,7 +94,7 @@ public class FileHandler {
 
     public NanoHTTPD.Response delete(NanoHTTPD.IHTTPSession session, Map<String, String> pathVariable) {
         Map<String, List<String>> parameters = session.getParameters();
-        List<String> proxies = parameters.get("proxies");
+        List<String> proxies = parameters.get("proxy");
         String proxy = "";
         if(proxies != null && !proxies.isEmpty()) {
             proxy = proxies.get(0);
@@ -259,7 +259,15 @@ public class FileHandler {
         if(folder == null) {
             return notfound(("/" + context + "/" + path).replaceAll("//", "/"));
         }
+        Path root = Paths.get(folder.path);
         Path p = Paths.get(folder.path, path);
+        try {
+            if(Files.isSameFile(root, p)) {
+                throw new RuntimeException("Cannot delete root");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         service.remove(p, proxy);
         return ok();
     }
@@ -273,6 +281,15 @@ public class FileHandler {
         if(target == null) {
             return notfound(("/" + destinationContext).replaceAll("//", "/"));
         }
+        Path root = Paths.get(target.path);
+        Path p = Paths.get(target.path, destinationPath);
+        try {
+            if(Files.isSameFile(root, p)) {
+                throw new RuntimeException("Cannot delete root");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         Path result = service.copy(Paths.get(source.path, sourcePath), Paths.get(target.path, destinationPath), proxy);
         return json(result);
     }
@@ -285,6 +302,16 @@ public class FileHandler {
         }
         if(target == null) {
             return notfound(("/" + destinationContext).replaceAll("//", "/"));
+        }
+        // cannot delete root
+        Path root = Paths.get(source.path);
+        Path p = Paths.get(source.path, sourcePath);
+        try {
+            if(Files.isSameFile(root, p)) {
+                throw new RuntimeException("Cannot delete root");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         Path result = service.move(Paths.get(source.path, sourcePath), Paths.get(target.path, destinationPath), proxy);
         return json(result);

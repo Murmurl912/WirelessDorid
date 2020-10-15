@@ -64,6 +64,9 @@ public class FolderFragment extends NavigationFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         model = new ViewModelProvider(this).get(FolderViewModel.class);
+        if(savedInstanceState != null && savedInstanceState.containsKey("folder")) {
+            model.folder(savedInstanceState.getParcelable("folder"));
+        }
         init();
     }
 
@@ -71,6 +74,7 @@ public class FolderFragment extends NavigationFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         view.findViewById(R.id.path_container).setOnClickListener(v -> {
             startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), 0);
+
         });
         view.findViewById(R.id.context_container).setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -115,6 +119,12 @@ public class FolderFragment extends NavigationFragment {
         super.onDetach();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("folder", model.folder().toFolder(null));
+    }
+
     private void init() {
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -128,6 +138,7 @@ public class FolderFragment extends NavigationFragment {
                 Log.i(TAG, "Receive context: " + bundle.getString("context"));
                 onSetContext(bundle.getString("context"));
             }
+            setArguments(new Bundle());
         }
 
         model.folder().name.observe(getViewLifecycleOwner(), s -> {

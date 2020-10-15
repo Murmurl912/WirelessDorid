@@ -6,6 +6,10 @@ public class FileServiceException extends RuntimeException {
 
     public final int code = 101;
 
+    public int getCode() {
+        return code;
+    }
+
     public Path path;
 
     public Path getPath() {

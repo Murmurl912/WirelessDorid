@@ -28,6 +28,7 @@ public class Folder implements Parcelable {
 
     protected Folder(Parcel in) {
         id = in.readLong();
+        id = id == -1 ? null : id;
         path = in.readString();
         name = in.readString();
         write = in.readByte() != 0;
@@ -56,7 +57,7 @@ public class Folder implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeLong(id == null ? -1 : id);
         dest.writeString(path);
         dest.writeString(name);
         dest.writeByte((byte) (write ? 1 : 0));
