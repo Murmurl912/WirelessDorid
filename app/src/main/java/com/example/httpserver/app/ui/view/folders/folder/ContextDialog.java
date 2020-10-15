@@ -31,7 +31,7 @@ public class ContextDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Set Name");
+        builder.setTitle(R.string.context);
         builder.setPositiveButton("Apply", (dialog, which) -> {
             NavController controller = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
             Bundle bundle = new Bundle();
@@ -49,7 +49,7 @@ public class ContextDialog extends DialogFragment {
         View view = null;
         builder.setView( view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_text, null));
         text = view.findViewById(R.id.edit_text);
-        text.setHint("Context Name");
+        text.setHint(R.string.context);
 
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey("context")) {

@@ -4,12 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +16,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
@@ -31,17 +25,12 @@ import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Folder;
 import com.example.httpserver.app.ui.NavigationFragment;
-import com.example.httpserver.common.FileUtils;
 import com.example.httpserver.common.Utils;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.hbisoft.pickit.PickiT;
-import com.hbisoft.pickit.PickiTCallbacks;
 
-import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
@@ -57,7 +46,7 @@ public class FolderFragment extends NavigationFragment {
     private TextView labelSummary;
     private SwitchMaterial read;
     private SwitchMaterial write;
-    private SwitchMaterial subfolder;
+    private SwitchMaterial publicly;
     private SwitchMaterial share;
     private View delete;
 
@@ -85,7 +74,6 @@ public class FolderFragment extends NavigationFragment {
         });
         view.findViewById(R.id.context_container).setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putString("title", "Set Context");
             bundle.putString("context", model.folder().name.getValue());
             Log.i(TAG, "Navigate to set context");
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.nav_context_editor, bundle);
@@ -94,7 +82,7 @@ public class FolderFragment extends NavigationFragment {
         labelSummary = view.findViewById(R.id.laebl_summary);
         read = view.findViewById(R.id.read);
         write = view.findViewById(R.id.write);
-        subfolder = view.findViewById(R.id.subfolder);
+        publicly = view.findViewById(R.id.public_share);
         share = view.findViewById(R.id.share);
 
         delete = view.findViewById(R.id.delete);
@@ -105,8 +93,8 @@ public class FolderFragment extends NavigationFragment {
         write.setOnClickListener(v -> {
             onSwitchWrite(write.isChecked());
         });
-        subfolder.setOnClickListener(v -> {
-            onSwitchRecursive(subfolder.isChecked());
+        publicly.setOnClickListener(v -> {
+            onSwitchPublicly(publicly.isChecked());
         });
         share.setOnClickListener(v -> {
             onSwitchShare(share.isChecked());
@@ -143,10 +131,18 @@ public class FolderFragment extends NavigationFragment {
         }
 
         model.folder().name.observe(getViewLifecycleOwner(), s -> {
-            labelSummary.setText(s);
+            if(s == null || s.isEmpty()) {
+                labelSummary.setText(R.string.context_summary);
+            } else {
+                labelSummary.setText(s);
+            }
         });
         model.folder().path.observe(getViewLifecycleOwner(), s -> {
-            pathSummary.setText(s);
+            if(s == null || s.isEmpty()) {
+                pathSummary.setText(R.string.path_summary);
+            } else {
+                pathSummary.setText(s);
+            }
         });
         model.folder().read.observe(getViewLifecycleOwner(), b -> {
             read.setChecked(b);
@@ -154,11 +150,11 @@ public class FolderFragment extends NavigationFragment {
         model.folder().write.observe(getViewLifecycleOwner(), b -> {
             write.setChecked(b);
         });
-        model.folder().recursive.observe(getViewLifecycleOwner(), b -> {
-            subfolder.setChecked(b);
+        model.folder().publicly.observe(getViewLifecycleOwner(), b -> {
+            publicly.setChecked(b);
         });
         model.folder().share.observe(getViewLifecycleOwner(), b -> {
-            subfolder.setChecked(b);
+            publicly.setChecked(b);
         });
     }
 
@@ -182,8 +178,8 @@ public class FolderFragment extends NavigationFragment {
 
     }
 
-    private void onSwitchRecursive(boolean recursive) {
-        model.folder().recursive.postValue(recursive);
+    private void onSwitchPublicly(boolean publicly) {
+        model.folder().publicly.postValue(publicly);
     }
 
     private void onSwitchShare(boolean share) {
@@ -191,23 +187,34 @@ public class FolderFragment extends NavigationFragment {
     }
 
     private void onSave() {
+        Context context = requireContext();
         Folder folder = model.folder().toFolder(null);
         if("".equals(folder.path)) {
-            error("Path is empty");
-            Log.i(TAG, "Folder is empty: " + folder);
+            error(context.getString(R.string.path_unset));
+            Log.i(TAG, "Folder path is empty: " + folder);
+            return;
+        }
+        if("".equals(folder.name)) {
+            error(context.getString(R.string.context_unset));
+            Log.i(TAG, "Folder name is empty: " + folder);
             return;
         }
 
         Path path = Paths.get(folder.path);
         if(!Files.exists(path) || !Files.isDirectory(path)) {
-            error("Path is not found or is not a directory");
+            error(context.getString(R.string.illegal_path));
             Log.i(TAG, "Folder path is not found or is not a directory: " + folder);
             return;
         };
+
         if(!Pattern.matches("\\p{L}+", folder.name)) {
-            error("Context must be a valid identifier: " + folder.name);
+            error(context.getString(R.string.context_name_error_prefix) + folder.name);
             Log.i(TAG, "Folder context name is not valid: " + folder);
             return;
+        }
+
+        if(folder.name.equals("static")) {
+            error(context.getString(R.string.context_name_conflicts) + folder.name);
         }
 
         App.app().executor().submit(()->{
@@ -218,7 +225,7 @@ public class FolderFragment extends NavigationFragment {
                 Log.i(TAG, "Navigate back to folders");
             } catch (Exception e) {
                 Log.e(TAG, "Failed to save folder: " + folder, e);
-                requireActivity().runOnUiThread(()->error("Path or context may already added"));
+                requireActivity().runOnUiThread(()->error(context.getString(R.string.entry_conflicts)));
             }
         });
     }
@@ -259,10 +266,11 @@ public class FolderFragment extends NavigationFragment {
     }
 
     private void error(String message) {
+        Context context = requireContext();
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setMessage(message).create();
-        dialog.setTitle("Error");
+        dialog.setTitle(R.string.error);
         dialog.setCancelable(true);
-        dialog.setButton(BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+        dialog.setButton(BUTTON_POSITIVE, context.getText(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -272,11 +280,12 @@ public class FolderFragment extends NavigationFragment {
     }
 
     private void alert() {
-        AlertDialog dialog = new AlertDialog.Builder(getContext()).setMessage("Are you sure to delete this folder").create();
-        dialog.setTitle("Delete " + model.folder().name.getValue());
+        Context context = requireContext();
+        AlertDialog dialog = new AlertDialog.Builder(getContext()).setMessage(R.string.delete_warning).create();
+        dialog.setTitle(requireContext().getString(R.string.delete) + model.folder().name.getValue());
 
         dialog.setCancelable(false);
-        dialog.setButton(BUTTON_POSITIVE, "DELETE", (dialog1, which) -> App.app().executor().submit(()->{
+        dialog.setButton(BUTTON_POSITIVE, context.getText(R.string.delete), (dialog1, which) -> App.app().executor().submit(()->{
             try {
                 App.app().db().folder().remove(model.folder().toFolder(null));
                 Log.i(TAG, "Delete folder: " + model.folder().toFolder(null));
@@ -285,7 +294,7 @@ public class FolderFragment extends NavigationFragment {
             }
             requireActivity().runOnUiThread(this::back);
         }));
-        dialog.setButton(BUTTON_NEGATIVE, "CANCEL", (d, w) ->{});
+        dialog.setButton(BUTTON_NEGATIVE, context.getText(R.string.cancel), (d, w) ->{});
         dialog.show();
     }
 

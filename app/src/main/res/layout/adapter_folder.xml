@@ -42,7 +42,6 @@
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:singleLine="true"
-                      android:text="Shared Folder"
                       android:textAppearance="?android:attr/textAppearanceListItem" />
 
             <TextView android:id="@+id/folder_path"
@@ -52,9 +51,10 @@
                       android:layout_alignStart="@id/path_title"
                       android:textAppearance="?android:attr/textAppearanceListItemSecondary"
                       android:textColor="?android:attr/textColorSecondary"
-                      android:maxLines="10"
-                      android:text="Folder Access Control"/>
+                      android:maxLines="10"/>
 
         </RelativeLayout>
+        <CheckBox android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

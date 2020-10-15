@@ -7,36 +7,19 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <string name="title_activity_folder_setting">FolderSettingActivity</string>
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="path">Path</string>
-    <string name="path_to_be_sharing">Path to be sharing</string>
+    <string name="path_summary">A path to the directory</string>
     <string name="access_control">Access Control</string>
     <string name="read">Read</string>
-    <string name="allow_read_to_this_folder">Allow read to this folder</string>
-    <string name="allow_write_to_this_folder">Allow write to this folder</string>
+    <string name="read_summary">Allow read to this folder</string>
+    <string name="write_summary">Allow write to this folder</string>
     <string name="write">Write</string>
     <string name="apply_permission_to_subfolder">Apply permission to subfolder</string>
     <string name="more">More</string>
-    <string name="delete">Delete</string>
     <string name="reset_setting_of_this_entry_to_default">Reset setting of this entry to default</string>
     <string name="enable_tls">Enable TLS</string>
     <string name="password">Password</string>
@@ -58,7 +41,56 @@
     <string name="security">Security</string>
     <string name="exit">Exit</string>
     <string name="enable_basic">Enable Basic</string>
-    <string name="enable_ftp">Enable FTP</string>
     <string name="http_url">HTTP URL</string>
     <string name="ftp_url">FTP URL</string>
+    <string name="folder">Folder</string>
+    <string name="context">Context</string>
+    <string name="context_summary">Context of this path, a name for shared folder</string>
+    <string name="share">Share</string>
+    <string name="enable">Enable</string>
+    <string name="share_summary">Enable sharing on this folder</string>
+    <string name="publicly">Public</string>
+    <string name="publicly_summary">Share this folder publicly</string>
+    <string name="delete">Delete</string>
+    <string name="delete_summary">Delete this entry</string>
+    <string name="basic_authentication">Basic Authentication</string>
+    <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="http_listening_port">HTTP Listening Port</string>
+    <string name="http_port">HTTP Port</string>
+    <string name="ftp_listening_port">FTP Listening Port</string>
+    <string name="ftp_port">FTP Port</string>
+    <string name="enable_ftp">Enable FTP</string>
+    <string name="enable_http">Enable HTTP</string>
+    <string name="http_status">HTTP Status</string>
+    <string name="status_stopped">Stopped</string>
+    <string name="status_starting">Starting</string>
+    <string name="status_running">Running</string>
+    <string name="status_stopping">Stopping</string>
+    <string name="status_error">Error</string>
+
+    <string name="stop_server">Stop Server</string>
+
+    <string name="delete_warning">Are sure to delete?</string>
+
+    <string name="error">Error</string>
+
+    <string name="context_name_error_prefix">Context must be a valid identifier: </string>
+    <string name="entry_conflicts">Path or context may already added</string>
+    <string name="illegal_path">Path is not found or is not a directory</string>
+    <string name="path_unset">Path is empty</string>
+    <string name="context_unset">Context is empty</string>
+    <string name="context_name_invalid">Context name is invalid</string>
+    <string name="context_name_conflicts">Context name conflicts</string>
+    <string name="server">Server</string>
+    <string name="directory">Directory</string>
+    <string name="directories">Directories</string>
+    <string name="apply">Apply</string>
+    <string name="authentication">Authentication</string>
+    <string name="ftp_port_illegal">Ftp port is illegal: </string>
+    <string name="http_port_illegal">Http port is illegal: </string>
+    <string name="ftp_http_port_conflict"> Ftp port conflicts with http port: </string>
+    <string name="server_is_running">Server is running</string>
+    <string name="server_config">Server Configuration</string>
 </resources>

@@ -28,7 +28,7 @@ public class ServerNotification {
                         .setContentText(contentText)
                         .setContentIntent(contentIntent)
                         .setSmallIcon(R.drawable.ic_server_icon)
-                        .setTicker("Server Is Running")
+                        .setTicker(context.getText(R.string.server_is_running))
                         .setWhen(when)
                         .setOngoing(true)
                         .setOnlyAlertOnce(true);
@@ -39,7 +39,7 @@ public class ServerNotification {
             PendingIntent stopPendingIntent =
                     PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-            builder.addAction(stopIcon, "Stop Server", stopPendingIntent);
+            builder.addAction(stopIcon, context.getString(R.string.stop_server), stopPendingIntent);
         }
 
         NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_SERVER);
@@ -50,7 +50,7 @@ public class ServerNotification {
     public static Notification startNotification(Context context, boolean noStopButton) {
         NotificationCompat.Builder builder =
                 buildNotification(
-                        context, "Server is running",
+                        context, context.getString(R.string.server_is_running),
                         "",
                         noStopButton);
 
@@ -66,7 +66,7 @@ public class ServerNotification {
         NotificationCompat.Builder builder =
                 buildNotification(
                         context,
-                        "Server is running",
+                        context.getString(R.string.server_is_running),
                         "",
                         noStopButton);
 

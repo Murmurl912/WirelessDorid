@@ -38,14 +38,14 @@ public class WebSecurityDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Authentication");
-        builder.setPositiveButton("Apply", (dialog, which) -> {
+        builder.setTitle(R.string.authentication);
+        builder.setPositiveButton(requireContext().getText(R.string.apply), (dialog, which) -> {
             onSave();
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        builder.setNegativeButton(requireContext().getText(R.string.cancel), (dialog, which) -> {
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
         });

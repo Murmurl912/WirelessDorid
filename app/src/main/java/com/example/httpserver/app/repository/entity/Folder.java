@@ -19,8 +19,8 @@ public class Folder implements Parcelable {
     public String name;
     public boolean write = false;
     public boolean read = true;
-    public boolean recursive = true;
     public boolean share = true;
+    public boolean publicly = false;
 
     public Folder() {
 
@@ -32,7 +32,7 @@ public class Folder implements Parcelable {
         name = in.readString();
         write = in.readByte() != 0;
         read = in.readByte() != 0;
-        recursive = in.readByte() != 0;
+        publicly = in.readByte() != 0;
         share = in.readByte() != 0;
     }
 
@@ -61,7 +61,7 @@ public class Folder implements Parcelable {
         dest.writeString(name);
         dest.writeByte((byte) (write ? 1 : 0));
         dest.writeByte((byte) (read ? 1 : 0));
-        dest.writeByte((byte) (recursive ? 1 : 0));
+        dest.writeByte((byte) (publicly ? 1 : 0));
         dest.writeByte((byte) (share ? 1 : 0));
     }
 
@@ -73,7 +73,7 @@ public class Folder implements Parcelable {
                 ", name='" + name + '\'' +
                 ", write=" + write +
                 ", read=" + read +
-                ", recursive=" + recursive +
+                ", publicly=" + publicly +
                 ", share=" + share +
                 '}';
     }

@@ -82,10 +82,11 @@ public class ServerFragment extends NavigationFragment {
             if(s == null) {
                 return;
             }
+            int strId = R.string.status_stopped;
             int id = R.drawable.ic_gray;
             switch (s) {
                 case "stopped":
-                    action.setText("Start Server");
+                    action.setText(R.string.start_server);
                     id = R.drawable.ic_gray;
                     break;
                 case "starting":
@@ -93,11 +94,11 @@ public class ServerFragment extends NavigationFragment {
                     id = R.drawable.ic_yellow;
                     break;
                 case "running":
-                    action.setText("Stop Server");
+                    action.setText(R.string.stop_server);
                     id = R.drawable.ic_green;
                     break;
             }
-            status.setText(s);
+            status.setText(strId);
             statusIcon.setImageResource(id);
         });
 
@@ -159,15 +160,18 @@ public class ServerFragment extends NavigationFragment {
         });
 
         action.setOnClickListener(v -> {
-            String s = status.getText().toString();
+            String s = App.app().serverStatus().getValue();
+            if(s == null) {
+                s = requireContext().getString(R.string.status_stopped);
+            }
             switch (s) {
                 case "error":
                 case "stopped":
-                    Log.i(TAG, "Start http service, server status: " + status.getText());
+                    Log.i(TAG, "Start http service, server status: " + s);
                     requireActivity().startService(new Intent(requireContext(), HttpService.class));
                     break;
                 case "running":
-                    Log.i(TAG, "Stop http service, server status: " + status.getText());
+                    Log.i(TAG, "Stop http service, server status: " + s);
                     requireActivity().stopService(new Intent(requireContext(), HttpService.class));
                     break;
             }

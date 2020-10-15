@@ -36,10 +36,10 @@ public class WebServerDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setPositiveButton("Apply", (dialog, which) -> {
+        builder.setPositiveButton(requireContext().getText(R.string.apply), (dialog, which) -> {
             onSave();
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        builder.setNegativeButton(requireContext().getText(R.string.cancel), (dialog, which) -> {
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
         });
@@ -71,17 +71,17 @@ public class WebServerDialog extends DialogFragment {
 
     private void onSave() {
         if(!range(ftpPort.getText().toString())) {
-            error("Ftp port range is illegal: " + ftpPort);
+            error(requireContext().getString(R.string.ftp_port_illegal) + ftpPort);
             return;
         }
 
         if(!range(httpPort.getText().toString())) {
-            error("Http port range is illegal: " + httpPort);
+            error(requireContext().getString(R.string.http_port_illegal) + httpPort);
             return;
         }
 
         if(Objects.equals(ftpPort.getText().toString(), httpPort.getText().toString())) {
-            error("Http and ftp port and not be the same: " + ftpPort.getText());
+            error(requireContext().getString(R.string.ftp_http_port_conflict) + ftpPort.getText());
             return;
         }
 
@@ -112,9 +112,9 @@ public class WebServerDialog extends DialogFragment {
 
     private void error(String message) {
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setMessage(message).create();
-        dialog.setTitle("Error");
+        dialog.setTitle(R.string.error);
         dialog.setCancelable(true);
-        dialog.setButton(BUTTON_POSITIVE, "OK", (dialog1, which) -> dialog1.dismiss());
+        dialog.setButton(BUTTON_POSITIVE, requireContext().getString(R.string.ok), (dialog1, which) -> dialog1.dismiss());
         dialog.show();
     }
 
