@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class ServerViewModel extends ViewModel {
+    public static final String TAG = ServerViewModel.class.getName();
 
     private MutableLiveData<String> password;
     private MutableLiveData<String> username;
@@ -39,25 +40,7 @@ public class ServerViewModel extends ViewModel {
     private Timer timer;
     private long start = 0L;
     private TimeBasedOneTimePassword totpPassword;
-
-    private final TimerTask totpUpdate = new TimerTask() {
-        @SuppressLint("DefaultLocale")
-        @Override
-        public void run() {
-            if(totpPassword == null) {
-                return;
-            }
-
-            int number = 0;
-            int time = (int)(System.currentTimeMillis() % 30000);
-            if(Math.abs(time - 30000) < 1000 || System.currentTimeMillis() - start < 2000) {
-                number = totpPassword.pin();
-                pin.postValue(String.format("%03d %03d", number / 1000, number % 1000));
-            }
-
-            progress.postValue(time);
-        }
-    };
+    private TimerTask task;
 
     private final Observer<Boolean> totpObserver = new Observer<Boolean>() {
         @Override
@@ -66,7 +49,16 @@ public class ServerViewModel extends ViewModel {
                 if(timer == null) {
                     timer = new Timer();
                 }
-                timer.scheduleAtFixedRate(totpUpdate, 0, 1000);
+                if(task != null) {
+                    task.cancel();
+                }
+                task = task();
+                try {
+                    timer.scheduleAtFixedRate(task, 0, 500);
+                    Log.i(TAG, "Totp update task scheduled");
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to schedule totp update task", e);
+                }
                 start = System.currentTimeMillis();
             }
         }
@@ -145,37 +137,51 @@ public class ServerViewModel extends ViewModel {
         return basic;
     }
 
-
     public void refresh() {
-
+        Log.i(TAG, "Refresh view model requested");
         App.app().executor().submit(()->{
-            ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
-
-            if(config.totp) {
-                try {
-                    totpPassword = TotpRepository.instance().getDefault();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                    // todo handle error
-                    App.app().db().configuration().save(new Configuration("totp", "false"));
-                    config.totp = false;
+            try {
+                ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
+                Log.i(TAG, "Load server config from database successfully: " + config);
+                if(config.totp) {
+                    try {
+                        totpPassword = TotpRepository.instance().getDefault();
+                    } catch (NoSuchAlgorithmException e) {
+                        Log.e(TAG, "Failed to obtain Totp password", e);
+                        try {
+                            Log.i(TAG, "Change totp config to false");
+                            App.app().db().configuration().save(new Configuration("totp", "false"));
+                        } catch (Exception ex) {
+                            Log.e(TAG, "Failed to write config to database", ex);
+                        }
+                        config.totp = false;
+                    }
                 }
-            }
 
-            username.postValue(config.username);
-            password.postValue(config.password);
-            httpPort.postValue(config.http_port);
-            address.postValue(config.address);
-            url.postValue("http://" + config.address + ":" + config.http_port + "/");
-            totp.postValue(config.totp);
-            tls.postValue(config.tls);
-            basic.postValue(config.basic);
+                username.postValue(config.username);
+                password.postValue(config.password);
+                ftpPort.postValue(config.ftp_port);
+                httpPort.postValue(config.http_port);
+                address.postValue(config.address);
+                url.postValue("http://" + config.address + ":" + config.http_port + "/");
+                totp.postValue(config.totp);
+                tls.postValue(config.tls);
+                basic.postValue(config.basic);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to load server config from database", e);
+            }
 
         });
 
         App.app().executor().submit(()->{
-            List<String> networks = networks();
-            addresses.postValue(networks);
+            try {
+                Log.i(TAG, "try to load network address");
+                List<String> networks = networks();
+                Log.i(TAG, "Load network address successfully： " + networks);
+                addresses.postValue(networks);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to get network address", e);
+            }
         });
 
         totp.observeForever(totpObserver);
@@ -209,12 +215,33 @@ public class ServerViewModel extends ViewModel {
         return addresses;
     }
 
+    private TimerTask task() {
+        Log.i(TAG, "Create totp update timer task");
+        return new TimerTask() {
+            @SuppressLint("DefaultLocale")
+            @Override
+            public void run() {
+                if(totpPassword == null) {
+                    return;
+                }
+
+                int number = 0;
+                int time = (int)(System.currentTimeMillis() % 30000);
+                if(Math.abs(time - 30000) < 2000 || System.currentTimeMillis() - start < 2000) {
+                    number = totpPassword.pin();
+                    pin.postValue(String.format("%03d %03d", number / 1000, number % 1000));
+                }
+
+                progress.postValue(time);
+            }
+        };
+    }
     @Override
     protected void onCleared() {
         timer.cancel();
         timer = null;
         totp.removeObserver(totpObserver);
-        Log.d("ViewModel", "Cleared");
+        Log.d(TAG,  "View model is cleared");
         super.onCleared();
     }
 }

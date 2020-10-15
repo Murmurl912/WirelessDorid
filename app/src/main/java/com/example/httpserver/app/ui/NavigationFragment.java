@@ -2,6 +2,7 @@ package com.example.httpserver.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -15,6 +16,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public abstract class NavigationFragment extends Fragment {
 
+    public static final String TAG = NavigationFragment.class.getName();
 
     public NavigationFragment() {
 
@@ -37,6 +39,7 @@ public abstract class NavigationFragment extends Fragment {
         inflater.inflate(R.menu.main_menu, menu);
         SwitchMaterial server = (menu.findItem(R.id.server_switch).getActionView().findViewById(R.id.server_switch_button));
         if(server != null) {
+            Log.i(TAG, "Observer server status on menu switch");
             App.app().serverStatus().observe(getViewLifecycleOwner(), status -> {
                 switch (status) {
                     case "running":
@@ -49,11 +52,17 @@ public abstract class NavigationFragment extends Fragment {
             });
 
             server.setOnClickListener(v -> {
-                boolean checked = server.isChecked();
-                if(checked) {
-                    requireActivity().stopService(new Intent(requireContext(), HttpService.class));
-                } else {
-                    requireActivity().startService(new Intent(requireContext(), HttpService.class));
+                try {
+                    boolean checked = server.isChecked();
+                    if(checked) {
+                        Log.i(TAG, "Start http service from menu switch");
+                        requireActivity().startService(new Intent(requireContext(), HttpService.class));
+                    } else {
+                        Log.i(TAG, "Stop http service from menu switch");
+                        requireActivity().stopService(new Intent(requireContext(), HttpService.class));
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to start or stop http service from menu switch", e);
                 }
             });
         }

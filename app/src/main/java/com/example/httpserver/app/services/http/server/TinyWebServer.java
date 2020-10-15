@@ -1,9 +1,12 @@
 package com.example.httpserver.app.services.http.server;
 
+import android.util.Log;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.route.Router;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.iki.elonen.NanoHTTPD;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 
@@ -80,7 +83,7 @@ public class TinyWebServer implements WebServer {
                 init();
                 break;
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("Server should not in starting or stopping state when stop is invoked");
         }
         state = STATE_STARTING;
         listener.accept(state, null);
@@ -103,7 +106,7 @@ public class TinyWebServer implements WebServer {
             case STATE_STOPPED:
                 break;
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("Server should not in starting or stopping state when stop is invoked");
         }
         state = STATE_STOPPING;
         listener.accept(state, null);
@@ -127,6 +130,8 @@ public class TinyWebServer implements WebServer {
 
         private final Router<BiFunction<NanoHTTPD.IHTTPSession, Map<String, String>, NanoHTTPD.Response>> router = TinyWebServer.this.router;
 
+        private ObjectMapper mapper = new ObjectMapper();
+
         public HttpServer(int port) {
             super(port);
         }
@@ -141,7 +146,25 @@ public class TinyWebServer implements WebServer {
             if(route == null) {
                 return super.serve(session);
             }
-            return route.handler.apply(session, pathVariables);
+            try {
+                return route.handler.apply(session, pathVariables);
+            } catch (Exception e) {
+                listener.accept(state, e);
+                return error(e);
+            }
+        }
+
+        private NanoHTTPD.Response error(Exception e) {
+            String json = e.getMessage();
+
+            try {
+                json = mapper.writeValueAsString(e);
+            } catch (Exception ignored) {
+
+            }
+            String code = "<code>" + json + "<code>";
+            return NanoHTTPD.newFixedLengthResponse(Response.Status.INTERNAL_ERROR,
+                    "text/html", "<h>Internal Server Error</h>" + code);
         }
 
     }

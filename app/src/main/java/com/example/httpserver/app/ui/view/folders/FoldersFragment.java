@@ -1,6 +1,7 @@
 package com.example.httpserver.app.ui.view.folders;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.httpserver.R;
 import com.example.httpserver.app.ui.NavigationFragment;
 import com.example.httpserver.app.ui.adapter.FolderAdapter;
+import com.example.httpserver.app.ui.view.folders.folder.FolderFragment;
 
 import java.util.function.BiConsumer;
 
 public class FoldersFragment extends NavigationFragment {
+
+    public static final String TAG = FolderFragment.class.getName();
 
     private FoldersViewModel mViewModel;
     private FolderAdapter adapter;
@@ -50,7 +54,8 @@ public class FoldersFragment extends NavigationFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
         view.findViewById(R.id.add_folder).setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.nav_folder);
+            Navigation.findNavController(v).navigate(R.id.nav_folder, new Bundle());
+            Log.i(TAG, "Navigate to create folder");
         });
     }
 
@@ -61,6 +66,7 @@ public class FoldersFragment extends NavigationFragment {
         mViewModel.folders().observe(getViewLifecycleOwner(), folders -> {
             adapter.folders(folders);
             adapter.notifyDataSetChanged();
+            Log.i(TAG, "Load folder records successfully, entry size: " + folders.size());
         });
     }
 

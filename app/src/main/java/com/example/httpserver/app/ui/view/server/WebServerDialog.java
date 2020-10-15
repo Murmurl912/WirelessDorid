@@ -10,6 +10,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
@@ -38,7 +40,8 @@ public class WebServerDialog extends DialogFragment {
             onSave();
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
-
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
         });
         View view = getLayoutInflater().inflate(R.layout.dialog_server, null);
         builder.setView(view);
@@ -93,6 +96,9 @@ public class WebServerDialog extends DialogFragment {
         configurations.add(httpPortConfig);
 
         App.app().executor().submit(()-> App.app().db().configuration().save(configurations));
+
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
     }
 
     private static boolean range(String port) {
@@ -108,12 +114,7 @@ public class WebServerDialog extends DialogFragment {
         AlertDialog dialog = new AlertDialog.Builder(getContext()).setMessage(message).create();
         dialog.setTitle("Error");
         dialog.setCancelable(true);
-        dialog.setButton(BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        dialog.setButton(BUTTON_POSITIVE, "OK", (dialog1, which) -> dialog1.dismiss());
         dialog.show();
     }
 

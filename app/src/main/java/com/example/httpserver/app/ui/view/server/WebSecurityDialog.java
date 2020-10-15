@@ -41,10 +41,13 @@ public class WebSecurityDialog extends DialogFragment {
         builder.setTitle("Authentication");
         builder.setPositiveButton("Apply", (dialog, which) -> {
             onSave();
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> {
-
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.nav_server, null, new NavOptions.Builder().setPopUpTo(R.id.nav_server, true).build());
         });
 
         View view = getLayoutInflater().inflate(R.layout.dialog_security, null);

@@ -159,4 +159,23 @@ public class ServerConfig implements Parcelable {
         dest.writeString(password);
         dest.writeString(status);
     }
+
+    @Override
+    public String toString() {
+        return "ServerConfig{" +
+                "http_port=" + http_port +
+                ", ftp_port=" + ftp_port +
+                ", address='" + address + '\'' +
+                ", http=" + http +
+                ", ftp=" + ftp +
+                ", basic=" + basic +
+                ", totp=" + totp +
+                ", tls=" + tls +
+                ", key='" + key + '\'' +
+                ", cert='" + cert + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

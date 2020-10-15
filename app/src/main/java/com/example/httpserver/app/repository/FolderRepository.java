@@ -11,7 +11,7 @@ import java.util.Objects;
 public interface FolderRepository {
 
     @Insert
-    public long[] add(Folder...folders);
+    public void add(Folder...folders);
     @Delete
     public void remove(Folder...path);
     @Update
@@ -21,7 +21,7 @@ public interface FolderRepository {
     public List<Folder> gets();
 
     @Query("select * from folder where id = :id")
-    public Folder getById(long id);
+    public Folder getById(Long id);
 
     @Query("select count(*) from folder where path = :path")
     public boolean containPath(String path);
@@ -50,31 +50,29 @@ public interface FolderRepository {
     @Query("select count(id) from folder where id = :id")
     public int countId(Long id);
 
-    @Transaction
-    public default long save(Folder folder) {
-        if(countId(folder.id) > 0) {
-            Folder old = getById(folder.id);
-            if(!Objects.equals(folder.name, old.name)) {
-                if(countName(folder.name) > 0) {
-                    throw new IllegalStateException();
-                }
-            }
-            if(!Objects.equals(folder.path, old.path)) {
-                if(countPath(folder.path) > 0) {
-                    throw new IllegalStateException();
-                }
-            }
-            update(folder);
-            return folder.id;
-        } else {
+    public default void save(Folder folder) {
+        if(folder.id == null || countId(folder.id) < 1) {
             if(countName(folder.name) > 0) {
-                throw new IllegalStateException();
+                throw new IllegalStateException("duplicate name: " + folder.name);
             }
             if(countPath(folder.path) > 0) {
-                throw new IllegalStateException();
+                throw new IllegalStateException("duplicate path: " + folder.path);
             }
-            long[] ids = add(folder);
-            return ids[0];
+            add(folder);
+            return;
         }
+
+        Folder old = getById(folder.id);
+        if(!Objects.equals(folder.name, old.name)) {
+            if(countName(folder.name) > 0) {
+                throw new IllegalStateException("duplicate name: " + folder.name);
+            }
+        }
+        if(!Objects.equals(folder.path, old.path)) {
+            if(countPath(folder.path) > 0) {
+                throw new IllegalStateException("duplicate path: " + folder.path);
+            }
+        }
+        update(folder);
     }
 }

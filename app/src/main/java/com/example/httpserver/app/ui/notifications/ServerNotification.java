@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.httpserver.R;
 import com.example.httpserver.app.MainActivity;
 import com.example.httpserver.app.services.HttpService;
+import com.example.httpserver.app.services.HttpServiceReceiver;
 
 public class ServerNotification {
 
@@ -34,7 +35,7 @@ public class ServerNotification {
 
         if (!noStopButton) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            Intent intent = new Intent(context, HttpService.class);
+            Intent intent = new Intent(HttpServiceReceiver.ACTION_STOP_SERVER).setPackage(context.getPackageName());
             PendingIntent stopPendingIntent =
                     PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 

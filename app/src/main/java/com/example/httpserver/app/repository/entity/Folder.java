@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Folder implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
-    public long id = -1L;
+    public Long id;
     public String path;
     public String name;
     public boolean write = false;
@@ -63,5 +63,18 @@ public class Folder implements Parcelable {
         dest.writeByte((byte) (read ? 1 : 0));
         dest.writeByte((byte) (recursive ? 1 : 0));
         dest.writeByte((byte) (share ? 1 : 0));
+    }
+
+    @Override
+    public String toString() {
+        return "Folder{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                ", write=" + write +
+                ", read=" + read +
+                ", recursive=" + recursive +
+                ", share=" + share +
+                '}';
     }
 }

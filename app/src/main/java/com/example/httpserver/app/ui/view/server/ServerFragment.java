@@ -3,6 +3,7 @@ package com.example.httpserver.app.ui.view.server;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
@@ -19,6 +20,7 @@ import com.example.httpserver.app.services.HttpService;
 import com.example.httpserver.app.ui.NavigationFragment;
 
 public class ServerFragment extends NavigationFragment {
+    public static final String TAG = ServerFragment.class.getName();
 
     private ServerViewModel model;
     private TextView port;
@@ -61,6 +63,7 @@ public class ServerFragment extends NavigationFragment {
             if(index > 0) {
                 addresses.setSelection(index);
             }
+            Log.i(TAG, "Network address updates: " + list);
         });
 
         model.password().observe(getViewLifecycleOwner(), s -> {
@@ -82,17 +85,14 @@ public class ServerFragment extends NavigationFragment {
             int id = R.drawable.ic_gray;
             switch (s) {
                 case "stopped":
-                    action.setEnabled(true);
                     action.setText("Start Server");
                     id = R.drawable.ic_gray;
                     break;
                 case "starting":
                 case "stopping":
-                    action.setEnabled(false);
                     id = R.drawable.ic_yellow;
                     break;
                 case "running":
-                    action.setEnabled(true);
                     action.setText("Stop Server");
                     id = R.drawable.ic_green;
                     break;
@@ -163,9 +163,11 @@ public class ServerFragment extends NavigationFragment {
             switch (s) {
                 case "error":
                 case "stopped":
+                    Log.i(TAG, "Start http service, server status: " + status.getText());
                     requireActivity().startService(new Intent(requireContext(), HttpService.class));
                     break;
                 case "running":
+                    Log.i(TAG, "Stop http service, server status: " + status.getText());
                     requireActivity().stopService(new Intent(requireContext(), HttpService.class));
                     break;
             }
@@ -183,6 +185,7 @@ public class ServerFragment extends NavigationFragment {
                 if(address != null && !address.isEmpty() && !port.isEmpty()) {
                     model.url().postValue("http://" + address + ":" + port + "/");
                 }
+                Log.i(TAG, "Ip address selected: " + address);
             }
 
             @Override
@@ -226,11 +229,12 @@ public class ServerFragment extends NavigationFragment {
 
         switch (item.getItemId()) {
             case R.id.security:
+                Log.i(TAG, "Navigate to web security dialog: " + bundle);
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                         .navigate(R.id.nav_auth, bundle);
                 return true;
             case R.id.server:
-
+                Log.i(TAG, "Navigate to server setting dialog: " + bundle);
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                         .navigate(R.id.nav_http_server_config, bundle);
                 return true;

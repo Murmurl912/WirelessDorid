@@ -45,6 +45,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 public class FolderFragment extends NavigationFragment {
@@ -73,7 +74,7 @@ public class FolderFragment extends NavigationFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        model = new ViewModelProvider(requireActivity()).get(FolderViewModel.class);
+        model = new ViewModelProvider(this).get(FolderViewModel.class);
         init();
     }
 
@@ -85,7 +86,8 @@ public class FolderFragment extends NavigationFragment {
         view.findViewById(R.id.context_container).setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString("title", "Set Context");
-            bundle.putString("text", "");
+            bundle.putString("context", model.folder().name.getValue());
+            Log.i(TAG, "Navigate to set context");
             Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigate(R.id.nav_context_editor, bundle);
         });
         pathSummary = view.findViewById(R.id.path_summary);
@@ -128,11 +130,14 @@ public class FolderFragment extends NavigationFragment {
     private void init() {
         Bundle bundle = getArguments();
         if(bundle != null) {
+            Log.i(TAG, "Receive bundle: " + bundle);
             Folder folder = (Folder)bundle.get("folder");
             if(folder != null) {
+                Log.i(TAG, "Receive folder: " + folder);
                 model.folder(folder);
             }
             if(bundle.containsKey("context")) {
+                Log.i(TAG, "Receive context: " + bundle.getString("context"));
                 onSetContext(bundle.getString("context"));
             }
         }
@@ -179,7 +184,6 @@ public class FolderFragment extends NavigationFragment {
 
     private void onSwitchRecursive(boolean recursive) {
         model.folder().recursive.postValue(recursive);
-
     }
 
     private void onSwitchShare(boolean share) {
@@ -189,27 +193,32 @@ public class FolderFragment extends NavigationFragment {
     private void onSave() {
         Folder folder = model.folder().toFolder(null);
         if("".equals(folder.path)) {
-            // empty path
             error("Path is empty");
+            Log.i(TAG, "Folder is empty: " + folder);
             return;
         }
 
         Path path = Paths.get(folder.path);
         if(!Files.exists(path) || !Files.isDirectory(path)) {
             error("Path is not found or is not a directory");
+            Log.i(TAG, "Folder path is not found or is not a directory: " + folder);
             return;
         };
         if(!Pattern.matches("\\p{L}+", folder.name)) {
             error("Context must be a valid identifier: " + folder.name);
+            Log.i(TAG, "Folder context name is not valid: " + folder);
             return;
         }
 
         App.app().executor().submit(()->{
             try {
                 App.app().db().folder().save(folder);
+                Log.i(TAG, "Save folder successfully: " + folder);
                 requireActivity().runOnUiThread(this::back);
+                Log.i(TAG, "Navigate back to folders");
             } catch (Exception e) {
-                error("Path or context may already added");
+                Log.e(TAG, "Failed to save folder: " + folder, e);
+                requireActivity().runOnUiThread(()->error("Path or context may already added"));
             }
         });
     }
@@ -228,6 +237,7 @@ public class FolderFragment extends NavigationFragment {
             case R.id.home:
             case R.id.cancel:
                 onCancel();
+                Log.d(TAG, "Cancel folder creation or modification");
                 return true;
             case R.id.apply:
                 onSave();
@@ -267,9 +277,15 @@ public class FolderFragment extends NavigationFragment {
 
         dialog.setCancelable(false);
         dialog.setButton(BUTTON_POSITIVE, "DELETE", (dialog1, which) -> App.app().executor().submit(()->{
-            App.app().db().folder().remove(model.folder().toFolder(null));
+            try {
+                App.app().db().folder().remove(model.folder().toFolder(null));
+                Log.i(TAG, "Delete folder: " + model.folder().toFolder(null));
+            } catch (Exception e) {
+                Log.e(TAG, "Filed to delete folder: " + model.folder().toFolder(null));
+            }
             requireActivity().runOnUiThread(this::back);
         }));
+        dialog.setButton(BUTTON_NEGATIVE, "CANCEL", (d, w) ->{});
         dialog.show();
     }
 
@@ -278,6 +294,7 @@ public class FolderFragment extends NavigationFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 0 && resultCode == RESULT_OK && data != null) {
             onSelectPath(Utils.path(requireContext(), data.getData()));
+            Log.i(TAG, "Path selected,\noriginal: " + data.getData() + "\nFile path: " + Utils.path(requireContext(), data.getData()));
         }
     }
 }

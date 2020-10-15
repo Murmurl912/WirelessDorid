@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.IBinder;
 
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import com.example.httpserver.app.App;
@@ -27,15 +28,18 @@ import java.util.function.BiConsumer;
 
 public class HttpService extends Service {
 
+    public static final String TAG = HttpService.class.getName();
+
     private TinyWebServer server;
     private FileHandler handler;
     private Handler messageHandler;
     private StaticFileStore store;
     private StaticFileHandler staticFileHandler;
 
-    private BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
+    private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
         public void accept(Integer integer, Exception exception) {
+            Log.i(TAG, "Server state: " + integer, exception);
             switch (integer) {
                 case TinyWebServer.STATE_STOPPED:
                     messageHandler.post(()->{
@@ -78,14 +82,22 @@ public class HttpService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "Http service started");
         App.app().executor().submit(()->{
             try {
                 App.app().serverStatus().postValue("starting");
+                Log.i(TAG, "Loading server config from database");
                 ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
+                Log.i(TAG, "Server config: " + config);
+                Log.i(TAG, "Creating file handler");
                 handler = new FileHandler(new AndroidFileService(), App.app().db().folder());
+                Log.i(TAG, "File handler created");
+                Log.i(TAG, "Creating static file handler and store");
                 store = new AssetsStaticFileStore(getAssets());
                 staticFileHandler = new StaticFileHandler(store);
+                Log.i(TAG, "Static file handler and store created");
                 server.setConfig(config);
+                Log.i(TAG, "Setup server routes");
                 server.router()
                         .add(Router.Route.of("GET", "/api/time", (session, map) -> TinyWebServer.response(new Date().toString())))
                         .add(Router.Route.of("GET", "/{context}/{*path}", handler::get))
@@ -95,23 +107,30 @@ public class HttpService extends Service {
                         .add(Router.Route.of("GET", "/static/{*path}", staticFileHandler::file))
 
                 ;
+                Log.i(TAG, "Server routes setup completed");
+                Log.i(TAG, "Starting server");
                 server.start();
+                Log.i(TAG, "Server started");
                 App.app().serverStatus().postValue("running");
             } catch (Exception e) {
                 App.app().serverStatus().postValue("error");
+                Log.e(TAG, "Failed to start http server", e);
             }
         });
+        Log.i(TAG, "Http server startup task submitted");
 
+        Log.i(TAG, "Start service in foreground");
         Notification notification =
                 ServerNotification.startNotification(getApplicationContext(), false);
-
         startForeground(NotificationConstants.SERVER_ID, notification);
+        Log.i(TAG, "Service running in foreground");
         return START_NOT_STICKY;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i(TAG, "Http Service created");
         messageHandler = new Handler(getMainLooper());
         server = new TinyWebServer();
         server.setServerListener(listener);
@@ -125,6 +144,7 @@ public class HttpService extends Service {
             server.stop();
             App.app().serverStatus().postValue("stopped");
         });
+        Log.i(TAG, "Shutdown server task submitted");
         super.onDestroy();
     }
 
