@@ -2,6 +2,7 @@ package com.example.httpserver.app.services.http.handler;
 
 import com.example.httpserver.app.repository.FolderRepository;
 import com.example.httpserver.app.repository.entity.Folder;
+import com.example.httpserver.app.services.http.FileMetaData;
 import com.example.httpserver.app.services.http.route.PathContainer;
 import com.example.httpserver.app.services.http.route.PathPattern;
 import com.example.httpserver.app.services.http.route.PathPatternParser;
@@ -52,13 +53,13 @@ public class FileHandler {
         try {
             switch (op) {
                 case "DIR":
-                    return dir(context, path);
+                    return dir(session.getUri(), context, path);
                 case "META":
-                    return meta(context, path);
+                    return meta(session.getUri(), context, path);
                 case "DOWNLOAD":
                     return download(context, path);
                 default:
-                    return defaultop(context, path);
+                    return defaultop(session.getUri(), context, path);
             }
         } catch (Exception e) {
             return handle(session.getUri(), e);
@@ -166,7 +167,7 @@ public class FileHandler {
         }
     }
 
-    public NanoHTTPD.Response defaultop(String context, String path) {
+    public NanoHTTPD.Response defaultop(String uri, String context, String path) {
         Folder folder = folder(context);
         if(folder == null) {
             return notfound(("/" + context + "/" + path).replaceAll("//", "/"));
@@ -174,7 +175,7 @@ public class FileHandler {
         Path p = Paths.get(folder.path, path);
         if(Files.exists(p)) {
             if(Files.isDirectory(p)) {
-                return dir(context, path);
+                return dir(uri, context, path);
             } else {
                 return download(context, path);
             }
@@ -183,24 +184,22 @@ public class FileHandler {
         }
     }
 
-    public NanoHTTPD.Response dir(String context, String path) {
+    public NanoHTTPD.Response dir(String uri, String context, String path) {
         Folder folder = folder(context);
         if(folder == null) {
             return notfound(("/" + context + "/" + path).replaceAll("//", "/"));
         }
-        Set<Path> paths = service.dir(Paths.get(folder.path, path));
-        List<Map<String, String>> metas =
-                paths.stream().map(service::meta).collect(Collectors.toList());
+        List<FileMetaData> metas = service.dir(uri, Paths.get(folder.path, path));
         return json(metas);
     }
 
-    public NanoHTTPD.Response meta(String context, String path) {
+    public NanoHTTPD.Response meta(String uri, String context, String path) {
         Folder folder = folder(context);
         if(folder == null) {
             return notfound(("/" + context + "/" + path).replaceAll("//", "/"));
         }
         Path p = Paths.get(folder.path, path);
-        Map<String, String> meta = service.meta(p);
+        FileMetaData meta = service.meta(uri, p);
         return json(meta);
     }
 

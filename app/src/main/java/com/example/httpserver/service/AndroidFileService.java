@@ -1,6 +1,7 @@
 package com.example.httpserver.service;
 
 import androidx.documentfile.provider.DocumentFile;
+import com.example.httpserver.app.services.http.FileMetaData;
 import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedOutputStream;
@@ -13,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -306,42 +308,11 @@ public class AndroidFileService implements FileService {
      * @throws FileServiceException io error
      */
     @Override
-    public Map<String, String> meta(Path path) {
+    public FileMetaData meta(String uri, Path path) {
         Condition.exist(path);
         Condition.readable(path);
 
-        BasicFileAttributeView basicFileAttributeView = Files.getFileAttributeView(path, BasicFileAttributeView.class);
-        try {
-            BasicFileAttributes attributes = basicFileAttributeView.readAttributes();
-            String name = path.getFileName().toString();
-            boolean hidden = Files.isHidden(path);
-            boolean readable = Files.isReadable(path);
-            boolean writable = Files.isWritable(path);
-            boolean directory = Files.isDirectory(path);
-            String modifytime = Files.getLastModifiedTime(path).toString();
-            String accesstime = attributes.lastAccessTime().toString();
-            String creationtime = attributes.creationTime().toString();
-            long size = attributes.size();
-            boolean regular = attributes.isRegularFile();
-            boolean sybmoliclink = attributes.isSymbolicLink();
-            boolean other = attributes.isOther();
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("name", name);
-            map.put("hidden", String.valueOf(hidden));
-            map.put("readable", String.valueOf(readable));
-            map.put("writable", String.valueOf(writable));
-            map.put("directory", String.valueOf(directory));
-            map.put("modifytime", String.valueOf(modifytime));
-            map.put("accesstime", String.valueOf(accesstime));
-            map.put("creationtime", String.valueOf(creationtime));
-            map.put("size", String.valueOf(size));
-            map.put("regular", String.valueOf(regular));
-            map.put("sybmoliclink", String.valueOf(sybmoliclink));
-            map.put("other", String.valueOf(other));
-            return map;
-        } catch (IOException e) {
-            throw new FileServiceException(e, path);
-        }
+        return FileMetaData.from(uri, path.toFile());
     }
 
     /**
@@ -354,16 +325,12 @@ public class AndroidFileService implements FileService {
      * @throws FileServiceException io errors
      */
     @Override
-    public Set<Path> dir(Path path) {
+    public List<FileMetaData> dir(String uri, Path path) {
         Condition.exist(path);
         Condition.readable(path);
         Condition.directory(path);
 
-        try {
-            return Files.list(path).collect(Collectors.toSet());
-        } catch (IOException e) {
-            throw new FileServiceException(e, path);
-        }
+        return FileMetaData.dir(uri, path.toFile());
     }
 
     public static class Condition {

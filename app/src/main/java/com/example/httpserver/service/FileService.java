@@ -1,10 +1,13 @@
 package com.example.httpserver.service;
 
 
+import com.example.httpserver.app.services.http.FileMetaData;
+
 import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,8 +31,8 @@ public interface FileService {
 
     public InputStream read(Path path);
 
-    public Map<String, String> meta(Path path);
+    public FileMetaData meta(String uri, Path path);
 
-    public Set<Path> dir(Path path);
+    public List<FileMetaData> dir(String uri, Path path);
 
 }
