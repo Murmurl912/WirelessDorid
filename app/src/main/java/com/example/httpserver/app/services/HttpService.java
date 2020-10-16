@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 
-import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.handler.AssetsStaticFileStore;
@@ -20,8 +18,7 @@ import com.example.httpserver.app.services.http.server.TinyWebServer;
 import com.example.httpserver.app.services.http.route.Router;
 import com.example.httpserver.app.ui.notifications.NotificationConstants;
 import com.example.httpserver.app.ui.notifications.ServerNotification;
-import com.example.httpserver.service.AndroidFileService;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
+import com.example.httpserver.service.impl.AndroidFileService;
 
 import java.util.Date;
 import java.util.function.BiConsumer;

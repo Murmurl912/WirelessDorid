@@ -1,4 +1,4 @@
-package com.example.httpserver.server;
+package com.example.httpserver.common.server;
 
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
@@ -6,7 +6,6 @@ import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
 
-import javax.net.ssl.SSLContext;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class HardcodeServer {

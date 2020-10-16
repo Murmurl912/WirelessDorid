@@ -1,4 +1,4 @@
-package com.example.httpserver.server;
+package com.example.httpserver.common.server;
 
 import android.util.Log;
 import io.netty.bootstrap.ServerBootstrap;

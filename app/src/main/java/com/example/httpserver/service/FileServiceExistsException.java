@@ -3,45 +3,23 @@ package com.example.httpserver.service;
 import java.nio.file.Path;
 
 public class FileServiceExistsException extends FileServiceException {
-
-    public int code = 201;
-
-    public FileServiceExistsException() {
+    public FileServiceExistsException(int code, Path path) {
+        super(code, path);
     }
 
-    public FileServiceExistsException(Path path) {
-        super(path);
+    public FileServiceExistsException(String message, int code, Path path) {
+        super(message, code, path);
     }
 
-    public FileServiceExistsException(String message, Path path) {
-        super(message, path);
+    public FileServiceExistsException(String message, Throwable cause, int code, Path path) {
+        super(message, cause, code, path);
     }
 
-    public FileServiceExistsException(String message) {
-        super(message);
+    public FileServiceExistsException(Throwable cause, int code, Path path) {
+        super(cause, code, path);
     }
 
-    public FileServiceExistsException(String message, Throwable cause, Path path) {
-        super(message, cause, path);
-    }
-
-    public FileServiceExistsException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public FileServiceExistsException(Throwable cause, Path path) {
-        super(cause, path);
-    }
-
-    public FileServiceExistsException(Throwable cause) {
-        super(cause);
-    }
-
-    public FileServiceExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, Path path) {
-        super(message, cause, enableSuppression, writableStackTrace, path);
-    }
-
-    public FileServiceExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public FileServiceExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, int code, Path path) {
+        super(message, cause, enableSuppression, writableStackTrace, code, path);
     }
 }

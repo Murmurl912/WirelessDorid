@@ -1,4 +1,4 @@
-package com.example.httpserver.server.handler.webfs;
+package com.example.httpserver.common.server.handler.webfs;
 
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;

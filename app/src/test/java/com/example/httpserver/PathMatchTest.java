@@ -14,7 +14,7 @@ public class PathMatchTest {
         PathPatternParser pathPatternParser = new PathPatternParser();
         PathPattern pathPattern = pathPatternParser.parse(url);
 
-        PathContainer pathContainer = PathContainer.parsePath("/api/hello/world");
+        PathContainer pathContainer = PathContainer.parsePath("/");
 
         PathPattern.PathMatchInfo info = pathPattern.matchAndExtract(pathContainer);
 

@@ -3,44 +3,23 @@ package com.example.httpserver.service;
 import java.nio.file.Path;
 
 public class FileServiceNotEmptyException extends FileServiceException {
-    public int code = 501;
-    public FileServiceNotEmptyException() {
-        super();
+    public FileServiceNotEmptyException(int code, Path path) {
+        super(code, path);
     }
 
-    public FileServiceNotEmptyException(Path path) {
-        super(path);
+    public FileServiceNotEmptyException(String message, int code, Path path) {
+        super(message, code, path);
     }
 
-    public FileServiceNotEmptyException(String message, Path path) {
-        super(message, path);
+    public FileServiceNotEmptyException(String message, Throwable cause, int code, Path path) {
+        super(message, cause, code, path);
     }
 
-    public FileServiceNotEmptyException(String message) {
-        super(message);
+    public FileServiceNotEmptyException(Throwable cause, int code, Path path) {
+        super(cause, code, path);
     }
 
-    public FileServiceNotEmptyException(String message, Throwable cause, Path path) {
-        super(message, cause, path);
-    }
-
-    public FileServiceNotEmptyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public FileServiceNotEmptyException(Throwable cause, Path path) {
-        super(cause, path);
-    }
-
-    public FileServiceNotEmptyException(Throwable cause) {
-        super(cause);
-    }
-
-    public FileServiceNotEmptyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, Path path) {
-        super(message, cause, enableSuppression, writableStackTrace, path);
-    }
-
-    protected FileServiceNotEmptyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    public FileServiceNotEmptyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, int code, Path path) {
+        super(message, cause, enableSuppression, writableStackTrace, code, path);
     }
 }

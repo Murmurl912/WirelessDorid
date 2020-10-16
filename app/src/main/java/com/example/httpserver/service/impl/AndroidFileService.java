@@ -1,23 +1,17 @@
-package com.example.httpserver.service;
+package com.example.httpserver.service.impl;
 
 import androidx.documentfile.provider.DocumentFile;
 import com.example.httpserver.app.services.http.FileMetaData;
+import com.example.httpserver.service.*;
 import org.apache.commons.io.FileUtils;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AndroidFileService implements FileService {
 
@@ -61,10 +55,10 @@ public class AndroidFileService implements FileService {
                 try {
                     Files.move(path, destination, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException(e, path);
+                    throw new FileServiceIOException(e, FileServiceException.CODE_PATH_EXISTS, path);
                 }
             } else {
-                throw new FileServiceExistsException(destination);
+                throw new FileServiceExistsException(FileServiceException.CODE_PATH_EXISTS, destination);
             }
         } else {
             try {
@@ -74,7 +68,7 @@ public class AndroidFileService implements FileService {
                     Files.move(path, destination);
                 }
             } catch (IOException e) {
-                throw new FileServiceException(e, path);
+                throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
             }
         }
         return destination;
@@ -104,17 +98,17 @@ public class AndroidFileService implements FileService {
                     if(PROXY_RECURSIVE.equalsIgnoreCase(proxy)) {
                         FileUtils.deleteDirectory(path.toFile());
                     } else {
-                        throw new FileServiceNotEmptyException(path);
+                        throw new FileServiceNotEmptyException(FileServiceException.CODE_NOT_EMPTY, path);
                     }
                 }
             } catch (IOException e) {
-                throw new FileServiceException(e, path);
+                throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
             }
         } else {
             try {
                 Files.delete(path);
             } catch (IOException e) {
-                throw new FileServiceException(e, path);
+                throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
             }
         }
 
@@ -151,10 +145,10 @@ public class AndroidFileService implements FileService {
                 try {
                     Files.copy(path, destination, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException(e, path);
+                    throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
                 }
             } else {
-                throw new FileServiceExistsException(path);
+                throw new FileServiceExistsException(FileServiceException.CODE_PATH_EXISTS, path);
             }
         } else {
             try {
@@ -164,7 +158,7 @@ public class AndroidFileService implements FileService {
                     Files.copy(path, destination);
                 }
             } catch (IOException e) {
-                throw new FileServiceException(e, path);
+                throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
             }
         }
         return destination;
@@ -185,7 +179,7 @@ public class AndroidFileService implements FileService {
         try {
             Files.createFile(path);
         } catch (IOException e) {
-            throw new FileServiceException(e, path);
+            throw new FileServiceIOException(e, FileServiceException.CODE_PATH_EXISTS, path);
         }
         return path;
     }
@@ -205,7 +199,7 @@ public class AndroidFileService implements FileService {
         try {
             Files.createDirectory(path);
         } catch (IOException e) {
-            throw new FileServiceException(e, path);
+            throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
         }
         return path;
     }
@@ -233,23 +227,23 @@ public class AndroidFileService implements FileService {
                 try {
                     Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException(e, path);
+                    throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
                 }
             } else {
-                throw new FileServiceExistsException(path);
+                throw new FileServiceExistsException(FileServiceException.CODE_PATH_EXISTS, path);
             }
         } else {
             if(PROXY_REPLACE.equals(proxy)) {
                 try {
                     Files.copy(stream, path, StandardCopyOption.REPLACE_EXISTING);
                 } catch (IOException e) {
-                    throw new FileServiceException(e, path);
+                    throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
                 }
             } else {
                 try {
                     Files.copy(stream, path);
                 } catch (IOException e) {
-                    throw new FileServiceException(e, path);
+                    throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
                 }
             }
         }
@@ -273,7 +267,7 @@ public class AndroidFileService implements FileService {
         try {
             Files.copy(path, stream);
         } catch (IOException e) {
-            throw new FileServiceException(e, path);
+            throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
         }
     }
 
@@ -295,7 +289,7 @@ public class AndroidFileService implements FileService {
         try {
             return Files.newInputStream(path);
         } catch (IOException e) {
-            throw new FileServiceException(e);
+            throw new FileServiceIOException(e, FileServiceException.CODE_IO_EXCEPTION, path);
         }
     }
 
@@ -337,25 +331,25 @@ public class AndroidFileService implements FileService {
 
         public static void readable(Path path) {
             if(!Files.isReadable(path)) {
-                throw new FileServiceUnreadableException(path);
+                throw new FileServiceUnreadableException(FileServiceException.CODE_UNREADABLE, path);
             }
         }
 
         public static void writable(Path path) {
             if(!Files.isWritable(path)) {
-                throw new FileServiceUnwritableException(path);
+                throw new FileServiceUnwritableException(FileServiceException.CODE_UNWRITABLE, path);
             }
         }
 
         public static void exist(Path path) {
             if(!Files.exists(path)) {
-                throw new FileServiceNotFoundException(path);
+                throw new FileServiceNotFoundException(FileServiceException.CODE_NOT_EMPTY, path);
             }
         }
 
         public static void unexist(Path path) {
             if(Files.exists(path)) {
-                throw new FileServiceExistsException(path);
+                throw new FileServiceExistsException(FileServiceException.CODE_PATH_EXISTS, path);
             }
         }
 
@@ -363,22 +357,22 @@ public class AndroidFileService implements FileService {
             try {
                 long count = Files.list(path).count();
                 if(count > 0) {
-                    throw new FileServiceNotEmptyException();
+                    throw new FileServiceNotEmptyException(FileServiceException.CODE_NOT_EMPTY, path);
                 }
             } catch (IOException e) {
-                throw new FileServiceException(e);
+                throw new FileServiceException(e, FileServiceException.CODE_IO_EXCEPTION, path);
             }
         }
 
         public static void directory(Path path) {
             if(!Files.isDirectory(path)) {
-                throw new FileServiceIsFileException(path);
+                throw new FileServiceIsFileException(FileServiceException.CODE_IS_FILE, path);
             }
         }
 
         public static void file(Path path) {
             if(Files.isDirectory(path)) {
-                throw new FileServiceIsDirectoryException(path);
+                throw new FileServiceIsDirectoryException(FileServiceException.CODE_IS_DIRECTORY, path);
             }
         }
     }

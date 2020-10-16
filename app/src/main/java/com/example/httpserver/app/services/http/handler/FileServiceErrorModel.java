@@ -17,8 +17,8 @@ public class FileServiceErrorModel {
 
     public static FileServiceErrorModel of(String uri, FileServiceException e) {
         FileServiceErrorModel model = new FileServiceErrorModel();
-        model.code = e.code;
-        model.path = e.path;
+        model.code = e.getCode();
+        model.path = e.getPath();
         model.uri = uri;
         model.error = e;
         model.timestamp = new Date();
