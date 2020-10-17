@@ -1,6 +1,6 @@
-package com.example.httpserver.common.server;
+package com.example.httpserver.service.server;
 
-import com.example.httpserver.common.server.handler.webfs.HttpServerHandler;
+import com.example.httpserver.service.server.handler.webfs.HttpServerHandler;
 
 import java.util.*;
 

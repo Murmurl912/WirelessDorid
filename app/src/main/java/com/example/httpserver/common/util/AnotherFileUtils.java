@@ -1,4 +1,4 @@
-package com.example.httpserver.common;
+package com.example.httpserver.common.util;
 
 /*
  * Copyright (C) 2018 OpenIntents.org

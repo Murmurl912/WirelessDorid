@@ -39,7 +39,7 @@ public class AndroidFileService implements FileService {
      * @throws FileServiceException when operation failed because of io
      */
     @Override
-    public Path move(Path path, Path destination, String proxy) {
+    public Path move(Path path, Path destination, String proxy)     {
         Condition.exist(path);
         Condition.readable(path);
         Condition.writable(destination.getParent());

@@ -1,5 +1,5 @@
 package com.example.httpserver.service.exception;
 
-public class PathIOException extends PathException {
+public class PathException extends ServiceException {
 
 }

@@ -1,4 +1,4 @@
-package com.example.httpserver.common;
+package com.example.httpserver.common.util;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;

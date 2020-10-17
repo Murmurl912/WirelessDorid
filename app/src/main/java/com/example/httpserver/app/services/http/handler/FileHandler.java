@@ -238,7 +238,7 @@ public class FileHandler {
             }
             Path p = Paths.get(folder.path, path);
             try {
-                Path result = service.create(p, item.openStream(), proxy);
+                Path result = service.write(p, item.openStream(), proxy);
                 // ignore rest of the file
                 if(itemIterator.hasNext()) {
                     service.remove(p, "");

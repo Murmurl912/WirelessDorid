@@ -25,7 +25,7 @@ import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Folder;
 import com.example.httpserver.app.ui.NavigationFragment;
-import com.example.httpserver.common.Utils;
+import com.example.httpserver.common.util.Utils;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.nio.file.Files;

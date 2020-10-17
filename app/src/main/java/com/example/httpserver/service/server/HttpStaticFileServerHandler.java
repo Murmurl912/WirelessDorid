@@ -1,4 +1,4 @@
-package com.example.httpserver.common.server;
+package com.example.httpserver.service.server;
 
 /*
  * Copyright 2012 The Netty Project

@@ -1,4 +1,4 @@
-package com.example.httpserver.common;
+package com.example.httpserver.common.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

@@ -1,4 +1,4 @@
 package com.example.httpserver.service.exception;
 
-public class PathIsEmpty {
+public class PathIsEmpty extends PathException {
 }

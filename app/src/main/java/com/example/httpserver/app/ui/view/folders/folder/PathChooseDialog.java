@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.DocumentsProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -15,10 +13,9 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.DialogFragment;
 import com.example.httpserver.R;
-import com.example.httpserver.common.FileUtils;
+import com.example.httpserver.common.util.FileUtils;
 
 
 public class PathChooseDialog extends DialogFragment {

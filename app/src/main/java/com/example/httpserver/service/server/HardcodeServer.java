@@ -1,4 +1,4 @@
-package com.example.httpserver.common.server;
+package com.example.httpserver.service.server;
 
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.server.AsyncHttpServer;

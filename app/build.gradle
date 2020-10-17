@@ -73,6 +73,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
     implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
 
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

@@ -1,4 +1,4 @@
 package com.example.httpserver.service.exception;
 
-public class PathNotFound {
+public class PathNotFound extends PathException {
 }
