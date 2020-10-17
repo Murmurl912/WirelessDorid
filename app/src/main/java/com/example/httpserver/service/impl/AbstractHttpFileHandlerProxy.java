@@ -14,8 +14,9 @@ import java.util.Map;
 
 public abstract class AbstractHttpFileHandlerProxy extends HttpFileHandler {
 
-    public AbstractHttpFileHandlerProxy(FileService fileService, ContextService contextService) {
-        super(fileService, contextService);
+    public AbstractHttpFileHandlerProxy(HttpFileHandler httpFileHandler) {
+        super(httpFileHandler.fileService(), httpFileHandler.contextService());
+
     }
 
     @Override

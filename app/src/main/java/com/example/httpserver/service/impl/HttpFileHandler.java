@@ -64,6 +64,9 @@ public abstract class HttpFileHandler implements FileHandler {
         String override = headers.get("override");
         String proxy = override != null && override.equals("true") ? "replace" : "";
 
+        if(path == null || path.isEmpty()) {
+            return bad();
+        }
         boolean isMultipartContent = FileUploadBase.isMultipartContent(new NanoFileUpload.NanoHttpdContext(session));
         FileMetaData meta = null;
         NanoHTTPD.Response response;
@@ -164,6 +167,7 @@ public abstract class HttpFileHandler implements FileHandler {
         if(path == null || path.isEmpty()) {
             return bad(); // is root
         }
+
         String proxy = depth != null && depth.equals("infinity") ? "recursive" : "";
         delete(uri, proxy, context, path);
         return nocontent();

@@ -215,7 +215,7 @@ public class AndroidFileService implements FileService {
      * @throws FileServiceExistsException if path already exits and replace proxy is not supplied
      */
     @Override
-    public Path create(Path path, InputStream stream, String proxy) {
+    public Path write(Path path, InputStream stream, String proxy) {
         Condition.writable(path.getParent());
         if(Files.exists(path)) {
             Condition.writable(path);
@@ -260,7 +260,7 @@ public class AndroidFileService implements FileService {
      * @throws FileServiceException io errors
      */
     @Override
-    public void write(Path path, OutputStream stream) {
+    public void read(Path path, OutputStream stream) {
         Condition.exist(path);
         Condition.readable(path);
         Condition.file(path);

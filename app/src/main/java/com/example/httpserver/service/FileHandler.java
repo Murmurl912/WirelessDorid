@@ -77,6 +77,8 @@ public interface FileHandler {
     }
 
     default public FileMetaData write(String uri, String context, String path, InputStream stream, String proxy) {
-        return null;
+        Path file = contextService().access(context, path, ContextService.ContextServiceAction.CONTEXT_SERVICE_ACTION_WRITE);
+        Path result = fileService().write(file, stream, proxy);
+        return FileMetaData.from(uri, result);
     }
 }
