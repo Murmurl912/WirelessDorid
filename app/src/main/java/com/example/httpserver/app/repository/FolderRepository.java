@@ -1,7 +1,6 @@
 package com.example.httpserver.app.repository;
 
 import androidx.room.*;
-
 import com.example.httpserver.app.repository.entity.Folder;
 
 import java.util.List;

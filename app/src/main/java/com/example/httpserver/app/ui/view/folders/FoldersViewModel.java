@@ -4,7 +4,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Folder;
 

@@ -1,7 +1,6 @@
 package com.example.httpserver.app.ui.view.folders.folder;
 
 import androidx.lifecycle.ViewModel;
-
 import com.example.httpserver.app.repository.entity.Folder;
 import com.example.httpserver.app.repository.entity.LiveFolder;
 

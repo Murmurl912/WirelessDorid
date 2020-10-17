@@ -2,7 +2,6 @@ package com.example.httpserver.app.ui.view.server;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,8 +15,6 @@ import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.dialog.MaterialDialogs;
 
 import java.util.ArrayList;
 import java.util.List;

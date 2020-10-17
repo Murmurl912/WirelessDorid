@@ -3,7 +3,6 @@ package com.example.httpserver.app.services.http.handler;
 import fi.iki.elonen.NanoHTTPD;
 
 import javax.activation.MimetypesFileTypeMap;
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 public class StaticFileHandler {

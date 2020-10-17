@@ -2,11 +2,7 @@ package com.example.httpserver.app.services.http.route;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 final class DefaultPathContainer implements PathContainer {

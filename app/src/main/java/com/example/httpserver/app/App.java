@@ -2,19 +2,13 @@ package com.example.httpserver.app;
 
 import android.app.Application;
 import android.content.Intent;
-
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
-
 import com.example.httpserver.app.database.AppDatabase;
-import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.HttpService;
 
-
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

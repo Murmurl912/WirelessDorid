@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.services.HttpService;

@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-
 import android.util.Log;
 import android.widget.Toast;
 import com.example.httpserver.app.App;
@@ -13,16 +12,14 @@ import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.handler.AssetsStaticFileStore;
 import com.example.httpserver.app.services.http.handler.StaticFileHandler;
 import com.example.httpserver.app.services.http.handler.StaticFileStore;
-import com.example.httpserver.app.services.http.server.TinyWebServer;
 import com.example.httpserver.app.services.http.route.Router;
+import com.example.httpserver.app.services.http.server.TinyWebServer;
 import com.example.httpserver.app.ui.notifications.NotificationConstants;
 import com.example.httpserver.app.ui.notifications.ServerNotification;
 import com.example.httpserver.common.handler.AndroidFileHandler;
 import com.example.httpserver.common.repository.AndroidFileContextRepository;
 import com.example.httpserver.common.repository.AndroidFileRepository;
-import com.example.httpserver.common.repository.FileContextRepository;
 import com.example.httpserver.common.service.AndroidFileService;
-import com.example.httpserver.common.handler.AndroidFileHandler;
 
 import java.util.Date;
 import java.util.function.BiConsumer;

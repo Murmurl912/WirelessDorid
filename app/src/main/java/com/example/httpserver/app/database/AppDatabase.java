@@ -2,7 +2,6 @@ package com.example.httpserver.app.database;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
-
 import com.example.httpserver.app.repository.ConfigurationRepository;
 import com.example.httpserver.app.repository.FolderRepository;
 import com.example.httpserver.app.repository.entity.Configuration;

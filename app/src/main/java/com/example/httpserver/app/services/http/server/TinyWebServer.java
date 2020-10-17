@@ -1,20 +1,11 @@
 package com.example.httpserver.app.services.http.server;
 
-import android.util.Log;
-import com.example.httpserver.app.App;
-import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.route.Router;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.iki.elonen.NanoHTTPD;
-import io.netty.handler.ssl.util.SelfSignedCertificate;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
-import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;

@@ -1,14 +1,15 @@
 package com.example.httpserver.common.repository;
 
 import com.example.httpserver.app.services.http.FileMetaData;
-import com.example.httpserver.service.*;
 import org.apache.commons.io.FileUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 public interface FileRepository {

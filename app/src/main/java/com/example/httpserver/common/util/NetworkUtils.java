@@ -2,7 +2,6 @@ package com.example.httpserver.common.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import androidx.annotation.NonNull;

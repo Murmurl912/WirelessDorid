@@ -5,7 +5,6 @@ import com.example.httpserver.app.services.http.route.PathContainer;
 import com.example.httpserver.app.services.http.route.PathPattern;
 import com.example.httpserver.app.services.http.route.PathPatternParser;
 import com.example.httpserver.common.model.FileData;
-import com.example.httpserver.common.repository.FileContextRepository;
 import com.example.httpserver.common.service.FileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +17,6 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
 import javax.activation.MimetypesFileTypeMap;
-import javax.net.ssl.SSLEngineResult;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +24,6 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class AndroidFileHandler {
 
@@ -51,7 +48,7 @@ public class AndroidFileHandler {
             FileMetaData meta = service.meta(data);
             if(meta.directory) {
                 List<FileMetaData> metas = service.dir(data);
-                NanoHTTPD.Response response = ok(meta);
+                NanoHTTPD.Response response = ok(metas);
                 response.addHeader("meta", json(meta));
                 return response;
             } else {

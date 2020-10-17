@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.os.Environment;
 import android.provider.Settings;
 import android.widget.Toast;
@@ -18,7 +17,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
 import com.example.httpserver.R;
 import com.google.android.material.navigation.NavigationView;
 

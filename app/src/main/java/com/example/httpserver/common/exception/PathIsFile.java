@@ -1,4 +1,4 @@
-package com.example.httpserver.service.exception;
+package com.example.httpserver.common.exception;
 
 public class PathIsFile extends PathException {
 }

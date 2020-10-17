@@ -54,13 +54,13 @@ public class Router<Handler> {
 
     public static class Route<Handler> implements Comparable<Route<Handler>> {
 
-        public final HttpMethod method;
+        public final String method;
         public final PathPattern pattern;
         public final Handler handler;
         private static final PathPatternParser DEFAULT_PATH_PARSER = new PathPatternParser();
 
         public Route(Handler handler,
-                     HttpMethod method,
+                     String method,
                      PathPattern pattern) {
             this.handler = handler;
             this.method = method;
@@ -76,7 +76,7 @@ public class Router<Handler> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Route<?> route = (Route<?>) o;
-            return method == route.method &&
+            return method.equals(route.method) &&
                     Objects.equals(pattern, route.pattern);
         }
 
@@ -86,10 +86,9 @@ public class Router<Handler> {
         }
 
         public static <T> Route<T> of(String method, String uri, T handler) {
-            HttpMethod m = HttpMethod.resolve(method);
             PathPattern p = DEFAULT_PATH_PARSER.parse(uri);
 
-            return new Route<>(handler, m, p);
+            return new Route<>(handler, method, p);
         }
 
         @Override

@@ -16,14 +16,7 @@
 
 package com.example.httpserver.app.services.http.route;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
-
-import com.example.httpserver.app.services.http.route.PathContainer;
+import java.util.*;
 /**
  * Representation of a parsed path pattern. Includes a chain of path elements
  * for fast matching and accumulates computed state for quick comparison of
