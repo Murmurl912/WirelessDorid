@@ -1,6 +1,6 @@
 package com.example.httpserver.common.repository;
 
-import com.example.httpserver.app.services.http.FileMetaData;
+import com.example.httpserver.common.model.FileMetaData;
 import org.apache.commons.io.FileUtils;
 
 import java.io.FileNotFoundException;

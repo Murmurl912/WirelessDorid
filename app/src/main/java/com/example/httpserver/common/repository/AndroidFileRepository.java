@@ -3,7 +3,7 @@ package com.example.httpserver.common.repository;
 import android.content.ContentResolver;
 import android.provider.DocumentsContract;
 import androidx.documentfile.provider.DocumentFile;
-import com.example.httpserver.app.services.http.FileMetaData;
+import com.example.httpserver.common.model.FileMetaData;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

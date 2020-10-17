@@ -17,7 +17,15 @@ public interface ConfigurationRepository {
     public void delete(Configuration...configurations);
 
     @Query("select * from configuration")
-    public Configuration select();
+    public Configuration gets();
+
+    @Query("select value from configuration where `key` = :key")
+    public String get(String key);
+
+    default public void put(String key, String value) {
+        Configuration configuration = new Configuration(key, value);
+        save(configuration);
+    }
 
     @Query("select * from configuration where `key` in (:keys)")
     public List<Configuration> select(String...keys);

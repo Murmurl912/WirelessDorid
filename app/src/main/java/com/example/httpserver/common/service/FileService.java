@@ -1,6 +1,6 @@
 package com.example.httpserver.common.service;
 
-import com.example.httpserver.app.services.http.FileMetaData;
+import com.example.httpserver.common.model.FileMetaData;
 import com.example.httpserver.common.model.FileData;
 
 import java.io.IOException;

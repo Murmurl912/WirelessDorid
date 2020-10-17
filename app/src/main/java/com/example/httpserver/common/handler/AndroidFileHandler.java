@@ -1,10 +1,11 @@
 package com.example.httpserver.common.handler;
 
-import com.example.httpserver.app.services.http.FileMetaData;
-import com.example.httpserver.app.services.http.route.PathContainer;
-import com.example.httpserver.app.services.http.route.PathPattern;
-import com.example.httpserver.app.services.http.route.PathPatternParser;
+import com.example.httpserver.common.model.FileMetaData;
+import com.example.httpserver.common.server.route.PathContainer;
+import com.example.httpserver.common.server.route.PathPattern;
+import com.example.httpserver.common.server.route.PathPatternParser;
 import com.example.httpserver.common.model.FileData;
+import com.example.httpserver.common.service.AuthService;
 import com.example.httpserver.common.service.FileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,12 +31,24 @@ public class AndroidFileHandler {
     private final FileService service;
     private final ObjectMapper mapper = new ObjectMapper();
     private final MimetypesFileTypeMap map  = new MimetypesFileTypeMap();
+    private final AuthService authService;
 
-    public AndroidFileHandler(FileService service) {
+    public AndroidFileHandler(FileService service, AuthService authService) {
         this.service = service;
+        this.authService = authService;
+    }
+
+    public NanoHTTPD.Response root(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        return ok(service.root());
     }
 
     public NanoHTTPD.Response get(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        try {
+            authService.verify(session);
+        } catch (Exception e) {
+            return bad(e);
+        }
+
         String uri = session.getUri();
         String context = vars.get("context");
         String path = vars.get("path");
@@ -43,6 +56,8 @@ public class AndroidFileHandler {
         data.path = path;
         data.context = context;
         data.uri = uri;
+        String auth = session.getHeaders().get("authorization");
+
 
         try {
             FileMetaData meta = service.meta(data);
@@ -68,6 +83,13 @@ public class AndroidFileHandler {
     }
 
     public NanoHTTPD.Response put(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        try {
+            authService.verify(session);
+        } catch (Exception e) {
+            return bad(e);
+        }
+
+
         String uri = session.getUri();
         String context = vars.get("context");
         String path = vars.get("path");
@@ -117,6 +139,13 @@ public class AndroidFileHandler {
     }
 
     public NanoHTTPD.Response move(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        try {
+            authService.verify(session);
+        } catch (Exception e) {
+            return bad(e);
+        }
+
+
         String uri = session.getUri();
         String context = vars.get("context");
         String path = vars.get("path");
@@ -159,6 +188,13 @@ public class AndroidFileHandler {
     }
 
     public NanoHTTPD.Response copy(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        try {
+            authService.verify(session);
+        } catch (Exception e) {
+            return bad(e);
+        }
+
+
         String uri = session.getUri();
         String context = vars.get("context");
         String path = vars.get("path");
@@ -203,6 +239,13 @@ public class AndroidFileHandler {
     }
 
     public NanoHTTPD.Response delete(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        try {
+            authService.verify(session);
+        } catch (Exception e) {
+            return bad(e);
+        }
+
+
         String uri = session.getUri();
         String context = vars.get("context");
         String path = vars.get("path");
@@ -229,21 +272,28 @@ public class AndroidFileHandler {
     private NanoHTTPD.Response ok(Object message) {
         return json(NanoHTTPD.Response.Status.OK, message);
     }
+
     private NanoHTTPD.Response created(Object message) {
         return json(NanoHTTPD.Response.Status.CREATED, message);
     }
+
     private NanoHTTPD.Response nocontent() {
         return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NO_CONTENT, "", "");
     }
+
     private NanoHTTPD.Response bad(Object message) {
         return json(NanoHTTPD.Response.Status.BAD_REQUEST, message);
     }
+
     private NanoHTTPD.Response forbidden(Object message) {
         return json(NanoHTTPD.Response.Status.FORBIDDEN, message);
     }
 
-    private NanoHTTPD.Response unauthorized(Object message) {
-        return json(NanoHTTPD.Response.Status.UNAUTHORIZED, message);
+    private NanoHTTPD.Response unauthorized() {
+        NanoHTTPD.Response response = json(NanoHTTPD.Response.Status.UNAUTHORIZED, null);
+        response.addHeader("content-length", "0");
+        response.addHeader("WWW-Authenticate", "Basic realm=\"Login\"");
+        return response;
     }
 
     private NanoHTTPD.Response notfound(Object message) {

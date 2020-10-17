@@ -8,19 +8,24 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 import com.example.httpserver.app.App;
+import com.example.httpserver.app.repository.TotpRepository;
 import com.example.httpserver.app.repository.entity.ServerConfig;
-import com.example.httpserver.app.services.http.handler.AssetsStaticFileStore;
-import com.example.httpserver.app.services.http.handler.StaticFileHandler;
-import com.example.httpserver.app.services.http.handler.StaticFileStore;
-import com.example.httpserver.app.services.http.route.Router;
-import com.example.httpserver.app.services.http.server.TinyWebServer;
+import com.example.httpserver.common.handler.AssetsStaticFileStore;
+import com.example.httpserver.common.handler.StaticFileHandler;
+import com.example.httpserver.common.handler.StaticFileStore;
+import com.example.httpserver.common.repository.AndroidServiceConfigRepository;
+import com.example.httpserver.common.server.route.Router;
+import com.example.httpserver.common.server.TinyWebServer;
 import com.example.httpserver.app.ui.notifications.NotificationConstants;
 import com.example.httpserver.app.ui.notifications.ServerNotification;
 import com.example.httpserver.common.handler.AndroidFileHandler;
 import com.example.httpserver.common.repository.AndroidFileContextRepository;
 import com.example.httpserver.common.repository.AndroidFileRepository;
 import com.example.httpserver.common.service.AndroidFileService;
+import com.example.httpserver.common.service.AuthService;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.function.BiConsumer;
 
@@ -99,11 +104,12 @@ public class HttpService extends Service {
                 Log.i(TAG, "Setup server routes");
                 server.router()
                         .add(Router.Route.of("GET", "/api/time", (session, map) -> TinyWebServer.response(new Date().toString())))
-                        .add(Router.Route.of("GET", "/{context}/{*path}", handler::get))
-                        .add(Router.Route.of("COPY", "/{context}/{*path}", handler::copy))
-                        .add(Router.Route.of("MOVE", "/{context}/{*path}", handler::move))
-                        .add(Router.Route.of("PUT", "/{context}/{*path}", handler::put))
-                        .add(Router.Route.of("DELETE", "/{context}/{*path}", handler::delete))
+                        .add(Router.Route.of("GET", "/fs-api", handler::root))
+                        .add(Router.Route.of("GET", "/fs-api/{context}/{*path}", handler::get))
+                        .add(Router.Route.of("COPY", "/fs-api/{context}/{*path}", handler::copy))
+                        .add(Router.Route.of("MOVE", "/fs-api/{context}/{*path}", handler::move))
+                        .add(Router.Route.of("PUT", "/fs-api/{context}/{*path}", handler::put))
+                        .add(Router.Route.of("DELETE", "/fs-api/{context}/{*path}", handler::delete))
                         .add(Router.Route.of("GET", "/", staticFileHandler::index))
                         .add(Router.Route.of("GET", "/static/{*path}", staticFileHandler::file))
 
@@ -149,8 +155,14 @@ public class HttpService extends Service {
         super.onDestroy();
     }
 
-    private AndroidFileHandler androidFileHandler() {
-        return new AndroidFileHandler(new AndroidFileService(new AndroidFileRepository(), new AndroidFileContextRepository(App.app().db().folder())));
+    private AndroidFileHandler androidFileHandler() throws InvalidKeySpecException, NoSuchAlgorithmException {
+        AuthService authService = new AuthService(
+                new AndroidServiceConfigRepository(App.app().db().configuration()),
+                TotpRepository.instance());
+        AndroidFileService fileService = new AndroidFileService(
+                new AndroidFileRepository(),
+                new AndroidFileContextRepository(App.app().db().folder()));
+        return new AndroidFileHandler(fileService, authService);
     }
 
 }
