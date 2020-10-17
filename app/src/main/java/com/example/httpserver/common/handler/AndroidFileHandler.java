@@ -31,13 +31,11 @@ import java.util.Objects;
 public class AndroidFileHandler {
 
     private final FileService service;
-    private final ObjectMapper mapper;
-    private final FileContextRepository repository;
-    private MimetypesFileTypeMap map  = new MimetypesFileTypeMap();
-    public AndroidFileHandler(FileService service, ObjectMapper mapper, FileContextRepository repository) {
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final MimetypesFileTypeMap map  = new MimetypesFileTypeMap();
+
+    public AndroidFileHandler(FileService service) {
         this.service = service;
-        this.mapper = mapper;
-        this.repository = repository;
     }
 
     public NanoHTTPD.Response get(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {

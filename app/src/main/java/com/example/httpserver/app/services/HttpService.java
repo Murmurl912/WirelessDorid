@@ -11,14 +11,18 @@ import android.widget.Toast;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.app.services.http.handler.AssetsStaticFileStore;
-import com.example.httpserver.app.services.http.handler.FileHandler;
 import com.example.httpserver.app.services.http.handler.StaticFileHandler;
 import com.example.httpserver.app.services.http.handler.StaticFileStore;
 import com.example.httpserver.app.services.http.server.TinyWebServer;
 import com.example.httpserver.app.services.http.route.Router;
 import com.example.httpserver.app.ui.notifications.NotificationConstants;
 import com.example.httpserver.app.ui.notifications.ServerNotification;
-import com.example.httpserver.service.impl.AndroidFileService;
+import com.example.httpserver.common.handler.AndroidFileHandler;
+import com.example.httpserver.common.repository.AndroidFileContextRepository;
+import com.example.httpserver.common.repository.AndroidFileRepository;
+import com.example.httpserver.common.repository.FileContextRepository;
+import com.example.httpserver.common.service.AndroidFileService;
+import com.example.httpserver.common.handler.AndroidFileHandler;
 
 import java.util.Date;
 import java.util.function.BiConsumer;
@@ -28,10 +32,11 @@ public class HttpService extends Service {
     public static final String TAG = HttpService.class.getName();
 
     private TinyWebServer server;
-    private FileHandler handler;
+    private AndroidFileHandler handler;
     private Handler messageHandler;
     private StaticFileStore store;
     private StaticFileHandler staticFileHandler;
+
 
     private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
@@ -87,7 +92,7 @@ public class HttpService extends Service {
                 ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
                 Log.i(TAG, "Server config: " + config);
                 Log.i(TAG, "Creating file handler");
-                handler = new FileHandler(new AndroidFileService(), App.app().db().folder());
+                handler = androidFileHandler();
                 Log.i(TAG, "File handler created");
                 Log.i(TAG, "Creating static file handler and store");
                 store = new AssetsStaticFileStore(getAssets());
@@ -98,6 +103,8 @@ public class HttpService extends Service {
                 server.router()
                         .add(Router.Route.of("GET", "/api/time", (session, map) -> TinyWebServer.response(new Date().toString())))
                         .add(Router.Route.of("GET", "/{context}/{*path}", handler::get))
+                        .add(Router.Route.of("COPY", "/{context}/{*path}", handler::copy))
+                        .add(Router.Route.of("MOVE", "/{context}/{*path}", handler::move))
                         .add(Router.Route.of("PUT", "/{context}/{*path}", handler::put))
                         .add(Router.Route.of("DELETE", "/{context}/{*path}", handler::delete))
                         .add(Router.Route.of("GET", "/", staticFileHandler::index))
@@ -145,5 +152,8 @@ public class HttpService extends Service {
         super.onDestroy();
     }
 
+    private AndroidFileHandler androidFileHandler() {
+        return new AndroidFileHandler(new AndroidFileService(new AndroidFileRepository(), new AndroidFileContextRepository(App.app().db().folder())));
+    }
 
 }
