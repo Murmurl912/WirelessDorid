@@ -1,4 +1,4 @@
 package com.example.httpserver.common.exception;
 
-public class TokenExpiredException extends ServiceException {
+public class TokenExpiredException extends AuthException {
 }

@@ -2,6 +2,8 @@ package com.example.httpserver.common.service;
 
 import com.example.httpserver.app.repository.TimeBasedOneTimePassword;
 import com.example.httpserver.app.repository.TotpRepository;
+import com.example.httpserver.common.exception.BadTokenException;
+import com.example.httpserver.common.exception.TokenExpiredException;
 import com.example.httpserver.common.model.LoginModel;
 import com.example.httpserver.common.repository.ServiceConfigRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -9,21 +11,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.iki.elonen.NanoHTTPD;
 import io.jsonwebtoken.*;
 
-import javax.crypto.KeyGenerator;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.time.Instant;
 import java.util.*;
 
 public class AuthService {
     private final ObjectMapper mapper = new ObjectMapper();
-    private ServiceConfigRepository repository;
-    private TimeBasedOneTimePassword password;
+    private final ServiceConfigRepository repository;
+    private final TimeBasedOneTimePassword password;
     private PublicKey publicKey;
     private PrivateKey privateKey;
-    private String algorithm = "RSA";
+    private final String algorithm = "RSA";
     private JwtParser parser;
 
     public AuthService(ServiceConfigRepository repository, TotpRepository totpRepository) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -32,38 +32,82 @@ public class AuthService {
         load();
     }
 
-    public String login(String data) throws JsonProcessingException {
-        LoginModel model = mapper.readValue(data, LoginModel.class);
-        String name = repository.get("username");
-        String pass = repository.get("password");
-        if(Objects.equals(model.password, pass) && Objects.equals(model.username, name)) {
-            return mapper.writeValueAsString(new String[]{token(model), refresh(model)});
+    public String[] login(LoginModel model) {
+        boolean basic = Objects.equals(repository.get("basic"), "true");
+        boolean totp = Objects.equals(repository.get("totp"), "true");
+
+        if(basic) {
+            String name = repository.get("username");
+            String pass = repository.get("password");
+
+            if(Objects.equals(model.password, pass) && Objects.equals(model.username, name)) {
+                return new String[]{token(model), refresh(model)};
+            }
         }
-        if(password.pin() == Integer.parseInt(model.pin)) {
-            return mapper.writeValueAsString(new String[]{token(model), refresh(model)});
+
+        if(totp) {
+            if(password.pin() == Integer.parseInt(model.pin)) {
+                return new String[]{token(model), refresh(model)};
+            }
+        }
+
+        if(!totp && !basic) {
+            return new String[]{"", ""};
         }
         throw new SecurityException("Authorization failed!");
     }
 
-    public boolean verify(NanoHTTPD.IHTTPSession session) {
+    public void verify(NanoHTTPD.IHTTPSession session) {
+        boolean basic = Objects.equals(repository.get("basic"), "true");
+        boolean totp = Objects.equals(repository.get("totp"), "true");
+        if(!basic && !totp) {
+            return;
+        }
+
         String header = session.getHeaders().get("authorization");
         if(header == null || header.isEmpty()) {
-            return false;
+            throw new BadTokenException();
         }
         String token = header.replace("Bearer ", "");
-        return verify(token);
+        verify(token);
     }
 
-    public boolean verify(String token) {
-
-        Jws<Claims> claims = parser.parseClaimsJws(token);
-        String name = claims.getBody().get("name", String.class);
-        String scope = claims.getBody().get("session", String.class);
-        String id = claims.getBody().getId();
-        return true;
+    public void verify (String token) {
+        try {
+            Jws<Claims> claims = parser.parseClaimsJws(token);
+            String name = claims.getBody().get("name", String.class);
+            String scope = claims.getBody().get("scope", String.class);
+            String id = claims.getBody().getId();
+            if(!Objects.equals(scope, "session")) {
+                throw new BadTokenException();
+            }
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (Exception e) {
+            throw new BadTokenException();
+        }
     }
 
-    public String token(LoginModel model) {
+    public String refresh(String token) {
+        try {
+            Jws<Claims> claims = parser.parseClaimsJws(token);
+            String name = claims.getBody().get("name", String.class);
+            String scope = claims.getBody().get("scope", String.class);
+            String id = claims.getBody().getId();
+            if(!Objects.equals(scope, "refresh")) {
+                throw new BadTokenException();
+            }
+            LoginModel model = new LoginModel();
+            model.username = name;
+            return refresh(model);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (Exception e) {
+            throw new BadTokenException();
+        }
+    }
+
+    private String token(LoginModel model) {
         return Jwts.builder()
                 .setSubject(model.username)
                 .claim("name", model.username)
@@ -76,7 +120,7 @@ public class AuthService {
                 .compact();
     }
 
-    public String refresh(LoginModel model) {
+    private String refresh(LoginModel model) {
         return Jwts.builder()
                 .setSubject(model.username)
                 .claim("name", model.username)
@@ -97,9 +141,9 @@ public class AuthService {
         publicKey = pair.getPublic();
 
         repository.put("public-key", Base64.getEncoder().encodeToString(publicKey.getEncoded()));
-        repository.put("private-key", Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        repository.put("private-key", Base64.getEncoder().encodeToString(privateKey.getEncoded()));
 
-         parser = Jwts.parserBuilder()
+        parser = Jwts.parserBuilder()
                 .setSigningKey(publicKey)
                 .build();
     }
@@ -109,6 +153,11 @@ public class AuthService {
         String privateKeyStr = repository.get("private-key");
 
         if(publicKeyStr == null || publicKeyStr.isEmpty()) {
+            generate();
+            return;
+        }
+
+        if(privateKeyStr == null || privateKeyStr.isEmpty()) {
             generate();
             return;
         }

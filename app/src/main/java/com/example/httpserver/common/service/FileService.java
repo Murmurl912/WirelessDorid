@@ -11,23 +11,23 @@ public interface FileService {
 
     List<FileMetaData> root();
 
-    FileMetaData meta(FileData data) throws IOException;
+    FileMetaData meta(FileData data);
 
-    void remove(FileData data) throws IOException;
+    void remove(FileData data);
 
-    List<FileMetaData> dir(FileData data) throws IOException;
+    List<FileMetaData> dir(FileData data);
 
-    FileMetaData move(FileData source, FileData destination) throws IOException;
+    FileMetaData move(FileData source, FileData destination);
 
-    FileMetaData copy(FileData source, FileData destination) throws IOException;
+    FileMetaData copy(FileData source, FileData destination);
 
-    FileMetaData write(FileData source, InputStream stream) throws IOException;
+    FileMetaData write(FileData source, InputStream stream);
 
-    FileMetaData mkdir(FileData source) throws IOException;
+    FileMetaData mkdir(FileData source);
 
     FileMetaData touch(FileData source);
 
-    InputStream read(FileData source) throws IOException;
+    InputStream read(FileData source);
 
     boolean isDirectory(FileData data);
 

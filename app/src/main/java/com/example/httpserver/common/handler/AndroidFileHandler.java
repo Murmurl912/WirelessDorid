@@ -1,6 +1,9 @@
 package com.example.httpserver.common.handler;
 
+import android.util.Log;
+import com.example.httpserver.common.exception.*;
 import com.example.httpserver.common.model.FileMetaData;
+import com.example.httpserver.common.model.ResponseModel;
 import com.example.httpserver.common.server.route.PathContainer;
 import com.example.httpserver.common.server.route.PathPattern;
 import com.example.httpserver.common.server.route.PathPatternParser;
@@ -23,10 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class AndroidFileHandler {
+
+    public static final String TAG = AndroidFileHandler.class.getSimpleName();
 
     private final FileService service;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -39,14 +45,14 @@ public class AndroidFileHandler {
     }
 
     public NanoHTTPD.Response root(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
+        Log.i(TAG, "Request received: " + session.getMethod() + " " + session.getUri());
         return ok(service.root());
     }
 
     public NanoHTTPD.Response get(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
-        try {
-            authService.verify(session);
-        } catch (Exception e) {
-            return bad(e);
+        NanoHTTPD.Response authResponse = auth(session);
+        if(authResponse != null) {
+            return authResponse;
         }
 
         String uri = session.getUri();
@@ -56,7 +62,6 @@ public class AndroidFileHandler {
         data.path = path;
         data.context = context;
         data.uri = uri;
-        String auth = session.getHeaders().get("authorization");
 
 
         try {
@@ -73,20 +78,15 @@ public class AndroidFileHandler {
                 response.addHeader("meta", json(meta));
                 return response;
             }
-        } catch (FileNotFoundException e) {
-            return notfound(e);
-        } catch (SecurityException e) {
-            return forbidden(e);
-        } catch (IOException e) {
+        } catch (PathException e) {
             return bad(e);
         }
     }
 
     public NanoHTTPD.Response put(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
-        try {
-            authService.verify(session);
-        } catch (Exception e) {
-            return bad(e);
+        NanoHTTPD.Response authResponse = auth(session);
+        if(authResponse != null) {
+            return authResponse;
         }
 
 
@@ -114,22 +114,16 @@ public class AndroidFileHandler {
                 FileItemStream item = itemIterator.next();
                 meta = service.write(data, item.openStream());
                 response = created(meta);
-            } catch (SecurityException e) {
-                return forbidden(e);
-            } catch (FileAlreadyExistsException | DirectoryNotEmptyException e) {
+            } catch (PathException e) {
                 return bad(e);
-            } catch (FileUploadException | IOException e) {
-                return bad(e);
+            } catch (Exception e) {
+                return error(e);
             }
         } else {
             try {
                 meta = service.mkdir(data);
                 response = created(meta);
-            } catch (SecurityException e) {
-                return forbidden(e);
-            } catch (FileAlreadyExistsException e) {
-                return bad(e);
-            } catch (IOException e) {
+            } catch (PathException e) {
                 return bad(e);
             }
         }
@@ -139,12 +133,10 @@ public class AndroidFileHandler {
     }
 
     public NanoHTTPD.Response move(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
-        try {
-            authService.verify(session);
-        } catch (Exception e) {
-            return bad(e);
+        NanoHTTPD.Response authResponse = auth(session);
+        if(authResponse != null) {
+            return authResponse;
         }
-
 
         String uri = session.getUri();
         String context = vars.get("context");
@@ -158,7 +150,7 @@ public class AndroidFileHandler {
         FileData destination = new FileData();
         destination.uri = session.getHeaders().getOrDefault("destination", "");
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
-        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/{context}/{*path}")
+        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{context}/{*path}")
                 .matchAndExtract(PathContainer.parsePath(destination.uri));
         if(info != null) {
             destination.context = info.getUriVariables().get("context");
@@ -173,27 +165,16 @@ public class AndroidFileHandler {
             NanoHTTPD.Response response = ok(metaData);
             response.addHeader("meta", json(metaData));
             return response;
-        } catch (SecurityException e) {
-            return forbidden(e);
-        } catch (FileNotFoundException e) {
-            return notfound(e);
-        } catch (DirectoryNotEmptyException e) {
-            return bad(e);
-        } catch (FileAlreadyExistsException e) {
-            return bad(e);
-        } catch (IOException e) {
+        } catch (PathException e) {
             return bad(e);
         }
-
     }
 
     public NanoHTTPD.Response copy(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
-        try {
-            authService.verify(session);
-        } catch (Exception e) {
-            return bad(e);
+        NanoHTTPD.Response authResponse = auth(session);
+        if(authResponse != null) {
+            return authResponse;
         }
-
 
         String uri = session.getUri();
         String context = vars.get("context");
@@ -207,7 +188,7 @@ public class AndroidFileHandler {
         FileData destination = new FileData();
         destination.uri = session.getHeaders().getOrDefault("destination", "");
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
-        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/{context}/{*path}")
+        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{context}/{*path}")
                 .matchAndExtract(PathContainer.parsePath(destination.uri));
         if(info != null) {
             destination.context = info.getUriVariables().get("context");
@@ -222,27 +203,16 @@ public class AndroidFileHandler {
             NanoHTTPD.Response response = ok(metaData);
             response.addHeader("meta", json(metaData));
             return response;
-        } catch (SecurityException e) {
-            return forbidden(e);
-        } catch (FileNotFoundException e) {
-            return notfound(e);
-        } catch (DirectoryNotEmptyException e) {
-            return bad(e);
-        } catch (FileAlreadyExistsException e) {
-            return bad(e);
-        } catch (IOException e) {
+        } catch (PathException e) {
             return bad(e);
         }
-
-
 
     }
 
     public NanoHTTPD.Response delete(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
-        try {
-            authService.verify(session);
-        } catch (Exception e) {
-            return bad(e);
+        NanoHTTPD.Response authResponse = auth(session);
+        if(authResponse != null) {
+            return authResponse;
         }
 
 
@@ -260,11 +230,7 @@ public class AndroidFileHandler {
         try {
             service.remove(data);
             return nocontent();
-        } catch (SecurityException e) {
-            return forbidden(e);
-        } catch (DirectoryNotEmptyException e) {
-            return bad(e);
-        } catch (IOException e) {
+        } catch (PathException e) {
             return bad(e);
         }
     }
@@ -281,19 +247,101 @@ public class AndroidFileHandler {
         return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.NO_CONTENT, "", "");
     }
 
-    private NanoHTTPD.Response bad(Object message) {
-        return json(NanoHTTPD.Response.Status.BAD_REQUEST, message);
+    private NanoHTTPD.Response bad(PathException ex) {
+
+        Log.i(TAG, "Bad request ", ex);
+
+        ResponseModel model = new ResponseModel();
+        model.error = ex;
+        model.timestamp = new Date();
+
+        if(ex instanceof PathExistsException) {
+            model.code = 1;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + " already exists";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathIsDirectory) {
+            model.code = 2;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + ", is a directory";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathIsEmpty) {
+            model.code = 3;
+            model.status = 400;
+            model.message = "context cannot be modified, context: " + ex.getSource().context;
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathIsFile) {
+            model.code = 4;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + ", is a file";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathNotEmpty) {
+            model.code = 5;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + ", path is a directory and not empty";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathNotFound) {
+            model.code = 6;
+            model.status = 404;
+            model.message = "source path: " + ex.getSource().uri + ", is not found";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathDeniedException) {
+            model.code = 7;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + ", access is denied by os";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathNotReadable) {
+            model.code  = 8;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + " cannot be read";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof  PathNotWritable) {
+            model.code = 9;
+            model.status = 400;
+            model.message = "source path: " + ex.getSource().uri + " cannot be write";
+            model.uri = ex.getSource().uri;
+        } else if(ex instanceof PathContextNotFound){
+            model.code = 10;
+            model.status = 404;
+            model.message = "context: " + ex.getSource().context + " cannot be found";
+            model.uri = ex.getSource().uri;
+        } else {
+            model.code = 11;
+            model.status = 400;
+            model.message = "error occurs during handle request";
+            model.uri = ex.getSource().uri;
+        }
+
+        return json(NanoHTTPD.Response.Status.lookup(model.status), model);
+    }
+
+    private NanoHTTPD.Response error(Exception e) {
+        Log.i(TAG, "internal error ", e);
+        return json(NanoHTTPD.Response.Status.INTERNAL_ERROR, e);
     }
 
     private NanoHTTPD.Response forbidden(Object message) {
         return json(NanoHTTPD.Response.Status.FORBIDDEN, message);
     }
 
-    private NanoHTTPD.Response unauthorized() {
-        NanoHTTPD.Response response = json(NanoHTTPD.Response.Status.UNAUTHORIZED, null);
-        response.addHeader("content-length", "0");
-        response.addHeader("WWW-Authenticate", "Basic realm=\"Login\"");
-        return response;
+    private NanoHTTPD.Response unauthorized(String uri, Exception e) {
+        ResponseModel model = new ResponseModel();
+        model.message = "Token is invalid or expired";
+        model.code = 9;
+        model.status = 401;
+        model.uri = uri;
+        model.timestamp = new Date();
+
+        return json(NanoHTTPD.Response.Status.UNAUTHORIZED, model);
+    }
+
+    private NanoHTTPD.Response auth(NanoHTTPD.IHTTPSession session) {
+        try {
+            authService.verify(session);
+            return null;
+        } catch (Exception e) {
+            return unauthorized(session.getUri(), e);
+        }
     }
 
     private NanoHTTPD.Response notfound(Object message) {

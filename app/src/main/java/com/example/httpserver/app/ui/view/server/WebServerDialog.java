@@ -85,8 +85,8 @@ public class WebServerDialog extends DialogFragment {
         List<Configuration> configurations = new ArrayList<>();
         Configuration ftpPortConfig = new Configuration("ftp_port", ftpPort.getText().toString());
         Configuration ftpConfig = new Configuration("ftp", Boolean.toString(enableFtp.isChecked()));
-        Configuration httpPortConfig = new Configuration("ftp_port", httpPort.getText().toString());
-        Configuration httpConfig = new Configuration("ftp", Boolean.toString(enableHttp.isChecked()));
+        Configuration httpPortConfig = new Configuration("http_port", httpPort.getText().toString());
+        Configuration httpConfig = new Configuration("http", Boolean.toString(enableHttp.isChecked()));
         configurations.add(ftpConfig);
         configurations.add(ftpPortConfig);
         configurations.add(httpConfig);

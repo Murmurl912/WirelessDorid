@@ -27,15 +27,19 @@ public class LiveFolder {
         folder.name = name.getValue();
         String s = path.getValue();
         folder.path = s == null ? "" : s;
+
         Boolean b = read.getValue();
         folder.read = b != null && b;
-        b = read.getValue();
-        folder.write = b != null && b;
+
         b = write.getValue();
-        folder.publicly = b != null && b;
+        folder.write = b != null && b;
+
         b = publicly.getValue();
-        folder.share = b != null && b;
+        folder.publicly = b != null && b;
+
         b = share.getValue();
+        folder.share = b != null && b;
+
         return folder;
     }
 

@@ -10,19 +10,17 @@ import android.widget.Toast;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.TotpRepository;
 import com.example.httpserver.app.repository.entity.ServerConfig;
-import com.example.httpserver.common.handler.AssetsStaticFileStore;
-import com.example.httpserver.common.handler.StaticFileHandler;
-import com.example.httpserver.common.handler.StaticFileStore;
+import com.example.httpserver.common.handler.*;
 import com.example.httpserver.common.repository.AndroidServiceConfigRepository;
 import com.example.httpserver.common.server.route.Router;
 import com.example.httpserver.common.server.TinyWebServer;
 import com.example.httpserver.app.ui.notifications.NotificationConstants;
 import com.example.httpserver.app.ui.notifications.ServerNotification;
-import com.example.httpserver.common.handler.AndroidFileHandler;
 import com.example.httpserver.common.repository.AndroidFileContextRepository;
 import com.example.httpserver.common.repository.AndroidFileRepository;
 import com.example.httpserver.common.service.AndroidFileService;
 import com.example.httpserver.common.service.AuthService;
+import com.example.httpserver.common.service.SimpleFileService;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -38,7 +36,7 @@ public class HttpService extends Service {
     private Handler messageHandler;
     private StaticFileStore store;
     private StaticFileHandler staticFileHandler;
-
+    private AuthHandler authHandler;
 
     private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
@@ -93,25 +91,30 @@ public class HttpService extends Service {
                 Log.i(TAG, "Loading server config from database");
                 ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
                 Log.i(TAG, "Server config: " + config);
-                Log.i(TAG, "Creating file handler");
+                Log.i(TAG, "Creating handler");
                 handler = androidFileHandler();
-                Log.i(TAG, "File handler created");
-                Log.i(TAG, "Creating static file handler and store");
+                authHandler = authHandler();
                 store = new AssetsStaticFileStore(getAssets());
                 staticFileHandler = new StaticFileHandler(store);
-                Log.i(TAG, "Static file handler and store created");
+                Log.i(TAG, "Handler created");
                 server.setConfig(config);
                 Log.i(TAG, "Setup server routes");
                 server.router()
                         .add(Router.Route.of("GET", "/api/time", (session, map) -> TinyWebServer.response(new Date().toString())))
+
+                        .add(Router.Route.of("POST", "/web-api/login", authHandler::login))
+                        .add(Router.Route.of("POST", "/web-api/logout", authHandler::logout))
+                        .add(Router.Route.of("POST", "/web-api/refresh", authHandler::refresh))
+
                         .add(Router.Route.of("GET", "/fs-api", handler::root))
                         .add(Router.Route.of("GET", "/fs-api/{context}/{*path}", handler::get))
                         .add(Router.Route.of("COPY", "/fs-api/{context}/{*path}", handler::copy))
                         .add(Router.Route.of("MOVE", "/fs-api/{context}/{*path}", handler::move))
                         .add(Router.Route.of("PUT", "/fs-api/{context}/{*path}", handler::put))
                         .add(Router.Route.of("DELETE", "/fs-api/{context}/{*path}", handler::delete))
+
                         .add(Router.Route.of("GET", "/", staticFileHandler::index))
-                        .add(Router.Route.of("GET", "/static/{*path}", staticFileHandler::file))
+                        .add(Router.Route.of("GET", "/web/{*path}", staticFileHandler::file))
 
                 ;
                 Log.i(TAG, "Server routes setup completed");
@@ -159,10 +162,12 @@ public class HttpService extends Service {
         AuthService authService = new AuthService(
                 new AndroidServiceConfigRepository(App.app().db().configuration()),
                 TotpRepository.instance());
-        AndroidFileService fileService = new AndroidFileService(
-                new AndroidFileRepository(),
-                new AndroidFileContextRepository(App.app().db().folder()));
+        SimpleFileService fileService = new SimpleFileService(new AndroidFileContextRepository(App.app().db().folder()));
         return new AndroidFileHandler(fileService, authService);
+    }
+
+    private AuthHandler authHandler() throws InvalidKeySpecException, NoSuchAlgorithmException {
+        return new AuthHandler(new AuthService(new AndroidServiceConfigRepository(App.app().db().configuration()), TotpRepository.instance()));
     }
 
 }

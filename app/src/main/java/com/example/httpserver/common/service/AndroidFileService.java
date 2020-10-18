@@ -15,6 +15,7 @@ import java.nio.file.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class AndroidFileService implements FileService {
 
     private final FileRepository repository;
@@ -36,6 +37,9 @@ public class AndroidFileService implements FileService {
 
     @Override
     public FileMetaData meta(FileData data) {
+        if(!exists(data)) {
+            throw new PathNotFound(data);
+        }
         try {
             return repository.meta(data.uri, realPath(data));
         } catch (Exception e) {
@@ -46,6 +50,9 @@ public class AndroidFileService implements FileService {
 
     @Override
     public List<FileMetaData> dir(FileData data) {
+        if(!exists(data)) {
+            throw new PathNotFound(data);
+        }
         try {
             return repository.dir(data.uri, realPath(data));
         } catch (Exception e) {
@@ -55,11 +62,13 @@ public class AndroidFileService implements FileService {
     }
 
     @Override
-    public void remove(FileData data) throws IOException {
+    public void remove(FileData data) {
         if(data.path == null || data.path.isEmpty()) {
             throw new PathIsEmpty(data);
         }
-
+        if(!exists(data)) {
+            throw new PathNotFound(data);
+        }
         try {
             repository.remove(realPath(data), data.recursive);
         } catch (Exception e) {
@@ -69,14 +78,16 @@ public class AndroidFileService implements FileService {
     }
 
     @Override
-    public FileMetaData move(FileData source, FileData destination) throws IOException {
+    public FileMetaData move(FileData source, FileData destination) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
         if(destination.path == null || destination.path.isEmpty()) {
             throw new PathIsEmpty(destination);
         }
-
+        if(!exists(source)) {
+            throw new PathNotFound(source);
+        }
         try {
             FileMetaData metaData = repository.move(realPath(source), realPath(destination), destination.override);
             metaData.uri = destination.uri;
@@ -88,7 +99,7 @@ public class AndroidFileService implements FileService {
     }
 
     @Override
-    public FileMetaData copy(FileData source, FileData destination) throws IOException {
+    public FileMetaData copy(FileData source, FileData destination) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
@@ -111,7 +122,7 @@ public class AndroidFileService implements FileService {
     }
 
     @Override
-    public FileMetaData write(FileData source, InputStream stream) throws IOException {
+    public FileMetaData write(FileData source, InputStream stream) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
@@ -126,7 +137,7 @@ public class AndroidFileService implements FileService {
     }
 
     @Override
-    public FileMetaData mkdir(FileData source) throws IOException {
+    public FileMetaData mkdir(FileData source) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
@@ -154,7 +165,7 @@ public class AndroidFileService implements FileService {
     }
 
     @Override
-    public InputStream read(FileData source) throws IOException {
+    public InputStream read(FileData source) {
         try {
             return repository.read(realPath(source));
         } catch (Exception e) {

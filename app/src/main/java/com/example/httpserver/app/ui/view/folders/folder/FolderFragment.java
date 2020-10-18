@@ -158,7 +158,7 @@ public class FolderFragment extends NavigationFragment {
             publicly.setChecked(b);
         });
         model.folder().share.observe(getViewLifecycleOwner(), b -> {
-            publicly.setChecked(b);
+            share.setChecked(b);
         });
     }
 
