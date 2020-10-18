@@ -56,6 +56,9 @@ public class WebServerDialog extends DialogFragment {
             ftpPort.setText(config.ftp_port + "");
             enableHttp.setChecked(config.http);
             enableFtp.setChecked(config.ftp);
+            enableHttp.setVisibility(View.GONE);
+            httpPort.setEnabled(config.http);
+            ftpPort.setEnabled(config.ftp);
         }
         enableFtp.setOnClickListener(v -> {
             ftpPort.setEnabled(enableFtp.isChecked());

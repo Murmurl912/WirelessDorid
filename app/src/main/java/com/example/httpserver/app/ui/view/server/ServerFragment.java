@@ -34,6 +34,7 @@ public class ServerFragment extends NavigationFragment {
     private TextView url;
     private View pinContainer;
     private ImageButton viewPassword;
+    private ImageButton qr;
 
     public static ServerFragment newInstance() {
         return new ServerFragment();
@@ -141,6 +142,7 @@ public class ServerFragment extends NavigationFragment {
         statusIcon = view.findViewById(R.id.status_icon);
         action = view.findViewById(R.id.action);
         url = view.findViewById(R.id.url);
+        qr = view.findViewById(R.id.url_qr);
 
         username = view.findViewById(R.id.username);
         password = view.findViewById(R.id.password);
@@ -204,6 +206,12 @@ public class ServerFragment extends NavigationFragment {
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
+        });
+
+        qr.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("text", model.url().getValue());
+            Navigation.findNavController(v).navigate(R.id.nav_qr_code, bundle);
         });
     }
 

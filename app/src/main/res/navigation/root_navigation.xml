@@ -10,6 +10,7 @@
                 app:destination="@id/nav_auth"/>
         <action android:id="@+id/action_nav_server_to_nav_http_server_config"
                 app:destination="@id/nav_http_server_config"/>
+        <action android:id="@+id/action_nav_server_to_nav_qr_code" app:destination="@id/nav_qr_code"/>
     </fragment>
     <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.view.folders.FoldersFragment"
               android:label="@string/directories" tools:layout="@layout/fragment_folders">
@@ -51,6 +52,11 @@
     <dialog android:id="@+id/nav_http_server_config" android:name="com.example.httpserver.app.ui.view.server.WebServerDialog"
             android:label="@string/server_config">
         <action android:id="@+id/action_nav_http_server_config_to_nav_server"
+                app:popUpTo="@id/nav_server"/>
+    </dialog>
+    <dialog android:id="@+id/nav_qr_code" android:name="com.example.httpserver.app.ui.view.server.QRCodeDialog"
+              android:label="QRCodeDialog">
+        <action android:id="@+id/action_nav_qr_code_to_nav_server"
                 app:popUpTo="@id/nav_server"/>
     </dialog>
 </navigation>
