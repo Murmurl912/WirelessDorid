@@ -48,26 +48,31 @@ public class HttpService extends Service {
                     messageHandler.post(()->{
                         Toast.makeText(getApplication(), "Server is stopped", Toast.LENGTH_SHORT).show();;
                     });
+                    App.app().serverStatus().postValue("stopped");
                     break;
                 case TinyWebServer.STATE_STARTING:
                     messageHandler.post(()->{
                         Toast.makeText(getApplication(), "Server is starting", Toast.LENGTH_SHORT).show();;
                     });
+                    App.app().serverStatus().postValue("starting");
                     break;
                 case TinyWebServer.STATE_RUNNING:
                     messageHandler.post(()->{
                         Toast.makeText(getApplication(), "Server is running", Toast.LENGTH_SHORT).show();;
                     });
+                    App.app().serverStatus().postValue("running");
                     break;
                 case TinyWebServer.STATE_STOPPING:
                     messageHandler.post(()->{
                         Toast.makeText(getApplication(), "Server is stopping", Toast.LENGTH_SHORT).show();;
                     });
+                    App.app().serverStatus().postValue("stopping");
                     break;
                 case TinyWebServer.STATE_ERROR:
                     messageHandler.post(()->{
                         Toast.makeText(getApplication(), "Server Error: " + exception.getMessage(), Toast.LENGTH_SHORT).show();;
                     });
+                    App.app().serverStatus().postValue("error");
                     break;
                     
             }
@@ -86,6 +91,8 @@ public class HttpService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Http service started");
+
+        // todo add start time out and exception handle
 
         if(startup != null && !startup.isDone() && !startup.isCancelled()) {
             startup.cancel(true);
