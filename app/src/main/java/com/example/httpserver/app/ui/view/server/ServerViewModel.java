@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.app.repository.entity.ServerConfig;
 import com.example.httpserver.common.repository.TimeBasedOneTimePassword;
 import com.example.httpserver.common.repository.TotpRepository;
 
@@ -140,32 +139,7 @@ public class ServerViewModel extends ViewModel {
         Log.i(TAG, "Refresh view model requested");
         App.app().executor().submit(()->{
             try {
-                ServerConfig config = ServerConfig.from(App.app().db().configuration().select(ServerConfig.keys));
-                Log.i(TAG, "Load server config from database successfully: " + config);
-                if(config.totp) {
-                    try {
-                        totpPassword = TotpRepository.instance().getDefault();
-                    } catch (NoSuchAlgorithmException e) {
-                        Log.e(TAG, "Failed to obtain Totp password", e);
-                        try {
-                            Log.i(TAG, "Change totp config to false");
-                            App.app().db().configuration().save(new Configuration("totp", "false"));
-                        } catch (Exception ex) {
-                            Log.e(TAG, "Failed to write config to database", ex);
-                        }
-                        config.totp = false;
-                    }
-                }
 
-                username.postValue(config.username);
-                password.postValue(config.password);
-                ftpPort.postValue(config.ftp_port);
-                httpPort.postValue(config.http_port);
-                address.postValue(config.address);
-                url.postValue("http://" + config.address + ":" + config.http_port + "/");
-                totp.postValue(config.totp);
-                tls.postValue(config.tls);
-                basic.postValue(config.basic);
             } catch (Exception e) {
                 Log.e(TAG, "Failed to load server config from database", e);
             }

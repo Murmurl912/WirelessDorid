@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FileService {
 
-    List<FileMetaData> root();
+    FileMetaData root();
 
     FileMetaData meta(VirtualFile file);
 

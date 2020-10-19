@@ -1,41 +1,36 @@
 package com.example.httpserver.common.service;
 
 import com.example.httpserver.common.exception.*;
-import com.example.httpserver.common.model.FileRootView;
+import com.example.httpserver.common.model.FileSystemView;
 import com.example.httpserver.common.model.VirtualFile;
 import com.example.httpserver.common.model.FileMetaData;
-import com.example.httpserver.common.repository.FileContextRepository;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SimpleFileService implements FileService {
 
-    private final FileContextRepository repository;
+    private final FileSystemView view;
 
-    public SimpleFileService(FileContextRepository repository) {
-        this.repository = repository;
+    public SimpleFileService(FileSystemView view) {
+        this.view = view;
     }
 
     @Override
-    public List<FileMetaData> root() {
-        return repository.all().stream().map(context -> {
-            File file = new File(context.path);
-            return FileMetaData.from("/fs-api/", file);
-        }).collect(Collectors.toList());
+    public FileMetaData root() {
+        VirtualFile file = new VirtualFile();
+        file.path = view.path;
+        return meta(file);
     }
 
     @Override
     public FileMetaData meta(VirtualFile file) {
-        FileRootView context = context(file);
-        Path p = path(file, context);
-        if(!context.read) {
+        Path p = path(file);
+        if(!view.read) {
             throw new PathNotReadable(file);
         }
 
@@ -51,12 +46,11 @@ public class SimpleFileService implements FileService {
         if(file.path == null || file.path.isEmpty()) {
             throw new PathIsEmpty(file);
         }
-        FileRootView context = context(file);
-        Path p = path(file, context);
-        if(!context.read) {
+        Path p = path(file);
+        if(!view.read) {
             throw new PathNotReadable(file);
         }
-        if(!context.write) {
+        if(!view.write) {
             throw new PathNotWritable(file);
         }
 
@@ -81,9 +75,8 @@ public class SimpleFileService implements FileService {
 
     @Override
     public List<FileMetaData> dir(VirtualFile dir) {
-        FileRootView context = context(dir);
-        Path p = path(dir, context);
-        if(!context.read) {
+        Path p = path(dir);
+        if(!view.read) {
             throw new PathNotReadable(dir);
         }
         if(!Files.exists(p)) {
@@ -107,26 +100,18 @@ public class SimpleFileService implements FileService {
         if(destination.path == null || destination.path.isEmpty()) {
             throw new PathIsEmpty(destination);
         }
-        FileRootView sc = context(source);
-        Path sp = path(source, sc);
-        if(!sc.read) {
+        Path sp = path(source);
+        if(!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!sc.write) {
+        if(!view.write) {
             throw new PathNotWritable(source);
         }
         if(!Files.exists(sp)) {
             throw new PathNotFound(source);
         }
 
-        FileRootView dc = context(destination);
-        Path dp = path(destination, dc);
-        if(!dc.read) {
-            throw new PathNotReadable(destination);
-        }
-        if(!dc.write) {
-            throw new PathNotWritable(destination);
-        }
+        Path dp = path(destination);
         if(!Files.exists(sp)) {
             throw new PathNotFound(source);
         }        try {
@@ -155,23 +140,17 @@ public class SimpleFileService implements FileService {
         if(destination.path == null || destination.path.isEmpty()) {
             throw new PathIsEmpty(destination);
         }
-        FileRootView sc = context(source);
-        Path sp = path(source, sc);
-        if(!sc.read) {
+        Path sp = path(source);
+        if(!view.read) {
             throw new PathNotReadable(source);
+        }
+        if(!view.write) {
+            throw new PathNotWritable(destination);
         }
         if(!Files.exists(sp)) {
             throw new PathNotFound(source);
         }
-
-        FileRootView dc = context(destination);
-        Path dp = path(destination, dc);
-        if(!dc.read) {
-            throw new PathNotReadable(destination);
-        }
-        if(!dc.write) {
-            throw new PathNotWritable(destination);
-        }
+        Path dp = path(destination);
         if(!Files.exists(sp)) {
             throw new PathNotFound(source);
         }        try {
@@ -197,12 +176,11 @@ public class SimpleFileService implements FileService {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
-        FileRootView context = context(source);
-        Path p = path(source, context);
-        if(!context.read) {
+        Path p = path(source);
+        if(!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!context.write) {
+        if(!view.write) {
             throw new PathNotWritable(source);
         }
         try {
@@ -230,12 +208,11 @@ public class SimpleFileService implements FileService {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
-        FileRootView context = context(source);
-        Path p = path(source, context);
-        if(!context.read) {
+        Path p = path(source);
+        if(!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!context.write) {
+        if(!view.write) {
             throw new PathNotWritable(source);
         }
         try {
@@ -257,12 +234,11 @@ public class SimpleFileService implements FileService {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
-        FileRootView context = context(source);
-        Path p = path(source, context);
-        if(!context.read) {
+        Path p = path(source);
+        if(!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!context.write) {
+        if(!view.write) {
             throw new PathNotWritable(source);
         }
         try {
@@ -281,9 +257,8 @@ public class SimpleFileService implements FileService {
 
     @Override
     public InputStream read(VirtualFile source) {
-        FileRootView context = context(source);
-        Path p = path(source, context);
-        if(!context.read) {
+        Path p = path(source);
+        if(!view.read) {
             throw new PathNotReadable(source);
         }
 
@@ -325,25 +300,9 @@ public class SimpleFileService implements FileService {
     public boolean exists(VirtualFile file) {
         return Files.exists(path(file));
     }
-
-    private FileRootView context(VirtualFile data) {
-        FileRootView context = repository.find(data.context);
-        if(context == null || !context.share) {
-            throw new PathContextNotFound(data);
-        }
-        return context;
-    }
-
-    private Path path(VirtualFile data, FileRootView context) {
-        return Paths.get(context.path, data.path);
-    }
+    
 
     private Path path(VirtualFile data) {
-        FileRootView context = repository.find(data.context);
-        if(context == null) {
-            throw new PathContextNotFound(data);
-        }
-
-        return Paths.get(context.path, data.path);
+        return Paths.get(view.path, data.path);
     }
 }

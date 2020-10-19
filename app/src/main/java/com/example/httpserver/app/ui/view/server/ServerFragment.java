@@ -1,7 +1,6 @@
 package com.example.httpserver.app.ui.view.server;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -13,8 +12,6 @@ import androidx.navigation.Navigation;
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.app.repository.entity.ServerConfig;
-import com.example.httpserver.app.services.http.HttpService;
 import com.example.httpserver.app.ui.NavigationFragment;
 
 public class ServerFragment extends NavigationFragment {
@@ -176,28 +173,6 @@ public class ServerFragment extends NavigationFragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Bundle bundle = new Bundle();
-        ServerConfig config = new ServerConfig();
-        config.username = model.username().getValue();
-        config.password = model.password().getValue();
-        Boolean totp = model.totp().getValue();
-        Boolean tls = model.totp().getValue();
-        Boolean basic = model.basic().getValue();
-        config.totp = totp == null || totp;
-        config.tls = tls == null || tls;
-        config.basic = basic == null || basic;
-        Integer ftport = model.ftpPort().getValue();
-        if(ftport != null) {
-            config.ftp_port = ftport;
-        }
-        Integer httpport = model.httpPort().getValue();
-        if(httpport != null) {
-            config.http_port = httpport;
-        }
-        Boolean ftp = model.ftp().getValue();
-        config.ftp = ftp != null ? ftp : false;
-        Boolean http = model.http().getValue();
-        config.http = http != null ? http : true;
-        bundle.putParcelable("server_config", config);
 
         switch (item.getItemId()) {
             case R.id.security:

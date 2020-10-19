@@ -14,7 +14,6 @@ import androidx.navigation.Navigation;
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.app.repository.entity.ServerConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +47,7 @@ public class WebServerDialog extends DialogFragment {
         enableHttp = view.findViewById(R.id.enable_http);
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey("server_config")) {
-            ServerConfig config = bundle.getParcelable("server_config");
-            if(config == null) {
-                config = new ServerConfig();
-            }
-            httpPort.setText(config.http_port + "");
-            ftpPort.setText(config.ftp_port + "");
-            enableHttp.setChecked(config.http);
-            enableFtp.setChecked(config.ftp);
-            enableHttp.setVisibility(View.GONE);
-            httpPort.setEnabled(config.http);
-            ftpPort.setEnabled(config.ftp);
+
         }
         enableFtp.setOnClickListener(v -> {
             ftpPort.setEnabled(enableFtp.isChecked());

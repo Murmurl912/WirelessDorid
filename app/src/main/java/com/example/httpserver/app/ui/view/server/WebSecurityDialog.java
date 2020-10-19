@@ -14,7 +14,6 @@ import androidx.navigation.Navigation;
 import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
-import com.example.httpserver.app.repository.entity.ServerConfig;
 
 import java.util.ArrayList;
 
@@ -51,15 +50,7 @@ public class WebSecurityDialog extends DialogFragment {
         builder.setView(view);
         Bundle bundle = getArguments();
         if(bundle != null && bundle.containsKey("server_config")) {
-            ServerConfig config = bundle.getParcelable("server_config");
-            if(config == null) {
-                config = new ServerConfig();
-            }
-            username.setText(config.username);
-            password.setText(config.password);
-            tls.setChecked(config.tls);
-            totp.setChecked(config.totp);
-            basic.setChecked(config.basic);
+
 
 
         }
