@@ -1,12 +1,11 @@
 package com.example.httpserver.common.service;
 
-import com.example.httpserver.app.repository.TimeBasedOneTimePassword;
-import com.example.httpserver.app.repository.TotpRepository;
+import com.example.httpserver.common.repository.TimeBasedOneTimePassword;
+import com.example.httpserver.common.repository.TotpRepository;
+import com.example.httpserver.app.services.ServiceConfigurationRepository;
 import com.example.httpserver.common.exception.BadTokenException;
 import com.example.httpserver.common.exception.TokenExpiredException;
 import com.example.httpserver.common.model.LoginModel;
-import com.example.httpserver.common.repository.ServiceConfigRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.iki.elonen.NanoHTTPD;
 import io.jsonwebtoken.*;
@@ -19,14 +18,15 @@ import java.util.*;
 
 public class AuthService {
     private final ObjectMapper mapper = new ObjectMapper();
-    private final ServiceConfigRepository repository;
+    private final ServiceConfigurationRepository repository;
     private final TimeBasedOneTimePassword password;
     private PublicKey publicKey;
     private PrivateKey privateKey;
     private final String algorithm = "RSA";
     private JwtParser parser;
 
-    public AuthService(ServiceConfigRepository repository, TotpRepository totpRepository) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public AuthService(ServiceConfigurationRepository repository, TotpRepository totpRepository)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         this.repository = repository;
         this.password = totpRepository.getDefault();
         load();

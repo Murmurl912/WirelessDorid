@@ -1,7 +1,6 @@
 package com.example.httpserver.app.services.ftp;
 
 import com.example.httpserver.app.services.ServiceConfigurationRepository;
-import com.example.httpserver.common.repository.ServiceConfigRepository;
 import org.apache.ftpserver.ConnectionConfig;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
@@ -9,20 +8,13 @@ import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.User;
-import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.Listener;
 import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.ssl.SslConfiguration;
-import org.apache.ftpserver.ssl.SslConfigurationFactory;
-import org.apache.ftpserver.usermanager.AnonymousAuthentication;
 import org.apache.ftpserver.usermanager.UserFactory;
-import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 public class TinyFtpServer {

@@ -7,10 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.example.httpserver.app.App;
-import com.example.httpserver.app.repository.TimeBasedOneTimePassword;
-import com.example.httpserver.app.repository.TotpRepository;
 import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
+import com.example.httpserver.common.repository.TimeBasedOneTimePassword;
+import com.example.httpserver.common.repository.TotpRepository;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;

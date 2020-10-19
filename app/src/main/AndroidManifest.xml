@@ -21,12 +21,12 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme" tools:targetApi="q">
         <service
-                android:name=".app.services.HttpService"
+                android:name=".app.services.http.HttpService"
                 android:enabled="true"
                 android:exported="false">
         </service>
 
-        <receiver android:name=".app.services.HttpServiceReceiver"
+        <receiver android:name=".app.services.ServiceReceiver"
                   android:exported="false">
             <intent-filter>
                 <action android:name="com.example.httpserver.app.services.ACTION_STOP_SERVER"/>

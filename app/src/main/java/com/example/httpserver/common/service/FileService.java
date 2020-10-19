@@ -1,9 +1,8 @@
 package com.example.httpserver.common.service;
 
 import com.example.httpserver.common.model.FileMetaData;
-import com.example.httpserver.common.model.FileData;
+import com.example.httpserver.common.model.VirtualFile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -11,30 +10,30 @@ public interface FileService {
 
     List<FileMetaData> root();
 
-    FileMetaData meta(FileData data);
+    FileMetaData meta(VirtualFile file);
 
-    void remove(FileData data);
+    void remove(VirtualFile file);
 
-    List<FileMetaData> dir(FileData data);
+    List<FileMetaData> dir(VirtualFile dir);
 
-    FileMetaData move(FileData source, FileData destination);
+    FileMetaData move(VirtualFile source, VirtualFile destination);
 
-    FileMetaData copy(FileData source, FileData destination);
+    FileMetaData copy(VirtualFile source, VirtualFile destination);
 
-    FileMetaData write(FileData source, InputStream stream);
+    FileMetaData write(VirtualFile source, InputStream stream);
 
-    FileMetaData mkdir(FileData source);
+    FileMetaData mkdir(VirtualFile source);
 
-    FileMetaData touch(FileData source);
+    FileMetaData touch(VirtualFile source);
 
-    InputStream read(FileData source);
+    InputStream read(VirtualFile source);
 
-    boolean isDirectory(FileData data);
+    boolean isDirectory(VirtualFile file);
 
-    boolean isFile(FileData data);
+    boolean isFile(VirtualFile file);
 
-    boolean isRoot(FileData data);
+    boolean isRoot(VirtualFile file);
 
-    boolean exists(FileData data);
+    boolean exists(VirtualFile file);
 
 }

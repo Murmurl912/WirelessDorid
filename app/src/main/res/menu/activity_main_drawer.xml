@@ -7,9 +7,9 @@
         <item
                 android:id="@+id/nav_server"
                 android:icon="@drawable/ic_http"
-                android:title="Server"/>
+                android:title="Http Server"/>
         <item
-            android:id="@+id/nav_folders"
+            android:id="@+id/nav_ftp"
             android:icon="@drawable/ic_storage"
             android:title="Directory"/>
     </group>

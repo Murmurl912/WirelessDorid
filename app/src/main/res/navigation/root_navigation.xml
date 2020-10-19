@@ -12,37 +12,7 @@
                 app:destination="@id/nav_http_server_config"/>
         <action android:id="@+id/action_nav_server_to_nav_qr_code" app:destination="@id/nav_qr_code"/>
     </fragment>
-    <fragment android:id="@+id/nav_folders" android:name="com.example.httpserver.app.ui.view.folders.FoldersFragment"
-              android:label="@string/directories" tools:layout="@layout/fragment_folders">
-        <action android:id="@+id/action_nav_folders_to_nav_folder"
-                app:destination="@id/nav_folder"/>
-    </fragment>
-    <fragment android:id="@+id/nav_folder"
-              android:name="com.example.httpserver.app.ui.view.folders.folder.FolderFragment"
-              android:label="@string/directory"
-              tools:layout="@layout/fragment_folder">
-        <action android:id="@+id/action_nav_folder_to_editTextDialog"
-                app:destination="@id/nav_context_editor"/>
-        <action android:id="@+id/action_nav_folder_to_nav_path_chooser"
-                app:destination="@id/nav_path_chooser"/>
-        <action android:id="@+id/action_nav_folder_to_nav_folders"
-                app:popUpToInclusive="true"
-                app:popUpTo="@id/nav_folders"/>
-    </fragment>
-    <dialog android:id="@+id/nav_context_editor"
-            android:name="com.example.httpserver.app.ui.view.folders.folder.ContextDialog"
-            android:label="@string/context"
-            tools:layout="@layout/dialog_edit_text">
-        <action android:id="@+id/action_nav_context_editor_to_nav_folder"
-                app:popUpTo="@id/nav_folder"/>
-    </dialog>
-    <dialog android:id="@+id/nav_path_chooser"
-            android:name="com.example.httpserver.app.ui.view.folders.folder.PathChooseDialog"
-            android:label="@string/path"
-            tools:layout="@layout/dialog_edit_text">
-        <action android:id="@+id/action_nav_path_chooser_to_nav_folder"
-                app:popUpTo="@id/nav_folder"/>
-    </dialog>
+
     <dialog android:id="@+id/nav_auth"
               android:name="com.example.httpserver.app.ui.view.server.WebSecurityDialog"
               android:label="@string/security">

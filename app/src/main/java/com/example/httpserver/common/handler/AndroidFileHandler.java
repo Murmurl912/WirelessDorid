@@ -4,10 +4,10 @@ import android.util.Log;
 import com.example.httpserver.common.exception.*;
 import com.example.httpserver.common.model.FileMetaData;
 import com.example.httpserver.common.model.ResponseModel;
-import com.example.httpserver.common.server.route.PathContainer;
-import com.example.httpserver.common.server.route.PathPattern;
-import com.example.httpserver.common.server.route.PathPatternParser;
-import com.example.httpserver.common.model.FileData;
+import com.example.httpserver.common.route.PathContainer;
+import com.example.httpserver.common.route.PathPattern;
+import com.example.httpserver.common.route.PathPatternParser;
+import com.example.httpserver.common.model.VirtualFile;
 import com.example.httpserver.common.service.AuthService;
 import com.example.httpserver.common.service.FileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,15 +17,10 @@ import fi.iki.elonen.NanoHTTPD;
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadBase;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 
 import javax.activation.MimetypesFileTypeMap;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.DirectoryNotEmptyException;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +53,7 @@ public class AndroidFileHandler {
         String uri = session.getUri();
         String context = vars.get("context");
         String path = vars.get("path");
-        FileData data = new FileData();
+        VirtualFile data = new VirtualFile();
         data.path = path;
         data.context = context;
         data.uri = uri;
@@ -95,7 +90,7 @@ public class AndroidFileHandler {
         String path = vars.get("path");
         Map<String, String> headers = session.getHeaders();
 
-        FileData data = new FileData();
+        VirtualFile data = new VirtualFile();
         data.path = path;
         data.context = context;
         data.uri = uri;
@@ -142,12 +137,12 @@ public class AndroidFileHandler {
         String context = vars.get("context");
         String path = vars.get("path");
 
-        FileData source = new FileData();
+        VirtualFile source = new VirtualFile();
         source.path = path;
         source.context = context;
         source.uri = uri;
 
-        FileData destination = new FileData();
+        VirtualFile destination = new VirtualFile();
         destination.uri = session.getHeaders().getOrDefault("destination", "");
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
         PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{context}/{*path}")
@@ -180,12 +175,12 @@ public class AndroidFileHandler {
         String context = vars.get("context");
         String path = vars.get("path");
 
-        FileData source = new FileData();
+        VirtualFile source = new VirtualFile();
         source.path = path;
         source.context = context;
         source.uri = uri;
 
-        FileData destination = new FileData();
+        VirtualFile destination = new VirtualFile();
         destination.uri = session.getHeaders().getOrDefault("destination", "");
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
         PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{context}/{*path}")
@@ -221,7 +216,7 @@ public class AndroidFileHandler {
         String path = vars.get("path");
         Map<String, String> headers = session.getHeaders();
 
-        FileData data = new FileData();
+        VirtualFile data = new VirtualFile();
         data.path = path;
         data.context = context;
         data.uri = uri;

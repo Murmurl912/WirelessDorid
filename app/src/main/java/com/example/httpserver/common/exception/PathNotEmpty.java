@@ -1,9 +1,9 @@
 package com.example.httpserver.common.exception;
 
-import com.example.httpserver.common.model.FileData;
+import com.example.httpserver.common.model.VirtualFile;
 
 public class PathNotEmpty extends PathException {
-    public PathNotEmpty(FileData source) {
+    public PathNotEmpty(VirtualFile source) {
         super(source);
     }
 }

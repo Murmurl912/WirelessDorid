@@ -1,8 +1,8 @@
 package com.example.httpserver;
 
-import com.example.httpserver.common.server.route.PathContainer;
-import com.example.httpserver.common.server.route.PathPattern;
-import com.example.httpserver.common.server.route.PathPatternParser;
+import com.example.httpserver.common.route.PathContainer;
+import com.example.httpserver.common.route.PathPattern;
+import com.example.httpserver.common.route.PathPatternParser;
 import org.junit.Test;
 
 public class PathMatchTest {

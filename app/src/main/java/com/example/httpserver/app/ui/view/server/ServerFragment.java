@@ -14,7 +14,7 @@ import com.example.httpserver.R;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.app.repository.entity.ServerConfig;
-import com.example.httpserver.app.services.HttpService;
+import com.example.httpserver.app.services.http.HttpService;
 import com.example.httpserver.app.ui.NavigationFragment;
 
 public class ServerFragment extends NavigationFragment {
@@ -81,36 +81,6 @@ public class ServerFragment extends NavigationFragment {
             model.url().postValue("http://" + model.address().getValue() + ":" + model.httpPort().getValue() + "/");
         });
 
-        App.app().serverStatus().observe(getViewLifecycleOwner(), s -> {
-            if(s == null) {
-                return;
-            }
-            int strId = R.string.status_stopped;
-            int id = R.drawable.ic_gray;
-            switch (s) {
-                case "stopped":
-                    action.setText(R.string.start_server);
-                    id = R.drawable.ic_gray;
-                    strId = R.string.status_stopped;
-                    break;
-                case "starting":
-                    id = R.string.status_starting;
-                    id = R.drawable.ic_yellow;
-                    break;
-                case "stopping":
-                    id = R.drawable.ic_yellow;
-                    strId = R.string.status_stopping;
-                    break;
-                case "running":
-                    action.setText(R.string.stop_server);
-                    id = R.drawable.ic_green;
-                    strId = R.string.status_running;
-                    break;
-            }
-            status.setText(strId);
-            statusIcon.setImageResource(id);
-        });
-
         model.httpPort().observe(getViewLifecycleOwner(), p -> {
             port.setText(p + "");
         });
@@ -167,24 +137,6 @@ public class ServerFragment extends NavigationFragment {
             }
 
             return false;
-        });
-
-        action.setOnClickListener(v -> {
-            String s = App.app().serverStatus().getValue();
-            if(s == null) {
-                s = requireContext().getString(R.string.status_stopped);
-            }
-            switch (s) {
-                case "error":
-                case "stopped":
-                    Log.i(TAG, "Start http service, server status: " + s);
-                    requireActivity().startService(new Intent(requireContext(), HttpService.class));
-                    break;
-                case "running":
-                    Log.i(TAG, "Stop http service, server status: " + s);
-                    requireActivity().stopService(new Intent(requireContext(), HttpService.class));
-                    break;
-            }
         });
 
         addresses.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

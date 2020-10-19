@@ -1,11 +1,10 @@
 package com.example.httpserver.common.service;
 
 import com.example.httpserver.common.exception.*;
-import com.example.httpserver.common.model.FileContext;
-import com.example.httpserver.common.model.FileData;
+import com.example.httpserver.common.model.FileRootView;
+import com.example.httpserver.common.model.VirtualFile;
 import com.example.httpserver.common.model.FileMetaData;
 import com.example.httpserver.common.repository.FileContextRepository;
-import com.example.httpserver.common.repository.FileRepository;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -28,87 +27,87 @@ public class SimpleFileService implements FileService {
     public List<FileMetaData> root() {
         return repository.all().stream().map(context -> {
             File file = new File(context.path);
-            return FileMetaData.from("/fs-api/" + context.context, file);
+            return FileMetaData.from("/fs-api/", file);
         }).collect(Collectors.toList());
     }
 
     @Override
-    public FileMetaData meta(FileData data) {
-        FileContext context = context(data);
-        Path p = path(data, context);
+    public FileMetaData meta(VirtualFile file) {
+        FileRootView context = context(file);
+        Path p = path(file, context);
         if(!context.read) {
-            throw new PathNotReadable(data);
+            throw new PathNotReadable(file);
         }
 
         if(!Files.exists(p)) {
-            throw new PathNotFound(data);
+            throw new PathNotFound(file);
         }
-        return FileMetaData.from(data.uri, p);
+        return FileMetaData.from(file.uri, p);
     }
 
     @Override
-    public void remove(FileData data) {
+    public void remove(VirtualFile file) {
 
-        if(data.path == null || data.path.isEmpty()) {
-            throw new PathIsEmpty(data);
+        if(file.path == null || file.path.isEmpty()) {
+            throw new PathIsEmpty(file);
         }
-        FileContext context = context(data);
-        Path p = path(data, context);
+        FileRootView context = context(file);
+        Path p = path(file, context);
         if(!context.read) {
-            throw new PathNotReadable(data);
+            throw new PathNotReadable(file);
         }
         if(!context.write) {
-            throw new PathNotWritable(data);
+            throw new PathNotWritable(file);
         }
 
         if(!Files.exists(p)) {
-            throw new PathNotFound(data);
+            throw new PathNotFound(file);
         }
 
         try {
-            if(Files.isDirectory(p) && data.recursive) {
+            if(Files.isDirectory(p) && file.recursive) {
                 FileUtils.deleteDirectory(p.toFile());
             } else {
                 Files.delete(p);
             }
         } catch (DirectoryNotEmptyException e) {
-            throw new PathNotEmpty(data);
+            throw new PathNotEmpty(file);
         } catch (AccessDeniedException e) {
-            throw new PathDeniedException(data);
+            throw new PathDeniedException(file);
         } catch (IOException e) {
-            throw new PathException(data);
+            throw new PathException(file);
         }
     }
 
     @Override
-    public List<FileMetaData> dir(FileData data) {
-        FileContext context = context(data);
-        Path p = path(data, context);
+    public List<FileMetaData> dir(VirtualFile dir) {
+        FileRootView context = context(dir);
+        Path p = path(dir, context);
         if(!context.read) {
-            throw new PathNotReadable(data);
+            throw new PathNotReadable(dir);
         }
         if(!Files.exists(p)) {
-            throw new PathNotFound(data);
+            throw new PathNotFound(dir);
         }
         if(!Files.isDirectory(p)) {
-            throw new PathIsFile(data);
+            throw new PathIsFile(dir);
         }
         try {
-            return FileMetaData.dir(data.uri, p.toFile());
+            return FileMetaData.dir(dir.uri, p.toFile());
         } catch (Exception e) {
-            throw new PathException(data);
+            throw new PathException(dir);
         }
     }
 
     @Override
-    public FileMetaData move(FileData source, FileData destination) {
+    public FileMetaData move(VirtualFile source, VirtualFile destination) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
         if(destination.path == null || destination.path.isEmpty()) {
             throw new PathIsEmpty(destination);
         }
-        FileContext sc = context(source);
+        FileRootView sc = context(source);
         Path sp = path(source, sc);
         if(!sc.read) {
             throw new PathNotReadable(source);
@@ -120,7 +119,7 @@ public class SimpleFileService implements FileService {
             throw new PathNotFound(source);
         }
 
-        FileContext dc = context(destination);
+        FileRootView dc = context(destination);
         Path dp = path(destination, dc);
         if(!dc.read) {
             throw new PathNotReadable(destination);
@@ -149,14 +148,14 @@ public class SimpleFileService implements FileService {
     }
 
     @Override
-    public FileMetaData copy(FileData source, FileData destination) {
+    public FileMetaData copy(VirtualFile source, VirtualFile destination) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
         if(destination.path == null || destination.path.isEmpty()) {
             throw new PathIsEmpty(destination);
         }
-        FileContext sc = context(source);
+        FileRootView sc = context(source);
         Path sp = path(source, sc);
         if(!sc.read) {
             throw new PathNotReadable(source);
@@ -165,7 +164,7 @@ public class SimpleFileService implements FileService {
             throw new PathNotFound(source);
         }
 
-        FileContext dc = context(destination);
+        FileRootView dc = context(destination);
         Path dp = path(destination, dc);
         if(!dc.read) {
             throw new PathNotReadable(destination);
@@ -194,11 +193,11 @@ public class SimpleFileService implements FileService {
     }
 
     @Override
-    public FileMetaData write(FileData source, InputStream stream) {
+    public FileMetaData write(VirtualFile source, InputStream stream) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
-        FileContext context = context(source);
+        FileRootView context = context(source);
         Path p = path(source, context);
         if(!context.read) {
             throw new PathNotReadable(source);
@@ -227,11 +226,11 @@ public class SimpleFileService implements FileService {
     }
 
     @Override
-    public FileMetaData mkdir(FileData source) {
+    public FileMetaData mkdir(VirtualFile source) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
-        FileContext context = context(source);
+        FileRootView context = context(source);
         Path p = path(source, context);
         if(!context.read) {
             throw new PathNotReadable(source);
@@ -254,11 +253,11 @@ public class SimpleFileService implements FileService {
     }
 
     @Override
-    public FileMetaData touch(FileData source) {
+    public FileMetaData touch(VirtualFile source) {
         if(source.path == null || source.path.isEmpty()) {
             throw new PathIsEmpty(source);
         }
-        FileContext context = context(source);
+        FileRootView context = context(source);
         Path p = path(source, context);
         if(!context.read) {
             throw new PathNotReadable(source);
@@ -281,8 +280,8 @@ public class SimpleFileService implements FileService {
     }
 
     @Override
-    public InputStream read(FileData source) {
-        FileContext context = context(source);
+    public InputStream read(VirtualFile source) {
+        FileRootView context = context(source);
         Path p = path(source, context);
         if(!context.read) {
             throw new PathNotReadable(source);
@@ -307,40 +306,40 @@ public class SimpleFileService implements FileService {
     }
 
     @Override
-    public boolean isDirectory(FileData data) {
-        return Files.isDirectory(path(data));
+    public boolean isDirectory(VirtualFile file) {
+        return Files.isDirectory(path(file));
     }
 
     @Override
-    public boolean isFile(FileData data) {
-        Path path = path(data);
+    public boolean isFile(VirtualFile file) {
+        Path path = path(file);
         return Files.exists(path) && !Files.isDirectory(path);
     }
 
     @Override
-    public boolean isRoot(FileData data) {
-        return data.path == null || data.path.isEmpty();
+    public boolean isRoot(VirtualFile file) {
+        return file.path == null || file.path.isEmpty();
     }
 
     @Override
-    public boolean exists(FileData data) {
-        return Files.exists(path(data));
+    public boolean exists(VirtualFile file) {
+        return Files.exists(path(file));
     }
 
-    private FileContext context(FileData data) {
-        FileContext context = repository.find(data.context);
+    private FileRootView context(VirtualFile data) {
+        FileRootView context = repository.find(data.context);
         if(context == null || !context.share) {
             throw new PathContextNotFound(data);
         }
         return context;
     }
 
-    private Path path(FileData data, FileContext context) {
+    private Path path(VirtualFile data, FileRootView context) {
         return Paths.get(context.path, data.path);
     }
 
-    private Path path(FileData data) {
-        FileContext context = repository.find(data.context);
+    private Path path(VirtualFile data) {
+        FileRootView context = repository.find(data.context);
         if(context == null) {
             throw new PathContextNotFound(data);
         }

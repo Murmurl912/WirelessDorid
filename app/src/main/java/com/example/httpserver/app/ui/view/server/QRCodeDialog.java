@@ -1,15 +1,11 @@
 package com.example.httpserver.app.ui.view.server;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -20,7 +16,6 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 import com.example.httpserver.R;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class QRCodeDialog extends DialogFragment {
 
