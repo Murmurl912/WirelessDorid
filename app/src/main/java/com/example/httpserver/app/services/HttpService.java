@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import com.example.httpserver.app.App;
@@ -17,9 +16,6 @@ import com.example.httpserver.common.server.route.Router;
 import com.example.httpserver.common.server.TinyWebServer;
 import com.example.httpserver.app.ui.notifications.NotificationConstants;
 import com.example.httpserver.app.ui.notifications.ServerNotification;
-import com.example.httpserver.common.repository.AndroidFileContextRepository;
-import com.example.httpserver.common.repository.AndroidFileRepository;
-import com.example.httpserver.common.service.AndroidFileService;
 import com.example.httpserver.common.service.AuthService;
 import com.example.httpserver.common.service.SimpleFileService;
 
@@ -145,7 +141,7 @@ public class HttpService extends Service {
         AuthService authService = new AuthService(
                 new AndroidServiceConfigRepository(App.app().db().configuration()),
                 TotpRepository.instance());
-        SimpleFileService fileService = new SimpleFileService(new AndroidFileContextRepository(App.app().db().folder()));
+        SimpleFileService fileService = new SimpleFileService(null);
         return new AndroidFileHandler(fileService, authService);
     }
 
