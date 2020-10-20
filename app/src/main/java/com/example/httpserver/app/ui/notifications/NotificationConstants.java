@@ -57,7 +57,7 @@ public class NotificationConstants {
           createNormalChannel(context);
           break;
         case TYPE_SERVER:
-          createFtpChannel(context);
+          createServerChannel(context);
           break;
         default:
           throw new IllegalArgumentException("Unrecognized type:" + type);
@@ -82,7 +82,7 @@ public class NotificationConstants {
    * it has importance.
    */
   @RequiresApi(api = Build.VERSION_CODES.O)
-  private static void createFtpChannel(Context context) {
+  private static void createServerChannel(Context context) {
     NotificationManager mNotificationManager =
         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     if (mNotificationManager.getNotificationChannel(CHANNEL_SERVER_ID) == null) {

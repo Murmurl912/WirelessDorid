@@ -38,7 +38,7 @@ public class TinyFtpServer {
     public static final String DEFAULT_CONCURRENT = "true";
     public static final String DEFAULT_CONCURRENT_LOGIN = "4";
     public static final String DEFAULT_CONCURRENT_LOGIN_PER_IP = "4";
-    public static final String DEFAULT_FTP_PORT = "2221";
+    public static final String DEFAULT_FTP_PORT = "2121";
     public static final String DEFAULT_FTP_TIME_OUT = "600";
 
     private final BiConsumer<Integer, Exception> DEFAULT_LISTENER = (integer, e) -> {

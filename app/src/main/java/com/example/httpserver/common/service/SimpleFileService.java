@@ -43,9 +43,6 @@ public class SimpleFileService implements FileService {
     @Override
     public void remove(VirtualFile file) {
 
-        if(file.path == null || file.path.isEmpty()) {
-            throw new PathIsEmpty(file);
-        }
         Path p = path(file);
         if(!view.read) {
             throw new PathNotReadable(file);
@@ -94,12 +91,7 @@ public class SimpleFileService implements FileService {
 
     @Override
     public FileMetaData move(VirtualFile source, VirtualFile destination) {
-        if(source.path == null || source.path.isEmpty()) {
-            throw new PathIsEmpty(source);
-        }
-        if(destination.path == null || destination.path.isEmpty()) {
-            throw new PathIsEmpty(destination);
-        }
+
         Path sp = path(source);
         if(!view.read) {
             throw new PathNotReadable(source);
@@ -134,12 +126,7 @@ public class SimpleFileService implements FileService {
 
     @Override
     public FileMetaData copy(VirtualFile source, VirtualFile destination) {
-        if(source.path == null || source.path.isEmpty()) {
-            throw new PathIsEmpty(source);
-        }
-        if(destination.path == null || destination.path.isEmpty()) {
-            throw new PathIsEmpty(destination);
-        }
+
         Path sp = path(source);
         if(!view.read) {
             throw new PathNotReadable(source);
@@ -173,9 +160,7 @@ public class SimpleFileService implements FileService {
 
     @Override
     public FileMetaData write(VirtualFile source, InputStream stream) {
-        if(source.path == null || source.path.isEmpty()) {
-            throw new PathIsEmpty(source);
-        }
+
         Path p = path(source);
         if(!view.read) {
             throw new PathNotReadable(source);
@@ -205,9 +190,7 @@ public class SimpleFileService implements FileService {
 
     @Override
     public FileMetaData mkdir(VirtualFile source) {
-        if(source.path == null || source.path.isEmpty()) {
-            throw new PathIsEmpty(source);
-        }
+
         Path p = path(source);
         if(!view.read) {
             throw new PathNotReadable(source);
@@ -231,9 +214,7 @@ public class SimpleFileService implements FileService {
 
     @Override
     public FileMetaData touch(VirtualFile source) {
-        if(source.path == null || source.path.isEmpty()) {
-            throw new PathIsEmpty(source);
-        }
+
         Path p = path(source);
         if(!view.read) {
             throw new PathNotReadable(source);

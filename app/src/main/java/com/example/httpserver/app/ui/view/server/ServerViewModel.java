@@ -7,15 +7,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import com.example.httpserver.app.App;
-import com.example.httpserver.app.repository.entity.Configuration;
 import com.example.httpserver.common.repository.TimeBasedOneTimePassword;
-import com.example.httpserver.common.repository.TotpRepository;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class ServerViewModel extends ViewModel {
@@ -211,7 +208,8 @@ public class ServerViewModel extends ViewModel {
     }
     @Override
     protected void onCleared() {
-        timer.cancel();
+        if(timer != null)
+            timer.cancel();
         timer = null;
         totp.removeObserver(totpObserver);
         Log.d(TAG,  "View model is cleared");

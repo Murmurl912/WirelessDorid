@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import com.example.httpserver.app.App;
 import com.example.httpserver.app.services.AndroidServiceConfigurationRepository;
 import com.example.httpserver.app.services.ServiceConfigurationRepository;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.function.BiConsumer;
 
@@ -19,7 +20,7 @@ public class FtpService extends Service implements Runnable {
     private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
         public void accept(Integer integer, Exception e) {
-
+            EventBus.getDefault().post("Ftp Service: " + integer + ", " + e.toString());
         }
     };
 

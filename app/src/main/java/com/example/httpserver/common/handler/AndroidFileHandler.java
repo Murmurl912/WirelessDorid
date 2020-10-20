@@ -51,11 +51,9 @@ public class AndroidFileHandler {
         }
 
         String uri = session.getUri();
-        String context = vars.get("context");
         String path = vars.get("path");
         VirtualFile data = new VirtualFile();
         data.path = path;
-        data.context = context;
         data.uri = uri;
 
 
@@ -92,7 +90,6 @@ public class AndroidFileHandler {
 
         VirtualFile data = new VirtualFile();
         data.path = path;
-        data.context = context;
         data.uri = uri;
         data.override = Boolean.parseBoolean(headers.getOrDefault("override", "false"));
 
@@ -134,24 +131,20 @@ public class AndroidFileHandler {
         }
 
         String uri = session.getUri();
-        String context = vars.get("context");
         String path = vars.get("path");
 
         VirtualFile source = new VirtualFile();
         source.path = path;
-        source.context = context;
         source.uri = uri;
 
         VirtualFile destination = new VirtualFile();
         destination.uri = session.getHeaders().getOrDefault("destination", "");
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
-        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{context}/{*path}")
+        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{*path}")
                 .matchAndExtract(PathContainer.parsePath(destination.uri));
         if(info != null) {
-            destination.context = info.getUriVariables().get("context");
             destination.path = info.getUriVariables().get("path");
         } else {
-            destination.context = "";
             destination.path = "";
         }
 
@@ -172,24 +165,20 @@ public class AndroidFileHandler {
         }
 
         String uri = session.getUri();
-        String context = vars.get("context");
         String path = vars.get("path");
 
         VirtualFile source = new VirtualFile();
         source.path = path;
-        source.context = context;
         source.uri = uri;
 
         VirtualFile destination = new VirtualFile();
         destination.uri = session.getHeaders().getOrDefault("destination", "");
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
-        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{context}/{*path}")
+        PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{*path}")
                 .matchAndExtract(PathContainer.parsePath(destination.uri));
         if(info != null) {
-            destination.context = info.getUriVariables().get("context");
             destination.path = info.getUriVariables().get("path");
         } else {
-            destination.context = "";
             destination.path = "";
         }
 
@@ -212,13 +201,11 @@ public class AndroidFileHandler {
 
 
         String uri = session.getUri();
-        String context = vars.get("context");
         String path = vars.get("path");
         Map<String, String> headers = session.getHeaders();
 
         VirtualFile data = new VirtualFile();
         data.path = path;
-        data.context = context;
         data.uri = uri;
         data.recursive = Boolean.parseBoolean(headers.getOrDefault("recursive", "false"));
 
@@ -260,12 +247,7 @@ public class AndroidFileHandler {
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + ", is a directory";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathIsEmpty) {
-            model.code = 3;
-            model.status = 400;
-            model.message = "context cannot be modified, context: " + ex.getSource().context;
-            model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathIsFile) {
+        }  else if(ex instanceof PathIsFile) {
             model.code = 4;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + ", is a file";
@@ -294,11 +276,6 @@ public class AndroidFileHandler {
             model.code = 9;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + " cannot be write";
-            model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathContextNotFound){
-            model.code = 10;
-            model.status = 404;
-            model.message = "context: " + ex.getSource().context + " cannot be found";
             model.uri = ex.getSource().uri;
         } else {
             model.code = 11;

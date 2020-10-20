@@ -1,13 +1,18 @@
 package com.example.httpserver.app.services.http;
 
+import android.content.res.AssetManager;
 import com.example.httpserver.app.services.ServiceConfigurationRepository;
-import com.example.httpserver.common.handler.AndroidFileHandler;
-import com.example.httpserver.common.handler.AuthHandler;
-import com.example.httpserver.common.handler.StaticFileHandler;
+import com.example.httpserver.common.handler.*;
+import com.example.httpserver.common.model.FileSystemView;
+import com.example.httpserver.common.repository.TotpRepository;
 import com.example.httpserver.common.route.Router;
+import com.example.httpserver.common.service.AuthService;
+import com.example.httpserver.common.service.SimpleFileService;
 import fi.iki.elonen.NanoHTTPD;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +24,15 @@ public class TinyHttpServer {
     private HttpServer server;
     private final ServiceConfigurationRepository repository;
     private AuthHandler authHandler;
+    private SimpleFileService fileService;
     private AndroidFileHandler handler;
     private StaticFileHandler staticFileHandler;
+
+    private FileSystemView view;
+    private AuthService authService;
+
+    private AssetManager assetManager;
+    private StaticFileStore staticFileStore;
 
     public static final String KEY_HTTP_PORT = "http_port";
     public static final String KEY_HTTP_TIMEOUT = "http_timeout";
@@ -36,14 +48,23 @@ public class TinyHttpServer {
     private BiConsumer<Integer, Exception> listener = DEFAULT_LISTENER;
 
 
-    public TinyHttpServer(ServiceConfigurationRepository repository) {
 
+    public TinyHttpServer(ServiceConfigurationRepository repository, AssetManager assetManager) {
+        this.assetManager = assetManager;
         this.repository = repository;
     }
 
-    private void init() {
+    private void init() throws InvalidKeySpecException, NoSuchAlgorithmException {
 
         int port = Integer.parseInt(repository.get(KEY_HTTP_PORT, DEFAULT_HTTP_PORT));
+        authService = new AuthService(repository, TotpRepository.instance());
+        authHandler = new AuthHandler(authService);
+
+        view = new FileSystemView();
+        fileService = new SimpleFileService(view);
+        handler = new AndroidFileHandler(fileService, authService);
+        staticFileStore = new AssetsStaticFileStore(assetManager);
+        staticFileHandler = new StaticFileHandler(staticFileStore);
         server = new HttpServer(port);
         server.router
                 .add(Router.Route.of("GET", "/api/time", (session, map) -> NanoHTTPD.newFixedLengthResponse(new Date().toString())))
@@ -53,38 +74,38 @@ public class TinyHttpServer {
                 .add(Router.Route.of("POST", "/web-api/refresh", authHandler::refresh))
 
                 .add(Router.Route.of("GET", "/fs-api", handler::root))
-                .add(Router.Route.of("GET", "/fs-api/{context}/{*path}", handler::get))
-                .add(Router.Route.of("COPY", "/fs-api/{context}/{*path}", handler::copy))
-                .add(Router.Route.of("MOVE", "/fs-api/{context}/{*path}", handler::move))
-                .add(Router.Route.of("PUT", "/fs-api/{context}/{*path}", handler::put))
-                .add(Router.Route.of("DELETE", "/fs-api/{context}/{*path}", handler::delete))
+                .add(Router.Route.of("GET", "/fs-api/{*path}", handler::get))
+                .add(Router.Route.of("COPY", "/fs-api/{*path}", handler::copy))
+                .add(Router.Route.of("MOVE", "/fs-api/{*path}", handler::move))
+                .add(Router.Route.of("PUT", "/fs-api/{*path}", handler::put))
+                .add(Router.Route.of("DELETE", "/fs-api/{*path}", handler::delete))
 
                 .add(Router.Route.of("GET", "/", staticFileHandler::index))
                 .add(Router.Route.of("GET", "/web/{*path}", staticFileHandler::file));
 
     }
 
-    synchronized public void start() {
-        if(server.isAlive()) {
-            server.stop();
-        }
-        init();
+    public synchronized void start() {
         try {
+            listener.accept(0, null);
+            init();
             server.start();
-        } catch (IOException e) {
+            listener.accept(1, null);
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
+            listener.accept(-1, e);
             // todo handle exception
         }
     }
 
-
-    synchronized public void stop() {
+    public synchronized void stop() {
         if(server != null) {
+            listener.accept(2, null);
             server.stop();
+            server = null;
         }
-        server = null;
+        listener.accept(3, null);
     }
-
 
     public void setServerListener(BiConsumer<Integer, Exception> listener) {
         this.listener = listener == null ? DEFAULT_LISTENER : listener;

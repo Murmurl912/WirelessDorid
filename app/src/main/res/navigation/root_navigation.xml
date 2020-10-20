@@ -3,7 +3,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/root_navigation"
-            app:startDestination="@id/nav_server">
+            app:startDestination="@id/nav_services">
     <fragment android:id="@+id/nav_server" android:name="com.example.httpserver.app.ui.view.server.ServerFragment"
               android:label="@string/server" tools:layout="@layout/fragment_server">
         <action android:id="@+id/action_nav_server_to_nav_basic_authen"
@@ -29,4 +29,8 @@
         <action android:id="@+id/action_nav_qr_code_to_nav_server"
                 app:popUpTo="@id/nav_server"/>
     </dialog>
+    <fragment android:id="@+id/nav_services"
+              android:name="com.example.httpserver.app.ui.view.services.ServicesFragment"
+              android:label="Services"
+              tools:layout="@layout/fragment_services"/>
 </navigation>

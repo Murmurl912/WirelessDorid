@@ -189,5 +189,4 @@ public class ServerFragment extends NavigationFragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }

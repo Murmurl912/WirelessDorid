@@ -9,9 +9,9 @@
                 android:icon="@drawable/ic_http"
                 android:title="Http Server"/>
         <item
-            android:id="@+id/nav_ftp"
+            android:id="@+id/nav_services"
             android:icon="@drawable/ic_storage"
-            android:title="Directory"/>
+            android:title="Services"/>
     </group>
 
     <group android:checkableBehavior="single">

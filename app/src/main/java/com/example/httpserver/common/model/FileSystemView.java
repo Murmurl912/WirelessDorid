@@ -6,6 +6,5 @@ public class FileSystemView {
     public Boolean share;
     public Boolean read;
     public Boolean write;
-    public Boolean publicly;
 
 }

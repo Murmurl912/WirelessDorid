@@ -1,6 +1,5 @@
 package com.example.httpserver.app.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,8 +7,6 @@ import android.view.MenuInflater;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.example.httpserver.R;
-import com.example.httpserver.app.App;
-import com.example.httpserver.app.services.http.HttpService;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public abstract class NavigationFragment extends Fragment {

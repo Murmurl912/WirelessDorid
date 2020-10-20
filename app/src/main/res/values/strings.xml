@@ -10,7 +10,6 @@
     <string name="title_activity_folder_setting">FolderSettingActivity</string>
 
 
-
     <string name="path">Path</string>
     <string name="path_summary">A path to the directory</string>
     <string name="access_control">Access Control</string>
@@ -76,7 +75,7 @@
 
     <string name="error">Error</string>
 
-    <string name="context_name_error_prefix">Context must be a valid identifier: </string>
+    <string name="context_name_error_prefix">Context must be a valid identifier:</string>
     <string name="entry_conflicts">Path or context may already added</string>
     <string name="illegal_path">Path is not found or is not a directory</string>
     <string name="path_unset">Path is empty</string>
@@ -88,9 +87,22 @@
     <string name="directories">Directories</string>
     <string name="apply">Apply</string>
     <string name="authentication">Authentication</string>
-    <string name="ftp_port_illegal">Ftp port is illegal: </string>
-    <string name="http_port_illegal">Http port is illegal: </string>
-    <string name="ftp_http_port_conflict"> Ftp port conflicts with http port: </string>
+    <string name="ftp_port_illegal">Ftp port is illegal:</string>
+    <string name="http_port_illegal">Http port is illegal:</string>
+    <string name="ftp_http_port_conflict">Ftp port conflicts with http port:</string>
     <string name="server_is_running">Server is running</string>
     <string name="server_config">Server Configuration</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>
