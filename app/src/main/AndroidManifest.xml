@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" package="com.example.httpserver">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.example.httpserver">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
-            android:requestLegacyExternalStorage="true"
             android:name=".app.App"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
+            android:requestLegacyExternalStorage="true"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme" tools:targetApi="q">
+            android:theme="@style/AppTheme"
+            tools:targetApi="q">
+        <activity
+                android:name=".app.ui.view.home.HomeActivity"
+                android:label="@string/title_activity_home">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
         <service
                 android:name=".app.services.http.HttpService"
                 android:enabled="true"
                 android:exported="false">
         </service>
 
-        <receiver android:name=".app.services.ServiceReceiver"
-                  android:exported="false">
+        <receiver
+                android:name=".app.services.ServiceReceiver"
+                android:exported="false">
             <intent-filter>
                 <action android:name="com.example.httpserver.app.services.ACTION_STOP_SERVER"/>
                 <action android:name="com.example.httpserver.app.services.ACTION_RESTART_SERVER"/>
                 <action android:name="com.example.httpserver.app.services.ACTION_START_SERVER"/>
             </intent-filter>
         </receiver>
+
         <activity
                 android:name=".app.MainActivity"
                 android:label="@string/app_name"
                 android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
