@@ -30,25 +30,7 @@ public abstract class NavigationFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.main_menu, menu);
-        SwitchMaterial server = (menu.findItem(R.id.server_switch).getActionView().findViewById(R.id.server_switch_button));
-        if(server != null) {
-            Log.i(TAG, "Observer server status on menu switch");
 
-            server.setOnClickListener(v -> {
-                try {
-                    boolean checked = server.isChecked();
-                    if(checked) {
-                        Log.i(TAG, "Start http service from menu switch");
-                    } else {
-                        Log.i(TAG, "Stop http service from menu switch");
-                    }
-                } catch (Exception e) {
-
-                }
-            });
-        }
     }
 
 

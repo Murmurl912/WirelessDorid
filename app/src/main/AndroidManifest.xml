@@ -20,15 +20,6 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:targetApi="q">
-        <activity
-                android:name=".app.ui.view.home.HomeActivity"
-                android:label="@string/title_activity_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
 
         <service
                 android:name=".app.services.http.HttpService"
