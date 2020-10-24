@@ -8,7 +8,7 @@
     <fragment
             android:id="@+id/nav_services"
             android:name="com.example.httpserver.app.ui.view.services.ServicesFragment"
-            android:label="@string/title_home"
+            android:label="Services"
             tools:layout="@layout/fragment_services">
 
         <action android:id="@+id/action_nav_services_to_nav_security" app:destination="@id/nav_security"/>
@@ -16,6 +16,7 @@
 
     <fragment android:id="@+id/nav_security"
               android:name="com.example.httpserver.app.ui.view.security.SecurityDialog"
-              android:label="SecurityDialog"/>
+              android:label="Security"
+              tools:layout="@layout/dialog_security"/>
 
 </navigation>

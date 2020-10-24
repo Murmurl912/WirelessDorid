@@ -1,22 +1,21 @@
 package com.example.httpserver.app.ui.view.services;
 
+import android.view.*;
 import android.widget.TextView;
 import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.httpserver.R;
 import com.example.httpserver.app.ui.adapter.AddressAdapter;
 import com.example.httpserver.app.ui.adapter.ServiceAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class ServicesFragment extends Fragment {
 
-    private ServicesViewModel mViewModel;
+    private ServicesViewModel model;
     private AddressAdapter addressAdapter;
     private ServiceAdapter serviceAdapter;
 
@@ -48,13 +47,27 @@ public class ServicesFragment extends Fragment {
         serviceUnavailable = view.findViewById(R.id.services_unavailable);
         networkUnavailable = view.findViewById(R.id.network_unavailable);
 
+        FloatingActionButton action = view.findViewById(R.id.main_action);
+
+        action.setTag("off");
+        action.setOnClickListener(v -> {
+            String tag = action.getTag().toString();
+            if(tag.equals("on")) {
+                action.setImageResource(R.drawable.ic_start_dark);
+                v.setTag("off");
+            } else {
+                action.setImageResource(R.drawable.ic_stop_dark);
+                v.setTag("on");
+            }
+        });
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ServicesViewModel.class);
-        mViewModel.addresses().observe(getViewLifecycleOwner(), list -> {
+        model = new ViewModelProvider(this).get(ServicesViewModel.class);
+        model.addresses().observe(getViewLifecycleOwner(), list -> {
             if(list.isEmpty()) {
                 addressContainer.setVisibility(View.GONE);
                 networkUnavailable.setVisibility(View.VISIBLE);
@@ -65,7 +78,7 @@ public class ServicesFragment extends Fragment {
             addressAdapter.setAddresses(list);
             addressAdapter.notifyDataSetChanged();
         });
-        mViewModel.services().observe(getViewLifecycleOwner(), list -> {
+        model.services().observe(getViewLifecycleOwner(), list -> {
             if(list.isEmpty()) {
                 serviceContainer.setVisibility(View.GONE);
                 serviceUnavailable.setVisibility(View.VISIBLE);
@@ -78,4 +91,8 @@ public class ServicesFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+
+    }
 }

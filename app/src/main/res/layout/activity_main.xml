@@ -6,10 +6,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/AppTheme.NoActionBar"
+        android:fitsSystemWindows="true"
         tools:context=".app.MainActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- fragment must on top of app bar   -->
+
     <fragment
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/nav_host_fragment"
@@ -22,22 +31,5 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/main_navigation"
     />
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:minHeight="?android:attr/actionBarSize"
-            app:fabAnimationMode="slide"
-            app:fabAlignmentMode="end"/>
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/main_action"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_start_dark"
-            app:layout_anchor="@id/toolbar"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
