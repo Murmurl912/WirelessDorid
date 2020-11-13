@@ -57,16 +57,4 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 1 && permissions.length > 0) {
-            if(grantResults[0] == PermissionChecker.PERMISSION_DENIED) {
-                Toast.makeText(this, "You must grant permission before using this app", Toast.LENGTH_LONG).show();;
-            } else {
-                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 }
