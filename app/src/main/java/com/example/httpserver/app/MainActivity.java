@@ -33,17 +33,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.navigation_view);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_setting)
+                .setOpenableLayout(drawerLayout)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(toolbar, navController);
+        NavigationUI.setupWithNavController(navigationView, navController);
     }
 
     @Override
@@ -65,39 +70,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_menu, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    private void check() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if(!Environment.isExternalStorageManager()) {
-                alert();
-            };
-        } else {
-            if(PermissionChecker.PERMISSION_GRANTED != PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            };
-        }
-    }
-
-    private void alert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("To make this app work properly. " +
-                "Manage external storage permission is required in android 11 and above. " +
-                "You need go to setting and grant permission.");
-        builder.setNegativeButton("Exit", ((dialog, which) -> {
-
-        }));
-        builder.setPositiveButton("Ok", (((dialog, which) -> {
-            startActivity(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));
-        })));
-    }
 }
