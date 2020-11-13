@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceHolder> {
 
-    private List<Map<String, String>> services;
+    private final List<Map<String, String>> services;
 
     public ServiceAdapter() {
         services = new ArrayList<>();
@@ -28,7 +28,7 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceH
     @NonNull
     @Override
     public ServiceHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_services, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_service, parent, false);
         return new ServiceHolder(view);
     }
 
@@ -49,9 +49,10 @@ public class ServiceAdapter extends RecyclerView.Adapter<ServiceAdapter.ServiceH
 
         public void bind() {
             Map<String, String> map = services.get(getAdapterPosition());
-            TextView title = itemView.findViewById(R.id.service_title);
+            TextView name = itemView.findViewById(R.id.service_name);
             TextView description = itemView.findViewById(R.id.service_description);
-            title.setText(map.get("title"));
+
+            name.setText(map.get("name"));
             description.setText(map.get("description"));
         }
     }

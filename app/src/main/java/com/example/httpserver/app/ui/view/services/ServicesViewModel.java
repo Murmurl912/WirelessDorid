@@ -13,23 +13,32 @@ import java.util.*;
 
 public class ServicesViewModel extends ViewModel {
 
-    private final MutableLiveData<List<String>> addresses;
     private final MutableLiveData<List<Map<String, String>>> services;
+    private final MutableLiveData<List<Map<String, String>>> networks;
 
     public ServicesViewModel() {
-        addresses = new MutableLiveData<>();
+        networks = new MutableLiveData<>();
         services = new MutableLiveData<>();
     }
 
-    public LiveData<List<String>> addresses() {
-        App.app().executor().submit(()->{
-            addresses.postValue(networks());
-        });
-        return addresses;
+
+    public LiveData<List<Map<String, String>>> network() {
+        networks.postValue(networks());
+        return networks;
     }
 
-    private List<String> networks() {
-        List<String> addresses = new ArrayList<>();
+    public LiveData<List<Map<String, String>>> service() {
+        services.postValue(services());
+        return services;
+    }
+
+    public void refresh() {
+
+    }
+
+    private List<Map<String, String>> networks() {
+
+        List<Map<String, String>> networks =  new ArrayList<>();
 
         try {
             Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
@@ -37,6 +46,9 @@ public class ServicesViewModel extends ViewModel {
             while (enumNetworkInterfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = enumNetworkInterfaces
                         .nextElement();
+                Map<String, String> network = new HashMap<>();
+                network.put("name", networkInterface.getDisplayName());
+                network.put("full_name", networkInterface.getName());
                 Enumeration<InetAddress> enumInetAddress = networkInterface
                         .getInetAddresses();
                 while (enumInetAddress.hasMoreElements()) {
@@ -45,7 +57,9 @@ public class ServicesViewModel extends ViewModel {
                         continue;
                     if(inetAddress.isLoopbackAddress())
                         continue;
-                    addresses.add(inetAddress.getHostAddress());
+                    network.put("address", inetAddress.getHostAddress());
+                    networks.add(network);
+                    break;
                 }
             }
 
@@ -53,20 +67,22 @@ public class ServicesViewModel extends ViewModel {
 
         }
 
-        return addresses;
+        return networks;
     }
 
-    public LiveData<List<Map<String, String>>> services() {
-        App.app().executor().submit(()->{
-            Map<String, String> http = new HashMap<>();
-            http.put("title", "Http File Service");
-            http.put("description", "Manage storage over http.");
-            Map<String, String> ftp = new HashMap<>();
-            ftp.put("title", "Ftp File Service");
-            ftp.put("description", "Manage storage over ftp");
+    private List<Map<String, String>> services() {
+        List<Map<String, String>> services = new ArrayList<>();
 
-            services.postValue(Arrays.asList(http, ftp));
-        });
+        Map<String, String> storage = new HashMap<>();
+        storage.put("name", "Storage Manage Service");
+        storage.put("description", "Manage phone storage via network.");
+
+        Map<String, String> screen = new HashMap<>();
+        screen.put("name", "Screen Cast Service");
+        screen.put("description", "Cast screen via network");
+
+        services.add(storage);
+        services.add(screen);
 
         return services;
     }

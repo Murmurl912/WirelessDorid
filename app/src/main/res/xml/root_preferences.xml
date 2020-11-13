@@ -1,38 +1,58 @@
 <PreferenceScreen
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-            app:title="@string/messages_header">
+            app:title="Security">
+
+        <SwitchPreference
+                app:key="tls"
+                app:title="TLS"
+                app:summary="Using TLS to secure connection"
+                app:useSimpleSummaryProvider="true"/>
+        <EditTextPreference
+                app:key="username"
+                app:title="Username"
+                app:useSimpleSummaryProvider="true"/>
 
         <EditTextPreference
-                app:key="signature"
-                app:title="@string/signature_title"
+                app:key="password"
+                app:title="Password"
                 app:useSimpleSummaryProvider="true"/>
-
-        <ListPreference
-                app:key="reply"
-                app:title="@string/reply_title"
-                app:entries="@array/reply_entries"
-                app:entryValues="@array/reply_values"
-                app:defaultValue="reply"
-                app:useSimpleSummaryProvider="true"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory
-            app:title="@string/sync_header">
+            app:title="Server">
 
-        <SwitchPreferenceCompat
-                app:key="sync"
-                app:title="@string/sync_title"/>
+        <EditTextPreference
+                app:key="http_port"
+                app:title="HTTP Port"
+                app:useSimpleSummaryProvider="true"/>
 
-        <SwitchPreferenceCompat
-                app:key="attachment"
-                app:title="@string/attachment_title"
-                app:summaryOn="@string/attachment_summary_on"
-                app:summaryOff="@string/attachment_summary_off"
-                app:dependency="sync"/>
+        <EditTextPreference
+                app:key="ftp_port"
+                app:title="FTP Port"
+                app:useSimpleSummaryProvider="true"/>
 
+        <EditTextPreference
+                app:key="timeout"
+                app:title="Timeout"
+                app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="File">
+        <EditTextPreference
+            app:key="path"
+            app:title="Shared Path"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="Startup">
+        <SwitchPreference
+                app:summary="Start when phone startup"
+                app:key="autostart"
+                app:title="Autostart"/>
     </PreferenceCategory>
 
 </PreferenceScreen>
