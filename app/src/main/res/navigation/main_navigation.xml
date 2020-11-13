@@ -8,15 +8,8 @@
     <fragment
             android:id="@+id/nav_home"
             android:name="com.example.httpserver.app.ui.view.home.HomeFragment"
-            android:label="Services"
-            tools:layout="@layout/fragment_home">
-        <action android:id="@+id/action_home_to_setting"
-                app:destination="@id/nav_setting"/>
-    </fragment>
-
-    <fragment android:id="@+id/nav_setting"
-              android:name="com.example.httpserver.app.ui.view.setting.SettingsFragment"
-              android:label="Setting"/>
+            android:label="Home"
+            tools:layout="@layout/fragment_home"/>
 
 
 </navigation>
