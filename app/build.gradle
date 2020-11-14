@@ -84,8 +84,16 @@ dependencies {
         exclude group: 'org.json', module: 'json' //provided by Android natively
     }
 
+    // qr code
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
     implementation 'com.google.zxing:core:3.3.2'
+
+    // chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // dynamic chart
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
+
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

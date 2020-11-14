@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
-        android:layout_marginHorizontal="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_margin="12dp"
         app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="#404040"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         xmlns:tools="http://schemas.android.com/tools"
@@ -42,12 +40,10 @@
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:singleLine="true"
-                      android:textColor="#ffffff"
                       tools:text="mur-computer"
                       android:textAppearance="?android:attr/textAppearanceListItem" />
 
             <TextView android:id="@+id/device_description"
-                      android:textColor="#ffffff"
                       android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:layout_below="@id/device_name"
