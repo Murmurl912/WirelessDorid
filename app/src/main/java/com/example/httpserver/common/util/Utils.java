@@ -20,10 +20,10 @@ public class Utils {
         String name = volume(context, tree);
         String mount = mount(context, name);
         String path = path(tree);
-        if(mount.endsWith("/") && path.startsWith("/")) {
+        if (mount.endsWith("/") && path.startsWith("/")) {
             return mount + path.substring(1, path.length());
         }
-        if(!mount.endsWith("/") && !path.startsWith("/")) {
+        if (!mount.endsWith("/") && !path.startsWith("/")) {
             return mount + "/" + path;
         }
         return mount + path;
@@ -32,7 +32,7 @@ public class Utils {
     private static String volume(Context context, Uri tree) {
         String id = DocumentsContract.getTreeDocumentId(tree);
         String[] parts = id.split(":");
-        if(parts.length > 0) {
+        if (parts.length > 0) {
             return parts[0];
         } else {
             return "";
@@ -43,14 +43,14 @@ public class Utils {
     private static String mount(@NonNull Context context, @NonNull String name) {
         StorageManager storageManager = context.getSystemService(StorageManager.class);
         StorageVolume primaryVolume = storageManager.getPrimaryStorageVolume();
-        if(name.contains("primary")) {
+        if (name.contains("primary")) {
             return path(primaryVolume);
         }
 
         List<StorageVolume> volumeList = storageManager.getStorageVolumes();
-        for(StorageVolume v : volumeList) {
+        for (StorageVolume v : volumeList) {
             String uuid = v.getUuid();
-            if(Objects.equals(uuid, name)) {
+            if (Objects.equals(uuid, name)) {
                 return path(v);
             }
         }
@@ -60,7 +60,7 @@ public class Utils {
 
     @NonNull
     private static String path(@NonNull StorageVolume volume) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             File dir = volume.getDirectory();
             return dir == null ? File.separator : dir.getAbsolutePath();
         } else {

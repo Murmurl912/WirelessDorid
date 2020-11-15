@@ -1,11 +1,13 @@
 package com.example.httpserver.app.ui.view.services;
 
-import android.view.*;
-import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.httpserver.R;
 import com.example.httpserver.app.ui.adapter.NetworkAdapter;

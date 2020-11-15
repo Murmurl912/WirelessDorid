@@ -13,16 +13,15 @@ import java.util.function.BiConsumer;
 
 public class FtpService extends Service implements Runnable {
 
-    private Thread thread;
-    private TinyFtpServer server;
-    private ServiceConfigurationRepository repository;
-
     private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
         public void accept(Integer integer, Exception e) {
             EventBus.getDefault().post("Ftp Service: " + integer + ", " + e.toString());
         }
     };
+    private Thread thread;
+    private TinyFtpServer server;
+    private ServiceConfigurationRepository repository;
 
     @Nullable
     @Override
@@ -38,7 +37,7 @@ public class FtpService extends Service implements Runnable {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(thread.isAlive()) {
+        if (thread.isAlive()) {
             thread.interrupt();
         }
         thread = new Thread(this);
@@ -48,11 +47,11 @@ public class FtpService extends Service implements Runnable {
 
     @Override
     public void onDestroy() {
-        if(thread != null && thread.isAlive()) {
+        if (thread != null && thread.isAlive()) {
             thread.interrupt();
         }
         thread = null;
-        if(server != null) {
+        if (server != null) {
             server.stop();
             server = null;
         }
@@ -61,7 +60,7 @@ public class FtpService extends Service implements Runnable {
 
     @Override
     public void run() {
-        if(server != null) {
+        if (server != null) {
             server.stop();
         }
         server = new TinyFtpServer(repository);

@@ -21,7 +21,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void state(boolean expression) {
         state(expression, "[Assertion failed] - this state invariant must be true");
@@ -39,7 +41,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void isTrue(boolean expression) {
         isTrue(expression, "[Assertion failed] - this expression must be true");
@@ -57,7 +61,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void isNull(Object object) {
         isNull(object, "[Assertion failed] - the object argument must be null");
@@ -75,7 +81,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void notNull(Object object) {
         notNull(object, "[Assertion failed] - this argument is required; it must not be null");
@@ -93,7 +101,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void hasLength(String text) {
         hasLength(text, "[Assertion failed] - this String argument must have length; it must not be null or empty");
@@ -111,7 +121,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void hasText(String text) {
         hasText(text, "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
@@ -129,7 +141,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void doesNotContain(String textToSearch, String substring) {
         doesNotContain(textToSearch, substring, () -> {
@@ -149,7 +163,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void notEmpty(Object[] array) {
         notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
@@ -160,7 +176,7 @@ public abstract class Assert {
             Object[] var2 = array;
             int var3 = array.length;
 
-            for(int var4 = 0; var4 < var3; ++var4) {
+            for (int var4 = 0; var4 < var3; ++var4) {
                 Object element = var2[var4];
                 if (element == null) {
                     throw new IllegalArgumentException(message);
@@ -175,7 +191,7 @@ public abstract class Assert {
             Object[] var2 = array;
             int var3 = array.length;
 
-            for(int var4 = 0; var4 < var3; ++var4) {
+            for (int var4 = 0; var4 < var3; ++var4) {
                 Object element = var2[var4];
                 if (element == null) {
                     throw new IllegalArgumentException(nullSafeGet(messageSupplier));
@@ -185,7 +201,9 @@ public abstract class Assert {
 
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void noNullElements(Object[] array) {
         noNullElements(array, "[Assertion failed] - this array must not contain any null elements");
@@ -203,7 +221,9 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void notEmpty(Collection<?> collection) {
         notEmpty(collection, "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
@@ -213,7 +233,7 @@ public abstract class Assert {
         if (collection != null) {
             Iterator var2 = collection.iterator();
 
-            while(var2.hasNext()) {
+            while (var2.hasNext()) {
                 Object element = var2.next();
                 if (element == null) {
                     throw new IllegalArgumentException(message);
@@ -227,7 +247,7 @@ public abstract class Assert {
         if (collection != null) {
             Iterator var2 = collection.iterator();
 
-            while(var2.hasNext()) {
+            while (var2.hasNext()) {
                 Object element = var2.next();
                 if (element == null) {
                     throw new IllegalArgumentException(nullSafeGet(messageSupplier));
@@ -249,14 +269,16 @@ public abstract class Assert {
         }
     }
 
-    /** @deprecated */
+    /**
+     * @deprecated
+     */
     @Deprecated
     public static void notEmpty(Map<?, ?> map) {
         notEmpty(map, "[Assertion failed] - this map must not be empty; it must contain at least one entry");
     }
 
     public static void isInstanceOf(Class<?> type, Object obj, String message) {
-        notNull(type, (String)"Type to check against must not be null");
+        notNull(type, (String) "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             instanceCheckFailed(type, obj, message);
         }
@@ -264,7 +286,7 @@ public abstract class Assert {
     }
 
     public static void isInstanceOf(Class<?> type, Object obj, Supplier<String> messageSupplier) {
-        notNull(type, (String)"Type to check against must not be null");
+        notNull(type, (String) "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             instanceCheckFailed(type, obj, nullSafeGet(messageSupplier));
         }
@@ -276,7 +298,7 @@ public abstract class Assert {
     }
 
     public static void isAssignable(Class<?> superType, Class<?> subType, String message) {
-        notNull(superType, (String)"Super type to check against must not be null");
+        notNull(superType, (String) "Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             assignableCheckFailed(superType, subType, message);
         }
@@ -284,7 +306,7 @@ public abstract class Assert {
     }
 
     public static void isAssignable(Class<?> superType, Class<?> subType, Supplier<String> messageSupplier) {
-        notNull(superType, (String)"Super type to check against must not be null");
+        notNull(superType, (String) "Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             assignableCheckFailed(superType, subType, nullSafeGet(messageSupplier));
         }
@@ -343,6 +365,6 @@ public abstract class Assert {
     }
 
     private static String nullSafeGet(Supplier<String> messageSupplier) {
-        return messageSupplier != null ? (String)messageSupplier.get() : null;
+        return messageSupplier != null ? (String) messageSupplier.get() : null;
     }
 }

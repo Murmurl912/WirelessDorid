@@ -60,7 +60,7 @@ public class FileMetaData {
 
     public static List<FileMetaData> dir(String uri, File dir) {
         File[] files = dir.listFiles();
-        if(files == null) {
+        if (files == null) {
             return Collections.emptyList();
         }
 

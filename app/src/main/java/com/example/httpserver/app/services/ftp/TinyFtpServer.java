@@ -19,8 +19,6 @@ import java.util.function.BiConsumer;
 
 public class TinyFtpServer {
 
-    private FtpServer server;
-    private ServiceConfigurationRepository repository;
     public static final String KEY_USERNAME = "username";
     public static final String KEY_PASSWORD = "password";
     public static final String KEY_HOME_DIR = "home_dir";
@@ -29,7 +27,6 @@ public class TinyFtpServer {
     public static final String KEY_CONCURRENT = "concurrent";
     public static final String KEY_FTP_PORT = "ftp_port";
     public static final String KEY_FTP_TIME_OUT = "ftp_default_timeout";
-
     public static final String DEFAULT_USERNAME = null;
     public static final String DEFAULT_PASSWORD = null;
     public static final String DEFAULT_HOME_DIR = "";
@@ -40,11 +37,11 @@ public class TinyFtpServer {
     public static final String DEFAULT_CONCURRENT_LOGIN_PER_IP = "4";
     public static final String DEFAULT_FTP_PORT = "2121";
     public static final String DEFAULT_FTP_TIME_OUT = "600";
-
     private final BiConsumer<Integer, Exception> DEFAULT_LISTENER = (integer, e) -> {
 
     };
-
+    private FtpServer server;
+    private ServiceConfigurationRepository repository;
     private BiConsumer<Integer, Exception> listener = DEFAULT_LISTENER;
 
     public TinyFtpServer(ServiceConfigurationRepository repository) {
@@ -58,10 +55,10 @@ public class TinyFtpServer {
         userFactory.setPassword(repository.get(KEY_PASSWORD, DEFAULT_PASSWORD));
         userFactory.setEnabled(Boolean.parseBoolean(repository.get(KEY_ENABLED, DEFAULT_ENABLED)));
         ArrayList<Authority> authorities = new ArrayList<>();
-        if(Boolean.parseBoolean(repository.get(KEY_WRITE, DEFAULT_WRITE))) {
+        if (Boolean.parseBoolean(repository.get(KEY_WRITE, DEFAULT_WRITE))) {
             authorities.add(new WritePermission());
         }
-        if(Boolean.parseBoolean(repository.get(KEY_CONCURRENT, DEFAULT_CONCURRENT))) {
+        if (Boolean.parseBoolean(repository.get(KEY_CONCURRENT, DEFAULT_CONCURRENT))) {
             authorities.add(new ConcurrentLoginPermission(4, 4));
         }
         userFactory.setAuthorities(authorities);
@@ -114,7 +111,7 @@ public class TinyFtpServer {
     }
 
     public synchronized void stop() {
-        if(server != null) {
+        if (server != null) {
             listener.accept(2, null);
             server.stop();
             server = null;
@@ -123,7 +120,7 @@ public class TinyFtpServer {
     }
 
     public void setListener(BiConsumer<Integer, Exception> listener) {
-        if(listener != null) {
+        if (listener != null) {
             this.listener = listener;
         }
     }

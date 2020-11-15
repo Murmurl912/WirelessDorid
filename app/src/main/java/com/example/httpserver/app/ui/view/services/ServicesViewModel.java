@@ -3,7 +3,6 @@ package com.example.httpserver.app.ui.view.services;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.example.httpserver.app.App;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -38,7 +37,7 @@ public class ServicesViewModel extends ViewModel {
 
     private List<Map<String, String>> networks() {
 
-        List<Map<String, String>> networks =  new ArrayList<>();
+        List<Map<String, String>> networks = new ArrayList<>();
 
         try {
             Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface
@@ -53,9 +52,9 @@ public class ServicesViewModel extends ViewModel {
                         .getInetAddresses();
                 while (enumInetAddress.hasMoreElements()) {
                     InetAddress inetAddress = enumInetAddress.nextElement();
-                    if(inetAddress instanceof Inet6Address)
+                    if (inetAddress instanceof Inet6Address)
                         continue;
-                    if(inetAddress.isLoopbackAddress())
+                    if (inetAddress.isLoopbackAddress())
                         continue;
                     network.put("address", inetAddress.getHostAddress());
                     networks.add(network);

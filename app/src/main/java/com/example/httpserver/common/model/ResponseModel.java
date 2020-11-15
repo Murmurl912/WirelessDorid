@@ -14,7 +14,9 @@ public class ResponseModel {
 
     public static void notfound(String uri) {
 
-    };
+    }
+
+    ;
 
     public static void forbidden(String uri) {
 
@@ -40,6 +42,7 @@ public class ResponseModel {
 
     }
 
-    public static void notpublic() {}
+    public static void notpublic() {
+    }
 
 }

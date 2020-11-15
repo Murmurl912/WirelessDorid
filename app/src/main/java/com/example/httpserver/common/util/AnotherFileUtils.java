@@ -41,7 +41,7 @@ import java.util.Comparator;
 public class AnotherFileUtils {
     public static final String DOCUMENTS_DIR = "documents";
     // configured android:authorities in AndroidManifest (https://developer.android.com/reference/android/support/v4/content/FileProvider)
-    public static final String AUTHORITY =  "YOUR_AUTHORITY.provider";
+    public static final String AUTHORITY = "YOUR_AUTHORITY.provider";
     public static final String HIDDEN_PREFIX = ".";
     /**
      * TAG for log messages.
@@ -255,7 +255,7 @@ public class AnotherFileUtils {
                 final int column_index = cursor.getColumnIndexOrThrow(column);
                 return cursor.getString(column_index);
             }
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (cursor != null)
@@ -337,7 +337,8 @@ public class AnotherFileUtils {
                         if (path != null) {
                             return path;
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
 
                 // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
@@ -537,7 +538,7 @@ public class AnotherFileUtils {
     }
 
     private static void logDir(File dir) {
-        if(!DEBUG) return;
+        if (!DEBUG) return;
         Log.d(TAG, "Dir=" + dir);
         File[] files = dir.listFiles();
         for (File file : files) {

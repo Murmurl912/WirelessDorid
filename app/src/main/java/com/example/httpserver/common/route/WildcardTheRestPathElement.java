@@ -44,6 +44,6 @@ class WildcardTheRestPathElement extends PathElement {
 
     @Override
     public char[] getChars() {
-        return (this.separator+"**").toCharArray();
+        return (this.separator + "**").toCharArray();
     }
 }

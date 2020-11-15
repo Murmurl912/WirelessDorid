@@ -22,28 +22,16 @@ public class TimeBasedOneTimePassword {
 
     private TimeBasedOneTimePassword(TimeBasedOneTimePasswordGenerator generator,
                                      Key key,
-                                     Duration duration){
+                                     Duration duration) {
         this.key = key;
         this.generator = generator;
         this.duration = duration;
     }
 
-    public int pin() {
-        try {
-            return generator.generateOneTimePassword(key, Instant.now());
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public Key key() {
-        return key;
-    }
-
     public static TimeBasedOneTimePassword from(Key key, Duration duration, int length) {
         Objects.requireNonNull(key);
         Objects.requireNonNull(duration);
-        if(length < 6 || length > 8) {
+        if (length < 6 || length > 8) {
             throw new IllegalArgumentException("length must larger than 5 and less than 9");
         }
         try {
@@ -67,6 +55,18 @@ public class TimeBasedOneTimePassword {
 
     public static TimeBasedOneTimePassword from(TimeBasedOneTimePasswordStore store) {
         return from(store.key, store.duration, store.length);
+    }
+
+    public int pin() {
+        try {
+            return generator.generateOneTimePassword(key, Instant.now());
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Key key() {
+        return key;
     }
 
     public TimeBasedOneTimePasswordStore store() {
@@ -97,9 +97,9 @@ public class TimeBasedOneTimePassword {
 
         @Override
         public void readExternal(ObjectInput in) throws ClassNotFoundException, IOException {
-            this.key = (Key)in.readObject();
+            this.key = (Key) in.readObject();
             this.length = in.readInt();
-            this.duration = (Duration)in.readObject();
+            this.duration = (Duration) in.readObject();
         }
     }
 

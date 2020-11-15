@@ -4,10 +4,10 @@ import android.util.Log;
 import com.example.httpserver.common.exception.*;
 import com.example.httpserver.common.model.FileMetaData;
 import com.example.httpserver.common.model.ResponseModel;
+import com.example.httpserver.common.model.VirtualFile;
 import com.example.httpserver.common.route.PathContainer;
 import com.example.httpserver.common.route.PathPattern;
 import com.example.httpserver.common.route.PathPatternParser;
-import com.example.httpserver.common.model.VirtualFile;
 import com.example.httpserver.common.service.AuthService;
 import com.example.httpserver.common.service.FileService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,7 +31,7 @@ public class AndroidFileHandler {
 
     private final FileService service;
     private final ObjectMapper mapper = new ObjectMapper();
-    private final MimetypesFileTypeMap map  = new MimetypesFileTypeMap();
+    private final MimetypesFileTypeMap map = new MimetypesFileTypeMap();
     private final AuthService authService;
 
     public AndroidFileHandler(FileService service, AuthService authService) {
@@ -46,7 +46,7 @@ public class AndroidFileHandler {
 
     public NanoHTTPD.Response get(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
         NanoHTTPD.Response authResponse = auth(session);
-        if(authResponse != null) {
+        if (authResponse != null) {
             return authResponse;
         }
 
@@ -59,7 +59,7 @@ public class AndroidFileHandler {
 
         try {
             FileMetaData meta = service.meta(data);
-            if(meta.directory) {
+            if (meta.directory) {
                 List<FileMetaData> metas = service.dir(data);
                 NanoHTTPD.Response response = ok(metas);
                 response.addHeader("meta", json(meta));
@@ -78,7 +78,7 @@ public class AndroidFileHandler {
 
     public NanoHTTPD.Response put(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
         NanoHTTPD.Response authResponse = auth(session);
-        if(authResponse != null) {
+        if (authResponse != null) {
             return authResponse;
         }
 
@@ -126,7 +126,7 @@ public class AndroidFileHandler {
 
     public NanoHTTPD.Response move(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
         NanoHTTPD.Response authResponse = auth(session);
-        if(authResponse != null) {
+        if (authResponse != null) {
             return authResponse;
         }
 
@@ -142,7 +142,7 @@ public class AndroidFileHandler {
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
         PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{*path}")
                 .matchAndExtract(PathContainer.parsePath(destination.uri));
-        if(info != null) {
+        if (info != null) {
             destination.path = info.getUriVariables().get("path");
         } else {
             destination.path = "";
@@ -160,7 +160,7 @@ public class AndroidFileHandler {
 
     public NanoHTTPD.Response copy(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
         NanoHTTPD.Response authResponse = auth(session);
-        if(authResponse != null) {
+        if (authResponse != null) {
             return authResponse;
         }
 
@@ -176,7 +176,7 @@ public class AndroidFileHandler {
         destination.override = Boolean.parseBoolean(session.getHeaders().getOrDefault("override", "false"));
         PathPattern.PathMatchInfo info = new PathPatternParser().parse("/fs-api/{*path}")
                 .matchAndExtract(PathContainer.parsePath(destination.uri));
-        if(info != null) {
+        if (info != null) {
             destination.path = info.getUriVariables().get("path");
         } else {
             destination.path = "";
@@ -195,7 +195,7 @@ public class AndroidFileHandler {
 
     public NanoHTTPD.Response delete(NanoHTTPD.IHTTPSession session, Map<String, String> vars) {
         NanoHTTPD.Response authResponse = auth(session);
-        if(authResponse != null) {
+        if (authResponse != null) {
             return authResponse;
         }
 
@@ -237,42 +237,42 @@ public class AndroidFileHandler {
         model.error = ex;
         model.timestamp = new Date();
 
-        if(ex instanceof PathExistsException) {
+        if (ex instanceof PathExistsException) {
             model.code = 1;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + " already exists";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathIsDirectory) {
+        } else if (ex instanceof PathIsDirectory) {
             model.code = 2;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + ", is a directory";
             model.uri = ex.getSource().uri;
-        }  else if(ex instanceof PathIsFile) {
+        } else if (ex instanceof PathIsFile) {
             model.code = 4;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + ", is a file";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathNotEmpty) {
+        } else if (ex instanceof PathNotEmpty) {
             model.code = 5;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + ", path is a directory and not empty";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathNotFound) {
+        } else if (ex instanceof PathNotFound) {
             model.code = 6;
             model.status = 404;
             model.message = "source path: " + ex.getSource().uri + ", is not found";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathDeniedException) {
+        } else if (ex instanceof PathDeniedException) {
             model.code = 7;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + ", access is denied by os";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof PathNotReadable) {
-            model.code  = 8;
+        } else if (ex instanceof PathNotReadable) {
+            model.code = 8;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + " cannot be read";
             model.uri = ex.getSource().uri;
-        } else if(ex instanceof  PathNotWritable) {
+        } else if (ex instanceof PathNotWritable) {
             model.code = 9;
             model.status = 400;
             model.message = "source path: " + ex.getSource().uri + " cannot be write";

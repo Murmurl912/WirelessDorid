@@ -1,9 +1,9 @@
 package com.example.httpserver.common.service;
 
 import com.example.httpserver.common.exception.*;
+import com.example.httpserver.common.model.FileMetaData;
 import com.example.httpserver.common.model.FileSystemView;
 import com.example.httpserver.common.model.VirtualFile;
-import com.example.httpserver.common.model.FileMetaData;
 import org.apache.commons.io.FileUtils;
 
 import java.io.FileNotFoundException;
@@ -30,11 +30,11 @@ public class SimpleFileService implements FileService {
     @Override
     public FileMetaData meta(VirtualFile file) {
         Path p = path(file);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(file);
         }
 
-        if(!Files.exists(p)) {
+        if (!Files.exists(p)) {
             throw new PathNotFound(file);
         }
         return FileMetaData.from(file.uri, p);
@@ -44,19 +44,19 @@ public class SimpleFileService implements FileService {
     public void remove(VirtualFile file) {
 
         Path p = path(file);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(file);
         }
-        if(!view.write) {
+        if (!view.write) {
             throw new PathNotWritable(file);
         }
 
-        if(!Files.exists(p)) {
+        if (!Files.exists(p)) {
             throw new PathNotFound(file);
         }
 
         try {
-            if(Files.isDirectory(p) && file.recursive) {
+            if (Files.isDirectory(p) && file.recursive) {
                 FileUtils.deleteDirectory(p.toFile());
             } else {
                 Files.delete(p);
@@ -73,13 +73,13 @@ public class SimpleFileService implements FileService {
     @Override
     public List<FileMetaData> dir(VirtualFile dir) {
         Path p = path(dir);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(dir);
         }
-        if(!Files.exists(p)) {
+        if (!Files.exists(p)) {
             throw new PathNotFound(dir);
         }
-        if(!Files.isDirectory(p)) {
+        if (!Files.isDirectory(p)) {
             throw new PathIsFile(dir);
         }
         try {
@@ -93,21 +93,22 @@ public class SimpleFileService implements FileService {
     public FileMetaData move(VirtualFile source, VirtualFile destination) {
 
         Path sp = path(source);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!view.write) {
+        if (!view.write) {
             throw new PathNotWritable(source);
         }
-        if(!Files.exists(sp)) {
+        if (!Files.exists(sp)) {
             throw new PathNotFound(source);
         }
 
         Path dp = path(destination);
-        if(!Files.exists(sp)) {
+        if (!Files.exists(sp)) {
             throw new PathNotFound(source);
-        }        try {
-            if(destination.override) {
+        }
+        try {
+            if (destination.override) {
                 Files.move(sp, dp, StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Files.move(sp, dp);
@@ -128,20 +129,21 @@ public class SimpleFileService implements FileService {
     public FileMetaData copy(VirtualFile source, VirtualFile destination) {
 
         Path sp = path(source);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!view.write) {
+        if (!view.write) {
             throw new PathNotWritable(destination);
         }
-        if(!Files.exists(sp)) {
+        if (!Files.exists(sp)) {
             throw new PathNotFound(source);
         }
         Path dp = path(destination);
-        if(!Files.exists(sp)) {
+        if (!Files.exists(sp)) {
             throw new PathNotFound(source);
-        }        try {
-            if(destination.override) {
+        }
+        try {
+            if (destination.override) {
                 Files.copy(sp, dp, StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Files.copy(sp, dp);
@@ -162,14 +164,14 @@ public class SimpleFileService implements FileService {
     public FileMetaData write(VirtualFile source, InputStream stream) {
 
         Path p = path(source);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!view.write) {
+        if (!view.write) {
             throw new PathNotWritable(source);
         }
         try {
-            if(source.override) {
+            if (source.override) {
                 Files.copy(stream, p, StandardCopyOption.REPLACE_EXISTING);
             } else {
                 Files.copy(stream, p);
@@ -192,10 +194,10 @@ public class SimpleFileService implements FileService {
     public FileMetaData mkdir(VirtualFile source) {
 
         Path p = path(source);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!view.write) {
+        if (!view.write) {
             throw new PathNotWritable(source);
         }
         try {
@@ -216,10 +218,10 @@ public class SimpleFileService implements FileService {
     public FileMetaData touch(VirtualFile source) {
 
         Path p = path(source);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(source);
         }
-        if(!view.write) {
+        if (!view.write) {
             throw new PathNotWritable(source);
         }
         try {
@@ -239,14 +241,14 @@ public class SimpleFileService implements FileService {
     @Override
     public InputStream read(VirtualFile source) {
         Path p = path(source);
-        if(!view.read) {
+        if (!view.read) {
             throw new PathNotReadable(source);
         }
 
-        if(!Files.exists(p)) {
+        if (!Files.exists(p)) {
             throw new PathNotFound(source);
         }
-        if(Files.isDirectory(p)) {
+        if (Files.isDirectory(p)) {
             throw new PathIsDirectory(source);
         }
 
@@ -281,7 +283,7 @@ public class SimpleFileService implements FileService {
     public boolean exists(VirtualFile file) {
         return Files.exists(path(file));
     }
-    
+
 
     private Path path(VirtualFile data) {
         return Paths.get(view.path, data.path);

@@ -23,7 +23,7 @@ public class AndroidServiceConfigurationRepository implements ServiceConfigurati
     @Override
     public String get(String key, String empty) {
         String value = repository.get(key);
-        if(value == null) {
+        if (value == null) {
             repository.put(key, empty);
         }
         return repository.get(key);

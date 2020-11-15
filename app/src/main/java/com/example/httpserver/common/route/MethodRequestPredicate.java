@@ -14,7 +14,7 @@ public class MethodRequestPredicate implements RequestPredicate {
         methods.add(method);
     }
 
-    public MethodRequestPredicate(HttpMethod...methods) {
+    public MethodRequestPredicate(HttpMethod... methods) {
         this.methods = new HashSet<>(Arrays.asList(methods));
     }
 

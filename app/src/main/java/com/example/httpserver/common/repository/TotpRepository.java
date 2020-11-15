@@ -6,14 +6,15 @@ import java.time.Duration;
 
 public class TotpRepository {
     private final static TotpRepository repository;
-    private TimeBasedOneTimePassword defaultPassword;
 
     static {
         repository = new TotpRepository();
     }
 
+    private TimeBasedOneTimePassword defaultPassword;
+
     private TotpRepository() {
-        if(repository != null) {
+        if (repository != null) {
             throw new IllegalStateException();
         }
     }
@@ -23,7 +24,7 @@ public class TotpRepository {
     }
 
     public synchronized TimeBasedOneTimePassword getDefault() throws NoSuchAlgorithmException {
-        if(defaultPassword == null) {
+        if (defaultPassword == null) {
             defaultPassword = TimeBasedOneTimePassword.create(Duration.ofSeconds(30), 6, "HmacSHA256", 512);
         }
         return defaultPassword;

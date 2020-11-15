@@ -13,7 +13,9 @@ public class RouteBuilder {
         PathPattern pattern = pattern(url);
 
         return this;
-    };
+    }
+
+    ;
 
 
     private PathPattern pattern(String url) {

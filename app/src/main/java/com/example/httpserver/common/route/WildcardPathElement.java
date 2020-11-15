@@ -46,7 +46,7 @@ class WildcardPathElement extends PathElement {
                 // Should not match a separator
                 return false;
             }
-            segmentData = ((PathContainer.PathSegment)element).valueToMatch();
+            segmentData = ((PathContainer.PathSegment) element).valueToMatch();
             pathIndex++;
         }
 
@@ -54,21 +54,18 @@ class WildcardPathElement extends PathElement {
             if (matchingContext.determineRemainingPath) {
                 matchingContext.remainingPathIndex = pathIndex;
                 return true;
-            }
-            else {
+            } else {
                 if (pathIndex == matchingContext.pathLength) {
                     // and the path data has run out too
                     return true;
-                }
-                else {
+                } else {
                     return (matchingContext.isMatchOptionalTrailingSeparator() &&  // if optional slash is on...
                             segmentData != null && segmentData.length() > 0 &&  // and there is at least one character to match the *...
                             (pathIndex + 1) == matchingContext.pathLength &&   // and the next path element is the end of the candidate...
                             matchingContext.isSeparator(pathIndex));  // and the final element is a separator
                 }
             }
-        }
-        else {
+        } else {
             // Within a path (e.g. /aa/*/bb) there must be at least one character to match the wildcard
             if (segmentData == null || segmentData.length() == 0) {
                 return false;
@@ -100,6 +97,6 @@ class WildcardPathElement extends PathElement {
 
     @Override
     public char[] getChars() {
-        return new char[] {'*'};
+        return new char[]{'*'};
     }
 }

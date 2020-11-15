@@ -1,11 +1,11 @@
 package com.example.httpserver.common.service;
 
-import com.example.httpserver.common.repository.TimeBasedOneTimePassword;
-import com.example.httpserver.common.repository.TotpRepository;
 import com.example.httpserver.app.services.ServiceConfigurationRepository;
 import com.example.httpserver.common.exception.BadTokenException;
 import com.example.httpserver.common.exception.TokenExpiredException;
 import com.example.httpserver.common.model.LoginModel;
+import com.example.httpserver.common.repository.TimeBasedOneTimePassword;
+import com.example.httpserver.common.repository.TotpRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.iki.elonen.NanoHTTPD;
 import io.jsonwebtoken.*;
@@ -14,15 +14,18 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
 
 public class AuthService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final ServiceConfigurationRepository repository;
     private final TimeBasedOneTimePassword password;
+    private final String algorithm = "RSA";
     private PublicKey publicKey;
     private PrivateKey privateKey;
-    private final String algorithm = "RSA";
     private JwtParser parser;
 
     public AuthService(ServiceConfigurationRepository repository, TotpRepository totpRepository)
@@ -36,22 +39,22 @@ public class AuthService {
         boolean basic = Objects.equals(repository.get("basic"), "true");
         boolean totp = Objects.equals(repository.get("totp"), "true");
 
-        if(basic) {
+        if (basic) {
             String name = repository.get("username");
             String pass = repository.get("password");
 
-            if(Objects.equals(model.password, pass) && Objects.equals(model.username, name)) {
+            if (Objects.equals(model.password, pass) && Objects.equals(model.username, name)) {
                 return new String[]{token(model), refresh(model)};
             }
         }
 
-        if(totp) {
-            if(password.pin() == Integer.parseInt(model.pin)) {
+        if (totp) {
+            if (password.pin() == Integer.parseInt(model.pin)) {
                 return new String[]{token(model), refresh(model)};
             }
         }
 
-        if(!totp && !basic) {
+        if (!totp && !basic) {
             return new String[]{"", ""};
         }
         throw new SecurityException("Authorization failed!");
@@ -60,25 +63,25 @@ public class AuthService {
     public void verify(NanoHTTPD.IHTTPSession session) {
         boolean basic = Objects.equals(repository.get("basic"), "true");
         boolean totp = Objects.equals(repository.get("totp"), "true");
-        if(!basic && !totp) {
+        if (!basic && !totp) {
             return;
         }
 
         String header = session.getHeaders().get("authorization");
-        if(header == null || header.isEmpty()) {
+        if (header == null || header.isEmpty()) {
             throw new BadTokenException();
         }
         String token = header.replace("Bearer ", "");
         verify(token);
     }
 
-    public void verify (String token) {
+    public void verify(String token) {
         try {
             Jws<Claims> claims = parser.parseClaimsJws(token);
             String name = claims.getBody().get("name", String.class);
             String scope = claims.getBody().get("scope", String.class);
             String id = claims.getBody().getId();
-            if(!Objects.equals(scope, "session")) {
+            if (!Objects.equals(scope, "session")) {
                 throw new BadTokenException();
             }
         } catch (ExpiredJwtException e) {
@@ -94,7 +97,7 @@ public class AuthService {
             String name = claims.getBody().get("name", String.class);
             String scope = claims.getBody().get("scope", String.class);
             String id = claims.getBody().getId();
-            if(!Objects.equals(scope, "refresh")) {
+            if (!Objects.equals(scope, "refresh")) {
                 throw new BadTokenException();
             }
             LoginModel model = new LoginModel();
@@ -152,12 +155,12 @@ public class AuthService {
         String publicKeyStr = repository.get("public-key");
         String privateKeyStr = repository.get("private-key");
 
-        if(publicKeyStr == null || publicKeyStr.isEmpty()) {
+        if (publicKeyStr == null || publicKeyStr.isEmpty()) {
             generate();
             return;
         }
 
-        if(privateKeyStr == null || privateKeyStr.isEmpty()) {
+        if (privateKeyStr == null || privateKeyStr.isEmpty()) {
             generate();
             return;
         }

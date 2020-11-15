@@ -22,6 +22,12 @@ public class PathPatternParser {
 
     private PathContainer.Options pathOptions = PathContainer.Options.HTTP_PATH;
 
+    /**
+     * Whether optional trailing slashing match is enabled.
+     */
+    public boolean isMatchOptionalTrailingSeparator() {
+        return this.matchOptionalTrailingSeparator;
+    }
 
     /**
      * Whether a {@link PathPattern} produced by this parser should
@@ -39,10 +45,10 @@ public class PathPatternParser {
     }
 
     /**
-     * Whether optional trailing slashing match is enabled.
+     * Whether case-sensitive pattern matching is enabled.
      */
-    public boolean isMatchOptionalTrailingSeparator() {
-        return this.matchOptionalTrailingSeparator;
+    public boolean isCaseSensitive() {
+        return this.caseSensitive;
     }
 
     /**
@@ -54,10 +60,12 @@ public class PathPatternParser {
     }
 
     /**
-     * Whether case-sensitive pattern matching is enabled.
+     * Return the {@link #setPathOptions configured} pattern parsing options.
+     *
+     * @since 5.2
      */
-    public boolean isCaseSensitive() {
-        return this.caseSensitive;
+    public PathContainer.Options getPathOptions() {
+        return this.pathOptions;
     }
 
     /**
@@ -65,6 +73,7 @@ public class PathPatternParser {
      * options used to parse input paths.
      * <p>{@link PathContainer.Options#HTTP_PATH}
      * is used by default.
+     *
      * @since 5.2
      */
     public void setPathOptions(PathContainer.Options pathOptions) {
@@ -72,20 +81,12 @@ public class PathPatternParser {
     }
 
     /**
-     * Return the {@link #setPathOptions configured} pattern parsing options.
-     * @since 5.2
-     */
-    public PathContainer.Options getPathOptions() {
-        return this.pathOptions;
-    }
-
-
-    /**
      * Process the path pattern content, a character at a time, breaking it into
      * path elements around separator boundaries and verifying the structure at each
      * stage. Produces a PathPattern object that can be used for fast matching
      * against paths. Each invocation of this method delegates to a new instance of
      * the {@link InternalPathPatternParser} because that class is not thread-safe.
+     *
      * @param pathPattern the input path pattern, e.g. /project/{name}
      * @return a PathPattern for quickly matching paths against request paths
      * @throws PatternParseException in case of parse errors

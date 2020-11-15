@@ -13,18 +13,15 @@ import java.util.function.BiConsumer;
 public class HttpService extends Service implements Runnable {
 
     public static final String TAG = HttpService.class.getName();
-
-    private TinyHttpServer server;
-    private ServiceConfigurationRepository repository;
-    private Thread thread;
-
-
     private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
         public void accept(Integer integer, Exception exception) {
             EventBus.getDefault().post("Http Service: " + integer + ", " + exception.toString());
         }
     };
+    private TinyHttpServer server;
+    private ServiceConfigurationRepository repository;
+    private Thread thread;
 
     public HttpService() {
 
@@ -43,7 +40,7 @@ public class HttpService extends Service implements Runnable {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if(thread.isAlive()) {
+        if (thread.isAlive()) {
             thread.interrupt();
         }
         thread = new Thread(this);
@@ -53,11 +50,11 @@ public class HttpService extends Service implements Runnable {
 
     @Override
     public void onDestroy() {
-        if(thread != null && thread.isAlive()) {
+        if (thread != null && thread.isAlive()) {
             thread.interrupt();
         }
         thread = null;
-        if(server != null) {
+        if (server != null) {
             server.stop();
             server = null;
         }
@@ -66,7 +63,7 @@ public class HttpService extends Service implements Runnable {
 
     @Override
     public void run() {
-        if(server != null) {
+        if (server != null) {
             server.stop();
         }
         server = new TinyHttpServer(repository, getAssets());

@@ -18,19 +18,19 @@ public class Router<Handler> {
         List<Route<Handler>> list = routes.stream().filter(route -> route.method.matches(method))
                 .filter(route -> {
                     PathPattern.PathMatchInfo info = route.predicate(uri);
-                    if(info == null) {
+                    if (info == null) {
                         return false;
                     }
                     matches.put(route, info);
                     return true;
                 }).sorted().collect(Collectors.toList());
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             return notFound();
         }
 
         Route<Handler> route = list.get(0);
         PathPattern.PathMatchInfo info = matches.get(route);
-        if(info != null)
+        if (info != null)
             pathVariables.putAll(info.getUriVariables());
         return route;
     }
@@ -54,10 +54,10 @@ public class Router<Handler> {
 
     public static class Route<Handler> implements Comparable<Route<Handler>> {
 
+        private static final PathPatternParser DEFAULT_PATH_PARSER = new PathPatternParser();
         public final String method;
         public final PathPattern pattern;
         public final Handler handler;
-        private static final PathPatternParser DEFAULT_PATH_PARSER = new PathPatternParser();
 
         public Route(Handler handler,
                      String method,
@@ -65,6 +65,12 @@ public class Router<Handler> {
             this.handler = handler;
             this.method = method;
             this.pattern = pattern;
+        }
+
+        public static <T> Route<T> of(String method, String uri, T handler) {
+            PathPattern p = DEFAULT_PATH_PARSER.parse(uri);
+
+            return new Route<>(handler, method, p);
         }
 
         public PathPattern.PathMatchInfo predicate(String uri) {
@@ -83,12 +89,6 @@ public class Router<Handler> {
         @Override
         public int hashCode() {
             return Objects.hash(method, pattern);
-        }
-
-        public static <T> Route<T> of(String method, String uri, T handler) {
-            PathPattern p = DEFAULT_PATH_PARSER.parse(uri);
-
-            return new Route<>(handler, method, p);
         }
 
         @Override

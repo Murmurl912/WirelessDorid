@@ -29,91 +29,90 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 
-
 public class NotificationConstants {
 
-  public static final int COPY_ID = 0;
-  public static final int EXTRACT_ID = 1;
-  public static final int ZIP_ID = 2;
-  public static final int DECRYPT_ID = 3;
-  public static final int ENCRYPT_ID = 4;
-  public static final int SERVER_ID = 5;
-  public static final int FAILED_ID = 6;
-  public static final int WAIT_ID = 7;
+    public static final int COPY_ID = 0;
+    public static final int EXTRACT_ID = 1;
+    public static final int ZIP_ID = 2;
+    public static final int DECRYPT_ID = 3;
+    public static final int ENCRYPT_ID = 4;
+    public static final int SERVER_ID = 5;
+    public static final int FAILED_ID = 6;
+    public static final int WAIT_ID = 7;
 
-  public static final int TYPE_NORMAL = 0, TYPE_SERVER = 1;
+    public static final int TYPE_NORMAL = 0, TYPE_SERVER = 1;
 
-  public static final String CHANNEL_NORMAL_ID = "normalChannel";
-  public static final String CHANNEL_SERVER_ID = "ftpChannel";
+    public static final String CHANNEL_NORMAL_ID = "normalChannel";
+    public static final String CHANNEL_SERVER_ID = "ftpChannel";
 
-  /**
-   * This creates a channel (API >= 26) or applies the correct metadata to a notification (API < 26)
-   */
-  public static void setMetadata(
-      Context context, NotificationCompat.Builder notification, int type) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      switch (type) {
-        case TYPE_NORMAL:
-          createNormalChannel(context);
-          break;
-        case TYPE_SERVER:
-          createServerChannel(context);
-          break;
-        default:
-          throw new IllegalArgumentException("Unrecognized type:" + type);
-      }
-    } else {
-      switch (type) {
-        case TYPE_NORMAL:
-          notification.setCategory(Notification.CATEGORY_SERVICE);
-          break;
-        case TYPE_SERVER:
-          notification.setCategory(Notification.CATEGORY_SERVICE);
-          notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-          break;
-        default:
-          throw new IllegalArgumentException("Unrecognized type:" + type);
-      }
+    /**
+     * This creates a channel (API >= 26) or applies the correct metadata to a notification (API < 26)
+     */
+    public static void setMetadata(
+            Context context, NotificationCompat.Builder notification, int type) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            switch (type) {
+                case TYPE_NORMAL:
+                    createNormalChannel(context);
+                    break;
+                case TYPE_SERVER:
+                    createServerChannel(context);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unrecognized type:" + type);
+            }
+        } else {
+            switch (type) {
+                case TYPE_NORMAL:
+                    notification.setCategory(Notification.CATEGORY_SERVICE);
+                    break;
+                case TYPE_SERVER:
+                    notification.setCategory(Notification.CATEGORY_SERVICE);
+                    notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unrecognized type:" + type);
+            }
+        }
     }
-  }
 
-  /**
-   * You CANNOT call this from android < O. THis channel is set so it doesn't bother the user, but
-   * it has importance.
-   */
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private static void createServerChannel(Context context) {
-    NotificationManager mNotificationManager =
-        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    if (mNotificationManager.getNotificationChannel(CHANNEL_SERVER_ID) == null) {
-      NotificationChannel mChannel =
-          new NotificationChannel(
-                  CHANNEL_SERVER_ID,
-              "Server",
-              NotificationManager.IMPORTANCE_HIGH);
-      // Configure the notification channel.
-      mChannel.setDescription("Http and ftp server");
-      mNotificationManager.createNotificationChannel(mChannel);
+    /**
+     * You CANNOT call this from android < O. THis channel is set so it doesn't bother the user, but
+     * it has importance.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private static void createServerChannel(Context context) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (mNotificationManager.getNotificationChannel(CHANNEL_SERVER_ID) == null) {
+            NotificationChannel mChannel =
+                    new NotificationChannel(
+                            CHANNEL_SERVER_ID,
+                            "Server",
+                            NotificationManager.IMPORTANCE_HIGH);
+            // Configure the notification channel.
+            mChannel.setDescription("Http and ftp server");
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
     }
-  }
 
-  /**
-   * You CANNOT call this from android < O. THis channel is set so it doesn't bother the user, with
-   * the lowest importance.
-   */
-  @RequiresApi(api = Build.VERSION_CODES.O)
-  private static void createNormalChannel(Context context) {
-    NotificationManager mNotificationManager =
-        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    if (mNotificationManager.getNotificationChannel(CHANNEL_NORMAL_ID) == null) {
-      NotificationChannel mChannel =
-          new NotificationChannel(
-              CHANNEL_NORMAL_ID,
-              "normal",
-              NotificationManager.IMPORTANCE_MIN);
-      // Configure the notification channel.
-      mChannel.setDescription("normal");
-      mNotificationManager.createNotificationChannel(mChannel);
+    /**
+     * You CANNOT call this from android < O. THis channel is set so it doesn't bother the user, with
+     * the lowest importance.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private static void createNormalChannel(Context context) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (mNotificationManager.getNotificationChannel(CHANNEL_NORMAL_ID) == null) {
+            NotificationChannel mChannel =
+                    new NotificationChannel(
+                            CHANNEL_NORMAL_ID,
+                            "normal",
+                            NotificationManager.IMPORTANCE_MIN);
+            // Configure the notification channel.
+            mChannel.setDescription("normal");
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
     }
-  }
 }

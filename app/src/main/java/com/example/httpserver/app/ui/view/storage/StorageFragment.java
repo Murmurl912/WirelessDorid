@@ -1,14 +1,14 @@
 package com.example.httpserver.app.ui.view.storage;
 
 import android.graphics.Color;
-import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import com.example.httpserver.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -49,7 +49,7 @@ public class StorageFragment extends Fragment {
         chart.getDescription().setEnabled(false);
         chart.setData(data);
         chart.getAxisLeft().setEnabled(false);
-        YAxis yAxis =  chart.getAxisRight();
+        YAxis yAxis = chart.getAxisRight();
         yAxis.setEnabled(true);
 
         XAxis xAxis = chart.getXAxis();

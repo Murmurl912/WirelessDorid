@@ -8,13 +8,13 @@ import java.util.List;
 @Dao
 public interface ConfigurationRepository {
     @Insert
-    public void insert(Configuration...configurations);
+    public void insert(Configuration... configurations);
 
     @Update
-    public void update(Configuration...configurations);
+    public void update(Configuration... configurations);
 
     @Delete
-    public void delete(Configuration...configurations);
+    public void delete(Configuration... configurations);
 
     @Query("select * from configuration")
     public Configuration gets();
@@ -28,15 +28,15 @@ public interface ConfigurationRepository {
     }
 
     @Query("select * from configuration where `key` in (:keys)")
-    public List<Configuration> select(String...keys);
+    public List<Configuration> select(String... keys);
 
     @Query("select count(*) from configuration where `key` = :key")
     public int contains(String key);
 
     @Transaction
-    default public void save(Configuration...configurations) {
+    default public void save(Configuration... configurations) {
         for (Configuration configuration : configurations) {
-            if(contains(configuration.key) > 0) {
+            if (contains(configuration.key) > 0) {
                 update(configuration);
             } else {
                 insert(configuration);
@@ -46,7 +46,7 @@ public interface ConfigurationRepository {
 
     default public void save(List<Configuration> configurations) {
         for (Configuration configuration : configurations) {
-            if(contains(configuration.key) > 0) {
+            if (contains(configuration.key) > 0) {
                 update(configuration);
             } else {
                 insert(configuration);

@@ -3,24 +3,19 @@ package com.example.httpserver.common.handler;
 import com.example.httpserver.common.model.LoginModel;
 import com.example.httpserver.common.service.AuthService;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.iki.elonen.NanoHTTPD;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class AuthHandler {
 
     private final AuthService service;
     private final ObjectMapper mapper = new ObjectMapper();
+
     public AuthHandler(AuthService service) {
         this.service = service;
         mapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
@@ -40,15 +35,15 @@ public class AuthHandler {
         switch (contenttype) {
             case "application/x-www-form-urlencoded":
                 List<String> l = session.getParameters().get("username");
-                if(l != null && !l.isEmpty()) {
+                if (l != null && !l.isEmpty()) {
                     model.username = l.get(0);
                 }
                 l = session.getParameters().get("password");
-                if(l != null && !l.isEmpty()) {
+                if (l != null && !l.isEmpty()) {
                     model.password = l.get(0);
                 }
                 l = session.getParameters().get("pin");
-                if(l != null && !l.isEmpty()) {
+                if (l != null && !l.isEmpty()) {
                     model.pin = l.get(0);
                 }
                 break;
@@ -110,6 +105,6 @@ public class AuthHandler {
     }
 
     private NanoHTTPD.Response bad(String message) {
-        return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.BAD_REQUEST, "text/plain",  message);
+        return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.BAD_REQUEST, "text/plain", message);
     }
 }

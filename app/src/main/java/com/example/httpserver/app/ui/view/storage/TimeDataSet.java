@@ -3,7 +3,8 @@ package com.example.httpserver.app.ui.view.storage;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TimeDataSet extends LineDataSet {
 
@@ -19,14 +20,14 @@ public class TimeDataSet extends LineDataSet {
     }
 
     private void setup() {
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             entries.add(new Entry(i, DEFAULT_Y_VALUE));
         }
         notifyDataSetChanged();
     }
 
     public void add(float value) {
-        if(entries.size() == 0) {
+        if (entries.size() == 0) {
             return;
         }
 

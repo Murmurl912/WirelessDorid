@@ -30,14 +30,12 @@ public class FileUtils {
 
     // TargetApi(21)
     private static final Boolean isCompatible = true;
-
-    private FileUtils() {
-        // Private constructor to enforce Singleton pattern.
-    }
-
     private static final String DOWNLOADS_VOLUME_NAME = "downloads";
     private static final String PRIMARY_VOLUME_NAME = "primary";
     private static final String HOME_VOLUME_NAME = "home";
+    private FileUtils() {
+        // Private constructor to enforce Singleton pattern.
+    }
 
     @Nullable
     @TargetApi(21)
@@ -53,7 +51,7 @@ public class FileUtils {
             Log.e(TAG, "getAbsolutePathFromTreeUri: called on unsupported API level");
             return null;
         }
-        
+
         if (treeUri == null) {
             Log.w(TAG, "getAbsolutePathFromTreeUri: called with treeUri == null");
             return null;
@@ -94,14 +92,14 @@ public class FileUtils {
         StorageManager mStorageManager =
                 (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
         List<StorageVolume> storageVolumeList = mStorageManager.getStorageVolumes();
-        for(StorageVolume volume : storageVolumeList) {
-            String uuid  = volume.getUuid();
+        for (StorageVolume volume : storageVolumeList) {
+            String uuid = volume.getUuid();
 
             boolean primary = volume.isPrimary();
             boolean removable = volume.isRemovable();
             String result = volume.getDirectory().getAbsolutePath().toString();
             Log.d(TAG, "Volume: " + id + ", path: " + result + ", name: " + volume.getMediaStoreVolumeName());
-            if(!Objects.equals(uuid, id)) {
+            if (!Objects.equals(uuid, id)) {
                 continue;
             }
             return result;
@@ -128,7 +126,7 @@ public class FileUtils {
                 return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
             }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 return getMountPath(volumeId, context);
             }
 

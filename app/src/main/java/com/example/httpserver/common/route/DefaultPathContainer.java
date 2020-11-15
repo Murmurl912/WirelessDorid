@@ -9,6 +9,12 @@ final class DefaultPathContainer implements PathContainer {
     private static final MultiValueMap<String, String> EMPTY_PARAMS = new LinkedMultiValueMap<>();
     private static final PathContainer EMPTY_PATH = new DefaultPathContainer("", Collections.emptyList());
     private static final Map<Character, DefaultSeparator> SEPARATORS = new HashMap<>(2);
+
+    static {
+        SEPARATORS.put('/', new DefaultSeparator('/', "%2F"));
+        SEPARATORS.put('.', new DefaultSeparator('.', "%2E"));
+    }
+
     private final String path;
     private final List<Element> elements;
 
@@ -17,36 +23,12 @@ final class DefaultPathContainer implements PathContainer {
         this.elements = Collections.unmodifiableList(elements);
     }
 
-    public String value() {
-        return this.path;
-    }
-
-    public List<Element> elements() {
-        return this.elements;
-    }
-
-    public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        } else {
-            return other instanceof PathContainer && this.value().equals(((PathContainer) other).value());
-        }
-    }
-
-    public int hashCode() {
-        return this.path.hashCode();
-    }
-
-    public String toString() {
-        return this.value();
-    }
-
     static PathContainer createFromUrlPath(String path, Options options) {
         if (path.isEmpty()) {
             return EMPTY_PATH;
         } else {
             char separator = options.separator();
-            DefaultSeparator separatorElement = (DefaultSeparator)SEPARATORS.get(separator);
+            DefaultSeparator separatorElement = (DefaultSeparator) SEPARATORS.get(separator);
             if (separatorElement == null) {
                 throw new IllegalArgumentException("Unexpected separator: '" + separator + "'");
             } else {
@@ -59,7 +41,7 @@ final class DefaultPathContainer implements PathContainer {
                     begin = 0;
                 }
 
-                while(begin < path.length()) {
+                while (begin < path.length()) {
                     int end = path.indexOf(separator, begin);
                     String segment = end != -1 ? path.substring(begin, end) : path.substring(begin);
                     if (!segment.isEmpty()) {
@@ -98,7 +80,7 @@ final class DefaultPathContainer implements PathContainer {
         MultiValueMap<String, String> result = new LinkedMultiValueMap<>();
 
         int end;
-        for(int begin = 1; begin < input.length(); begin = end + 1) {
+        for (int begin = 1; begin < input.length(); begin = end + 1) {
             end = input.indexOf(59, begin);
             String param = end != -1 ? input.substring(begin, end) : input.substring(begin);
             parsePathParamValues(param, charset, result);
@@ -153,14 +135,33 @@ final class DefaultPathContainer implements PathContainer {
                 return "fromIndex: " + fromIndex + " should be < toIndex " + toIndex;
             });
             List<Element> subList = elements.subList(fromIndex, toIndex);
-            String path = (String)subList.stream().map(Element::value).collect(Collectors.joining(""));
+            String path = (String) subList.stream().map(Element::value).collect(Collectors.joining(""));
             return new DefaultPathContainer(path, subList);
         }
     }
 
-    static {
-        SEPARATORS.put('/', new DefaultSeparator('/', "%2F"));
-        SEPARATORS.put('.', new DefaultSeparator('.', "%2E"));
+    public String value() {
+        return this.path;
+    }
+
+    public List<Element> elements() {
+        return this.elements;
+    }
+
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        } else {
+            return other instanceof PathContainer && this.value().equals(((PathContainer) other).value());
+        }
+    }
+
+    public int hashCode() {
+        return this.path.hashCode();
+    }
+
+    public String toString() {
+        return this.value();
     }
 
     private static class DefaultPathSegment implements PathSegment {

@@ -1,23 +1,17 @@
 package com.example.httpserver.app.ui.view.home;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Looper;
-import android.widget.TableLayout;
-import android.widget.Toast;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.httpserver.R;
 import com.example.httpserver.app.services.wifi.WifiDirectService;
@@ -81,39 +75,45 @@ public class HomeFragment extends Fragment {
         String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE,
                 Manifest.permission.CHANGE_NETWORK_STATE, Manifest.permission.ACCESS_NETWORK_STATE};
-        if(PackageManager.PERMISSION_DENIED ==
+        if (PackageManager.PERMISSION_DENIED ==
                 requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestPermissions(permissions, 0);
             return false;
-        };
-        if(PackageManager.PERMISSION_DENIED ==
+        }
+        ;
+        if (PackageManager.PERMISSION_DENIED ==
                 requireActivity().checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE)) {
             requestPermissions(permissions, 0);
             return false;
-        };
-        if(PackageManager.PERMISSION_DENIED ==
+        }
+        ;
+        if (PackageManager.PERMISSION_DENIED ==
                 requireActivity().checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE)) {
             requestPermissions(permissions, 0);
             return false;
-        };
-        if(PackageManager.PERMISSION_DENIED ==
+        }
+        ;
+        if (PackageManager.PERMISSION_DENIED ==
                 requireActivity().checkSelfPermission(Manifest.permission.CHANGE_NETWORK_STATE)) {
             requestPermissions(permissions, 0);
             return false;
-        };
-        if(PackageManager.PERMISSION_DENIED ==
+        }
+        ;
+        if (PackageManager.PERMISSION_DENIED ==
                 requireActivity().checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE)) {
             requestPermissions(permissions, 0);
             return false;
-        };
+        }
+        ;
         return true;
     }
 
     private void startWifiDirect() {
-        if(!wifiDirectPermissionCheck()) {
+        if (!wifiDirectPermissionCheck()) {
             Toast.makeText(requireContext(), "Permission is needed!", Toast.LENGTH_SHORT).show();
             return;
-        };
+        }
+        ;
         requireActivity().startService(new Intent(requireContext(), WifiDirectService.class));
     }
 

@@ -21,7 +21,7 @@ public class ServiceReceiver extends BroadcastReceiver {
             Intent service = new Intent(context, HttpService.class);
             service.putExtras(intent);
             String action = intent.getAction();
-            if(action == null) {
+            if (action == null) {
                 return;
             }
             switch (action) {

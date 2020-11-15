@@ -37,8 +37,7 @@ class LiteralPathElement extends PathElement {
         this.caseSensitive = caseSensitive;
         if (caseSensitive) {
             this.text = literalText;
-        }
-        else {
+        } else {
             // Force all the text lower case to make matching faster
             this.text = new char[literalText.length];
             for (int i = 0; i < this.len; i++) {
@@ -58,21 +57,20 @@ class LiteralPathElement extends PathElement {
         if (!(element instanceof PathContainer.PathSegment)) {
             return false;
         }
-        String value = ((PathContainer.PathSegment)element).valueToMatch();
+        String value = ((PathContainer.PathSegment) element).valueToMatch();
         if (value.length() != this.len) {
             // Not enough data to match this path element
             return false;
         }
 
-        char[] data = ((PathContainer.PathSegment)element).valueToMatchAsChars();
+        char[] data = ((PathContainer.PathSegment) element).valueToMatchAsChars();
         if (this.caseSensitive) {
             for (int i = 0; i < this.len; i++) {
                 if (data[i] != this.text[i]) {
                     return false;
                 }
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < this.len; i++) {
                 // TODO revisit performance if doing a lot of case insensitive matching
                 if (Character.toLowerCase(data[i]) != this.text[i]) {
@@ -86,19 +84,16 @@ class LiteralPathElement extends PathElement {
             if (matchingContext.determineRemainingPath) {
                 matchingContext.remainingPathIndex = pathIndex;
                 return true;
-            }
-            else {
+            } else {
                 if (pathIndex == matchingContext.pathLength) {
                     return true;
-                }
-                else {
+                } else {
                     return (matchingContext.isMatchOptionalTrailingSeparator() &&
                             (pathIndex + 1) == matchingContext.pathLength &&
                             matchingContext.isSeparator(pathIndex));
                 }
             }
-        }
-        else {
+        } else {
             return (this.next != null && this.next.matches(pathIndex, matchingContext));
         }
     }

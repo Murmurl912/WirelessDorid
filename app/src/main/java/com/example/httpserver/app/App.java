@@ -11,14 +11,13 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class App extends Application{
+public class App extends Application {
 
     public static final String TAG = App.class.getName();
-
+    private static App app;
     private AppDatabase db;
     private ExecutorService executor;
 
-    private static App app;
     public static App app() {
         return app;
     }
@@ -30,7 +29,6 @@ public class App extends Application{
         setup();
         app = this;
     }
-
 
 
     @Override

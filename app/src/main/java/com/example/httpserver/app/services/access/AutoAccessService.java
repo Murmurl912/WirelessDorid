@@ -2,18 +2,8 @@ package com.example.httpserver.app.services.access;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
-import android.view.accessibility.AccessibilityWindowInfo;
-
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class AutoAccessService extends AccessibilityService {
 

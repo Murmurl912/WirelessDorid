@@ -21,32 +21,26 @@ import java.util.function.BiFunction;
 
 public class TinyHttpServer {
 
-    private HttpServer server;
-    private final ServiceConfigurationRepository repository;
-    private AuthHandler authHandler;
-    private SimpleFileService fileService;
-    private AndroidFileHandler handler;
-    private StaticFileHandler staticFileHandler;
-
-    private FileSystemView view;
-    private AuthService authService;
-
-    private AssetManager assetManager;
-    private StaticFileStore staticFileStore;
-
     public static final String KEY_HTTP_PORT = "http_port";
     public static final String KEY_HTTP_TIMEOUT = "http_timeout";
-
     public static final String DEFAULT_HTTP_PORT = "4443";
-
+    private final ServiceConfigurationRepository repository;
     private final BiConsumer<Integer, Exception> DEFAULT_LISTENER = new BiConsumer<Integer, Exception>() {
         @Override
         public void accept(Integer integer, Exception exception) {
 
         }
     };
+    private HttpServer server;
+    private AuthHandler authHandler;
+    private SimpleFileService fileService;
+    private AndroidFileHandler handler;
+    private StaticFileHandler staticFileHandler;
+    private FileSystemView view;
+    private AuthService authService;
+    private AssetManager assetManager;
+    private StaticFileStore staticFileStore;
     private BiConsumer<Integer, Exception> listener = DEFAULT_LISTENER;
-
 
 
     public TinyHttpServer(ServiceConfigurationRepository repository, AssetManager assetManager) {
@@ -99,7 +93,7 @@ public class TinyHttpServer {
     }
 
     public synchronized void stop() {
-        if(server != null) {
+        if (server != null) {
             listener.accept(2, null);
             server.stop();
             server = null;
@@ -131,7 +125,7 @@ public class TinyHttpServer {
                 String method = session.getMethod().toString();
                 HashMap<String, String> pathVariables = new HashMap<>();
                 Router.Route<BiFunction<IHTTPSession, Map<String, String>, Response>> route = router.route(method, uri, pathVariables);
-                if(route == null) {
+                if (route == null) {
                     // todo handle not found
                     return super.serve(session);
                 }

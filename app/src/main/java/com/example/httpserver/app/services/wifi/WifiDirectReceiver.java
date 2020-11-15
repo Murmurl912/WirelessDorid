@@ -5,14 +5,9 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.NetworkInfo;
-import android.net.wifi.WpsInfo;
-import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 
 public class WifiDirectReceiver extends BroadcastReceiver {
 
@@ -36,7 +31,7 @@ public class WifiDirectReceiver extends BroadcastReceiver {
             // the Activity.
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                if(count++ > 0) {
+                if (count++ > 0) {
                     return;
                 }
 
@@ -51,8 +46,8 @@ public class WifiDirectReceiver extends BroadcastReceiver {
                     public void onFailure(int reason) {
                         String str = reason == WifiP2pManager.P2P_UNSUPPORTED ?
                                 "Unsupported" : reason == WifiP2pManager.ERROR ?
-                                    "Error" : reason == WifiP2pManager.BUSY ?
-                                    "Busy" : reason + "";
+                                "Error" : reason == WifiP2pManager.BUSY ?
+                                "Busy" : reason + "";
 
                         Toast.makeText(context, "WiFi Direct Discovering Peers Failed: " + str, Toast.LENGTH_SHORT).show();
                     }
