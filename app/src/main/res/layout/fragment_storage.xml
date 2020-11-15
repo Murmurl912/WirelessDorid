@@ -50,7 +50,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:contentPadding="12dp">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                       android:orientation="vertical">
 
 <!--            <com.anychart.AnyChartView-->
@@ -61,7 +61,8 @@
             <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/io_speed"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"/>
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
             <LinearLayout android:layout_width="match_parent"
                           android:layout_height="wrap_content"
@@ -87,10 +88,6 @@
                     android:text="Read only"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Open Web Api"/>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

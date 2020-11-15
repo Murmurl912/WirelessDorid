@@ -1,13 +1,17 @@
 package com.example.httpserver.app.ui.view.storage;
 
+import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.*;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class StorageViewModel extends ViewModel {
 
+    public static final String TAG = StorageViewModel.class.getSimpleName();
     private MutableLiveData<Long> time = new MutableLiveData<>();
     private Thread thread;
 

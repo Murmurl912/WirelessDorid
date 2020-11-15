@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.httpserver.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
@@ -41,19 +42,28 @@ public class StorageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        dataSet.setDrawValues(false);
         dataSet.setColor(Color.RED);
+        dataSet.setDrawCircles(false);
+        dataSet.setDrawFilled(true);
+        dataSet.setFillColor(Color.RED);
         dataSet.setValueTextColor(Color.BLACK);
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setMode(LineDataSet.Mode.STEPPED);
 
         chart = view.findViewById(R.id.io_speed);
         chart.getDescription().setEnabled(false);
+        chart.setScaleEnabled(false);
+
         chart.setData(data);
-        chart.getAxisLeft().setEnabled(false);
-        YAxis yAxis = chart.getAxisRight();
-        yAxis.setEnabled(true);
+        chart.getAxisRight().setEnabled(false);
+        chart.getAxisLeft().setEnabled(true);
+        chart.getAxisLeft().setAxisMinimum(0);
+        chart.getAxisLeft().setDrawGridLines(false);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+
 
         chart.invalidate();
     }
