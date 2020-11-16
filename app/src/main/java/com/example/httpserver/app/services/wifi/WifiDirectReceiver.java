@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
@@ -36,10 +37,12 @@ public class WifiDirectReceiver extends BroadcastReceiver {
                 }
 
                 Toast.makeText(context, "WiFi Direct Enabled", Toast.LENGTH_SHORT).show();
-                manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+                WifiP2pConfig config = new WifiP2pConfig();
+
+                manager.createGroup(channel, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(context, "WiFi Direct Discovering Peers Succeed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "WiFi Direct Group Created", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -49,12 +52,12 @@ public class WifiDirectReceiver extends BroadcastReceiver {
                                 "Error" : reason == WifiP2pManager.BUSY ?
                                 "Busy" : reason + "";
 
-                        Toast.makeText(context, "WiFi Direct Discovering Peers Failed: " + str, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "WiFi Direct Group Creation Filed: " + str, Toast.LENGTH_SHORT).show();
                     }
                 });
 
             } else {
-                Toast.makeText(context, "WiFi Direct Disenabled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "WiFi Direct Disabled", Toast.LENGTH_SHORT).show();
             }
 
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {

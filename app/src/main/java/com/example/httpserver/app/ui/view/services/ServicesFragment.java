@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.httpserver.R;
 import com.example.httpserver.app.ui.adapter.NetworkAdapter;
 import com.example.httpserver.app.ui.adapter.ServiceAdapter;
@@ -18,6 +19,7 @@ public class ServicesFragment extends Fragment {
     private ServicesViewModel model;
     private RecyclerView networkContainer;
     private RecyclerView serviceContainer;
+    private SwipeRefreshLayout refresh;
 
     private NetworkAdapter networkAdapter;
     private ServiceAdapter serviceAdapter;
@@ -46,6 +48,8 @@ public class ServicesFragment extends Fragment {
 
         networkContainer.setAdapter((networkAdapter = new NetworkAdapter()));
         serviceContainer.setAdapter((serviceAdapter = new ServiceAdapter()));
+        (refresh = view.findViewById(R.id.swipe_refresh))
+                .setOnRefreshListener(this::refresh);
     }
 
     @Override
@@ -63,7 +67,9 @@ public class ServicesFragment extends Fragment {
     }
 
     private void refresh() {
+        refresh.setRefreshing(true);
         model.refresh();
+        refresh.setRefreshing(false);
     }
 
 }

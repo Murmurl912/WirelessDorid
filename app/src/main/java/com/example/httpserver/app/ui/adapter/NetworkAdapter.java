@@ -28,7 +28,7 @@ public class NetworkAdapter extends RecyclerView.Adapter<NetworkAdapter.NetworkI
     @NonNull
     @Override
     public NetworkInterfaceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_interface, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_network, parent, false);
         return new NetworkInterfaceViewHolder(view);
     }
 

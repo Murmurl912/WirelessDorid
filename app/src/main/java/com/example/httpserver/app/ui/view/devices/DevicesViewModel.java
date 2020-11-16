@@ -19,7 +19,7 @@ public class DevicesViewModel extends ViewModel {
     }
 
     public void refresh() {
-
+        device();
     }
 
     private List<Map<String, String>> devices() {

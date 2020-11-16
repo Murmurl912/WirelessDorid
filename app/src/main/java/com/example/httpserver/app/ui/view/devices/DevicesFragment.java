@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.httpserver.R;
 import com.example.httpserver.app.ui.adapter.DeviceAdapter;
 
@@ -17,6 +18,7 @@ public class DevicesFragment extends Fragment {
     private DevicesViewModel model;
     private DeviceAdapter adapter;
     private RecyclerView container;
+    private SwipeRefreshLayout refresh;
 
     public static DevicesFragment newInstance() {
         return new DevicesFragment();
@@ -34,6 +36,8 @@ public class DevicesFragment extends Fragment {
         container = view.findViewById(R.id.device_container);
         adapter = new DeviceAdapter();
         container.setAdapter(adapter);
+        (refresh = view.findViewById(R.id.swipe_refresh))
+                .setOnRefreshListener(this::refresh);
     }
 
     @Override
@@ -47,6 +51,9 @@ public class DevicesFragment extends Fragment {
     }
 
     private void refresh() {
+        refresh.setRefreshing(true);
         model.refresh();
+        refresh.setRefreshing(false);
     }
+
 }

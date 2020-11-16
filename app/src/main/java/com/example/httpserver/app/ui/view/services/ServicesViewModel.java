@@ -32,7 +32,8 @@ public class ServicesViewModel extends ViewModel {
     }
 
     public void refresh() {
-
+        network();
+        service();
     }
 
     private List<Map<String, String>> networks() {
