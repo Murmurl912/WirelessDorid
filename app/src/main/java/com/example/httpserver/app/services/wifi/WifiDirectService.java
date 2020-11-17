@@ -1,13 +1,17 @@
 package com.example.httpserver.app.services.wifi;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 public class WifiDirectService extends Service {
 
@@ -40,12 +44,7 @@ public class WifiDirectService extends Service {
         filter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
         manager = getSystemService(WifiP2pManager.class);
-        channel = manager.initialize(getApplicationContext(), getMainLooper(), new WifiP2pManager.ChannelListener() {
-            @Override
-            public void onChannelDisconnected() {
-                Toast.makeText(getApplicationContext(), "Wifi Direct Channel Disconnected", Toast.LENGTH_SHORT).show();
-            }
-        });
+        channel = manager.initialize(getApplicationContext(), getMainLooper(), () -> Toast.makeText(getApplicationContext(), "Wifi Direct Channel Disconnected", Toast.LENGTH_SHORT).show());
         receiver = new WifiDirectReceiver(manager, channel, this);
         registerReceiver(receiver, filter);
     }
@@ -60,5 +59,9 @@ public class WifiDirectService extends Service {
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        if(manager != null && channel != null) {
+            manager.removeGroup(channel, null);
+            channel.close();
+        }
     }
 }
