@@ -28,12 +28,6 @@
             android:theme="@style/AppTheme"
             tools:targetApi="q">
 
-        <service
-                android:name=".app.service.http.HttpService"
-                android:enabled="true"
-                android:exported="false">
-        </service>
-
         <service android:name=".app.service.access.AutoAccessService"
                  android:enabled="true"
                  android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
@@ -46,20 +40,6 @@
                 android:resource="@xml/access_service_config"/>
         </service>
 
-        <service android:name=".app.service.wifi.WifiDirectService"
-                 android:permission="android.permission.ACCESS_FINE_LOCATION"
-                 android:exported="false"
-                 android:enabled="true"/>
-
-        <receiver
-                android:name=".app.service.ServiceReceiver"
-                android:exported="false">
-            <intent-filter>
-                <action android:name="com.example.httpserver.app.service.ACTION_STOP_SERVER"/>
-                <action android:name="com.example.httpserver.app.service.ACTION_RESTART_SERVER"/>
-                <action android:name="com.example.httpserver.app.service.ACTION_START_SERVER"/>
-            </intent-filter>
-        </receiver>
 
         <activity
                 android:name=".app.MainActivity"
