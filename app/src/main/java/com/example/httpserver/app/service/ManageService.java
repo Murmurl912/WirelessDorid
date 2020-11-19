@@ -1,19 +1,14 @@
 package com.example.httpserver.app.service;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
-import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 public class ManageService extends Service {

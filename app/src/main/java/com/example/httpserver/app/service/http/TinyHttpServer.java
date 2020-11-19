@@ -1,7 +1,7 @@
 package com.example.httpserver.app.service.http;
 
 import android.content.res.AssetManager;
-import com.example.httpserver.app.service.ServiceConfigurationRepository;
+import com.example.httpserver.app.service.config.ServiceConfigurationRepository;
 import com.example.httpserver.common.handler.*;
 import com.example.httpserver.common.model.FileSystemView;
 import com.example.httpserver.common.repository.TotpRepository;

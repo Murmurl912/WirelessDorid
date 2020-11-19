@@ -1,6 +1,6 @@
 package com.example.httpserver.app.service.ftp;
 
-import com.example.httpserver.app.service.ServiceConfigurationRepository;
+import com.example.httpserver.app.service.config.ServiceConfigurationRepository;
 import org.apache.ftpserver.ConnectionConfig;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;

@@ -1,4 +1,4 @@
-package com.example.httpserver.app.service;
+package com.example.httpserver.app.service.config;
 
 public interface ServiceConfigurationRepository {
     public String get(String key);
