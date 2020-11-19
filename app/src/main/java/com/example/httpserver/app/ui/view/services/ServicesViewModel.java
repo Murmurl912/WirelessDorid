@@ -3,21 +3,29 @@ package com.example.httpserver.app.ui.view.services;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import com.example.httpserver.app.service.event.ServiceEvent;
+import org.greenrobot.eventbus.EventBus;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class ServicesViewModel extends ViewModel {
 
     private final MutableLiveData<List<Map<String, String>>> services;
     private final MutableLiveData<List<Map<String, String>>> networks;
 
+    private final Consumer<ServiceEvent> serviceEventConsumer = serviceEvent -> {
+
+    };
+
     public ServicesViewModel() {
         networks = new MutableLiveData<>();
         services = new MutableLiveData<>();
+        EventBus.getDefault().register(serviceEventConsumer);
     }
 
 
@@ -85,5 +93,11 @@ public class ServicesViewModel extends ViewModel {
         services.add(screen);
 
         return services;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        EventBus.getDefault().cancelEventDelivery(serviceEventConsumer);
     }
 }

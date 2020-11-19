@@ -10,6 +10,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
+import com.example.httpserver.app.service.event.*;
+import org.greenrobot.eventbus.EventBus;
 
 public class ManageService extends Service {
 
@@ -32,8 +34,6 @@ public class ManageService extends Service {
         manager = getSystemService(WifiP2pManager.class);
         receiver = new WifiP2pReceiver();
         receiver.register();
-
-
     }
 
     @Override
@@ -62,9 +62,10 @@ public class ManageService extends Service {
         }
 
         channel = manager.initialize(this, getMainLooper(), () -> {
-            // todo notify wifi direct channel closed
+            // todo create event builder
             channel = null;
             channelAlive = false;
+            EventBus.getDefault().post(new WifiDirectChannelClosedEvent());
         });
         channelAlive = true;
     }
@@ -78,12 +79,17 @@ public class ManageService extends Service {
         manager.createGroup(channel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-
+                EventBus.getDefault().post(new WifiDirectGroupCreateSuccessEvent());
             }
 
             @Override
             public void onFailure(int reason) {
-                // todo report error
+                ServiceEvent e = reason == WifiP2pManager.BUSY
+                        ? new WifiDirectGroupCreateBusyEvent() :
+                        reason == WifiP2pManager.P2P_UNSUPPORTED
+                        ? new WifiDirectGroupCreateUnsupportEvent() :
+                                new WifiDirectGroupCreateErrorEvent();
+                EventBus.getDefault().post(e);
             }
         });
     }
@@ -126,9 +132,10 @@ public class ManageService extends Service {
                 case WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION:
                     int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, WifiP2pManager.WIFI_P2P_STATE_DISABLED);
                     if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
+                        EventBus.getDefault().post(new WifiDirectEnabledEvent());
                         createGroup();
                     } else {
-                        // todo report error
+                        EventBus.getDefault().post(new WifiDirectDisabledEvent());
                     }
                     break;
                 case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION:
@@ -138,6 +145,7 @@ public class ManageService extends Service {
                     WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
                     WifiP2pInfo info = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO);
                     NetworkInfo network = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+                    EventBus.getDefault().post(new WifiDirectConnectionChangedEvent());
                     break;
                 case WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION:
                     WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
@@ -147,7 +155,6 @@ public class ManageService extends Service {
                     break;
                 default:
                     // todo handle exception
-                    return;
             }
         }
     }
