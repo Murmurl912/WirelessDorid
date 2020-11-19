@@ -1,4 +1,4 @@
-package com.example.httpserver.app.services.access;
+package com.example.httpserver.app.service.access;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;

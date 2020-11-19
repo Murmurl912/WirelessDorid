@@ -1,4 +1,4 @@
-package com.example.httpserver.app.services.wifi;
+package com.example.httpserver.app.service.wifi;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -13,8 +13,6 @@ import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.util.Collection;
 
 public class WifiDirectReceiver extends BroadcastReceiver {
 

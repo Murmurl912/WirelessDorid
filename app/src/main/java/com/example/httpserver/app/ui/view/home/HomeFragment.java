@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.httpserver.R;
-import com.example.httpserver.app.services.wifi.WifiDirectService;
+import com.example.httpserver.app.service.wifi.WifiDirectService;
 import com.example.httpserver.app.ui.adapter.HomePageAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;

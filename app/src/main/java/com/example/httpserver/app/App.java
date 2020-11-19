@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import androidx.room.Room;
 import com.example.httpserver.app.database.AppDatabase;
-import com.example.httpserver.app.services.http.HttpService;
+import com.example.httpserver.app.service.http.HttpService;
 
 import java.util.Date;
 import java.util.concurrent.ExecutorService;

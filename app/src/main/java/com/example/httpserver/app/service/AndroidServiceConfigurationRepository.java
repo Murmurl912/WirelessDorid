@@ -1,4 +1,4 @@
-package com.example.httpserver.app.services;
+package com.example.httpserver.app.service;
 
 import com.example.httpserver.app.repository.ConfigurationRepository;
 

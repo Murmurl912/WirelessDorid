@@ -29,12 +29,12 @@
             tools:targetApi="q">
 
         <service
-                android:name=".app.services.http.HttpService"
+                android:name=".app.service.http.HttpService"
                 android:enabled="true"
                 android:exported="false">
         </service>
 
-        <service android:name=".app.services.access.AutoAccessService"
+        <service android:name=".app.service.access.AutoAccessService"
                  android:enabled="true"
                  android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
                  android:label="Auto click service">
@@ -46,18 +46,18 @@
                 android:resource="@xml/access_service_config"/>
         </service>
 
-        <service android:name=".app.services.wifi.WifiDirectService"
+        <service android:name=".app.service.wifi.WifiDirectService"
                  android:permission="android.permission.ACCESS_FINE_LOCATION"
                  android:exported="false"
                  android:enabled="true"/>
 
         <receiver
-                android:name=".app.services.ServiceReceiver"
+                android:name=".app.service.ServiceReceiver"
                 android:exported="false">
             <intent-filter>
-                <action android:name="com.example.httpserver.app.services.ACTION_STOP_SERVER"/>
-                <action android:name="com.example.httpserver.app.services.ACTION_RESTART_SERVER"/>
-                <action android:name="com.example.httpserver.app.services.ACTION_START_SERVER"/>
+                <action android:name="com.example.httpserver.app.service.ACTION_STOP_SERVER"/>
+                <action android:name="com.example.httpserver.app.service.ACTION_RESTART_SERVER"/>
+                <action android:name="com.example.httpserver.app.service.ACTION_START_SERVER"/>
             </intent-filter>
         </receiver>
 

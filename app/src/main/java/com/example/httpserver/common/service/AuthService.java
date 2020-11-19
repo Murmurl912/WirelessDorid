@@ -1,6 +1,6 @@
 package com.example.httpserver.common.service;
 
-import com.example.httpserver.app.services.ServiceConfigurationRepository;
+import com.example.httpserver.app.service.ServiceConfigurationRepository;
 import com.example.httpserver.common.exception.BadTokenException;
 import com.example.httpserver.common.exception.TokenExpiredException;
 import com.example.httpserver.common.model.LoginModel;

@@ -1,4 +1,4 @@
-package com.example.httpserver.app.services.wifi;
+package com.example.httpserver.app.service.wifi;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -11,7 +11,6 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.IBinder;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 
 public class WifiDirectService extends Service {
 

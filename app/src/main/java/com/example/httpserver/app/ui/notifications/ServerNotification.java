@@ -9,7 +9,6 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import com.example.httpserver.R;
 import com.example.httpserver.app.MainActivity;
-import com.example.httpserver.app.services.ServiceReceiver;
 
 public class ServerNotification {
 

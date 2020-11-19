@@ -1,4 +1,4 @@
-package com.example.httpserver.app.services;
+package com.example.httpserver.app.service;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -15,8 +15,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import com.example.httpserver.app.services.wifi.WifiDirectReceiver;
 
 public class ManageService extends Service {
 

@@ -1,32 +1,29 @@
-package com.example.httpserver.app.services.http;
+package com.example.httpserver.app.service.ftp;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import androidx.annotation.Nullable;
 import com.example.httpserver.app.App;
-import com.example.httpserver.app.services.AndroidServiceConfigurationRepository;
-import com.example.httpserver.app.services.ServiceConfigurationRepository;
+import com.example.httpserver.app.service.AndroidServiceConfigurationRepository;
+import com.example.httpserver.app.service.ServiceConfigurationRepository;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.function.BiConsumer;
 
-public class HttpService extends Service implements Runnable {
+public class FtpService extends Service implements Runnable {
 
-    public static final String TAG = HttpService.class.getName();
     private final BiConsumer<Integer, Exception> listener = new BiConsumer<Integer, Exception>() {
         @Override
-        public void accept(Integer integer, Exception exception) {
-            EventBus.getDefault().post("Http Service: " + integer + ", " + exception.toString());
+        public void accept(Integer integer, Exception e) {
+            EventBus.getDefault().post("Ftp Service: " + integer + ", " + e.toString());
         }
     };
-    private TinyHttpServer server;
-    private ServiceConfigurationRepository repository;
     private Thread thread;
+    private TinyFtpServer server;
+    private ServiceConfigurationRepository repository;
 
-    public HttpService() {
-
-    }
-
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -66,7 +63,8 @@ public class HttpService extends Service implements Runnable {
         if (server != null) {
             server.stop();
         }
-        server = new TinyHttpServer(repository, getAssets());
-        server.setServerListener(listener);
+        server = new TinyFtpServer(repository);
+        server.setListener(listener);
+        server.start();
     }
 }
