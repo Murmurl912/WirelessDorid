@@ -4,8 +4,6 @@ import android.os.Bundle;
 
 public interface ServiceEvent {
 
-    public int type();
-
-    public Bundle extras();
+    public Bundle extras(Bundle bundle);
 
 }

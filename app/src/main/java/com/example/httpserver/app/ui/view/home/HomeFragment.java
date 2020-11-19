@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 import com.example.httpserver.R;
+import com.example.httpserver.app.service.ManageService;
 import com.example.httpserver.app.ui.adapter.HomePageAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -68,13 +69,13 @@ public class HomeFragment extends Fragment {
                     String tag = v.getTag().toString();
                     if("stopped".equals(tag)) {
                         // start
-                        if(startWifiDirect()) {
+                        if(start()) {
                             v.setTag("running");
                             action.setImageResource(R.drawable.ic_stop_light);
                         }
                     } else if("running".equals(tag)) {
                         // stop
-                        if(stopWifiDirect()) {
+                        if(stop()) {
                             v.setTag("stopped");
                             action.setImageResource(R.drawable.ic_start_light);
                         }
@@ -137,17 +138,18 @@ public class HomeFragment extends Fragment {
         requestPermissions(permissions, 0);
     }
 
-    private boolean startWifiDirect() {
+    private boolean start() {
         if (!wifiDirectPermissionCheck()) {
             Toast.makeText(requireContext(), "Permission is needed!", Toast.LENGTH_SHORT).show();
             requestWifiDirectPermission();
             return false;
         }
 
+        requireActivity().startService(new Intent(requireActivity(), ManageService.class));
         return true;
     }
 
-    private boolean stopWifiDirect() {
-        return false;
+    private boolean stop() {
+        return requireActivity().stopService(new Intent(requireActivity(), ManageService.class));
     }
 }

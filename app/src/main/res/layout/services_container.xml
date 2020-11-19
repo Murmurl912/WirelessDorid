@@ -17,17 +17,35 @@
                     android:layout_marginHorizontal="12dp"
                     android:layout_marginVertical="12dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    app:contentPadding="6dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                               android:orientation="vertical">
 
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
-                                  android:orientation="horizontal">
+                                  android:orientation="horizontal"
+                                  android:padding="6dp">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                                  android:textStyle="bold"
+                                  android:text="Address:    "/>
+                        <TextView android:id="@+id/network_address"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:paddingHorizontal="10dp"
+                                  tools:text="192.168.49.1"
+                                  android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:padding="6dp">
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                                   android:text="Network:    "/>
                         <TextView android:id="@+id/network_name"
                                   android:layout_width="wrap_content"
@@ -40,11 +58,11 @@
 
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
-                                  android:orientation="horizontal">
+                                  android:orientation="horizontal"
+                                  android:padding="6dp">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-                                  android:textStyle="bold"
                                   android:text="Password: "/>
                         <TextView android:id="@+id/network_pass"
                                   android:paddingHorizontal="10dp"

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.*;
+import android.os.Bundle;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 import com.example.httpserver.app.service.event.*;
@@ -19,7 +20,9 @@ public class ManageService extends Service {
     private WifiP2pManager.Channel channel;
     private volatile boolean channelAlive = false;
     private WifiP2pReceiver receiver;
+    private volatile boolean groupCreating = false;
     private volatile boolean groupCreated = false;
+
     private WifiP2pGroup group;
 
     @Nullable
@@ -61,13 +64,19 @@ public class ManageService extends Service {
             return;
         }
 
-        channel = manager.initialize(this, getMainLooper(), () -> {
-            // todo create event builder
-            channel = null;
-            channelAlive = false;
-            EventBus.getDefault().post(new WifiDirectChannelClosedEvent());
-        });
-        channelAlive = true;
+        try {
+            channel = manager.initialize(this, getMainLooper(), () -> {
+                // todo create event builder
+                channel = null;
+                channelAlive = false;
+                EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_CHANNEL_CLOSED);
+            });
+            channelAlive = true;
+            EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_CHANNEL_OPEN);
+        } catch (Exception e) {
+            // todo handle exception
+
+        }
     }
 
     private void service() {
@@ -76,20 +85,29 @@ public class ManageService extends Service {
 
     @SuppressLint("MissingPermission")
     private void createGroup() {
+        if (groupCreated || groupCreating) {
+            return;
+        }
+
+        groupCreating = true;
         manager.createGroup(channel, new WifiP2pManager.ActionListener() {
+
             @Override
             public void onSuccess() {
-                EventBus.getDefault().post(new WifiDirectGroupCreateSuccessEvent());
+                EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_GROUP_CREATE_SUCCESS);
+                groupCreating = false;
+                groupCreated = true;
             }
 
             @Override
             public void onFailure(int reason) {
-                ServiceEvent e = reason == WifiP2pManager.BUSY
-                        ? new WifiDirectGroupCreateBusyEvent() :
-                        reason == WifiP2pManager.P2P_UNSUPPORTED
-                        ? new WifiDirectGroupCreateUnsupportEvent() :
-                                new WifiDirectGroupCreateErrorEvent();
-                EventBus.getDefault().post(e);
+                WifiDirectEvent event = WifiDirectEvent.WIFI_DIRECT_GROUP_CREATE_ERROR;
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("reason", reason);
+                event.extras(bundle);
+                EventBus.getDefault().post(event);
+                groupCreating = false;
             }
         });
     }
@@ -127,31 +145,55 @@ public class ManageService extends Service {
                 // todo handle exception
                 return;
             }
+            Bundle bundle = new Bundle();
+            WifiDirectEvent event;
 
             switch (intent.getAction()) {
                 case WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION:
                     int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, WifiP2pManager.WIFI_P2P_STATE_DISABLED);
                     if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                        EventBus.getDefault().post(new WifiDirectEnabledEvent());
+                        EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_ENABLED);
                         createGroup();
                     } else {
-                        EventBus.getDefault().post(new WifiDirectDisabledEvent());
+                        EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_DISABLED);
                     }
                     break;
                 case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION:
                     WifiP2pDeviceList peers = intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
+                    bundle = new Bundle();
+                    bundle.putParcelable("peers", peers);
+                    event = WifiDirectEvent.WIFI_DIRECT_PEERS_CHANGED;
+                    event.extras(bundle);
+                    EventBus.getDefault().post(event);
                     break;
                 case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION:
                     WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
                     WifiP2pInfo info = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO);
                     NetworkInfo network = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-                    EventBus.getDefault().post(new WifiDirectConnectionChangedEvent());
+
+                    bundle = new Bundle();
+                    bundle.putParcelable("group", group);
+                    bundle.putParcelable("info", info);
+                    bundle.putParcelable("network", network);
+                    event = WifiDirectEvent.WIFI_DIRECT_PEERS_CHANGED;
+                    event.extras(bundle);
+                    EventBus.getDefault().post(event);
                     break;
                 case WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION:
                     WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
+                    bundle = new Bundle();
+                    bundle.putParcelable("device", device);
+                    event = WifiDirectEvent.WIFI_DIRECT_DEVICE_CHANGED;
+                    event.extras(bundle);
+                    EventBus.getDefault().post(event);
                     break;
                 case WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION:
                     int discovery = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED);
+                    bundle = new Bundle();
+                    bundle.putInt("discovery", discovery);
+                    event = WifiDirectEvent.WIFI_DIRECT_DISCOVERY_CHANGED;
+                    event.extras(bundle);
+                    EventBus.getDefault().post(event);
                     break;
                 default:
                     // todo handle exception

@@ -33,7 +33,7 @@ public class ServerNotification {
 
         if (!noStopButton) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            Intent intent = new Intent(ServiceReceiver.ACTION_STOP_SERVER).setPackage(context.getPackageName());
+            Intent intent = new Intent("Stop").setPackage(context.getPackageName());
             PendingIntent stopPendingIntent =
                     PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 

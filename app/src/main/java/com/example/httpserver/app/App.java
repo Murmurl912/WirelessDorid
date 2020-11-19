@@ -53,12 +53,5 @@ public class App extends Application {
         return executor;
     }
 
-    public void start() {
-        startService(new Intent(getApplicationContext(), HttpService.class));
-    }
-
-    public void stop() {
-        stopService(new Intent(getApplicationContext(), HttpService.class));
-    }
 
 }

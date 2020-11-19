@@ -1,10 +1,14 @@
 package com.example.httpserver.app.ui.view.services;
 
+import android.os.Bundle;
+import android.view.View;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.httpserver.app.service.event.ServiceEvent;
+import com.example.httpserver.app.service.event.WifiDirectEvent;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -17,17 +21,13 @@ public class ServicesViewModel extends ViewModel {
 
     private final MutableLiveData<List<Map<String, String>>> services;
     private final MutableLiveData<List<Map<String, String>>> networks;
-
-    private final Consumer<ServiceEvent> serviceEventConsumer = serviceEvent -> {
-
-    };
+    private final MutableLiveData<Bundle> wifi = new MutableLiveData<>();
 
     public ServicesViewModel() {
         networks = new MutableLiveData<>();
         services = new MutableLiveData<>();
-        EventBus.getDefault().register(serviceEventConsumer);
+        EventBus.getDefault().register(this);
     }
-
 
     public LiveData<List<Map<String, String>>> network() {
         networks.postValue(networks());
@@ -39,9 +39,24 @@ public class ServicesViewModel extends ViewModel {
         return services;
     }
 
+    public LiveData<Bundle> wifi() {
+        return wifi;
+    }
+
     public void refresh() {
         network();
         service();
+    }
+
+
+    @Subscribe
+    public void onEvent(WifiDirectEvent event) {
+        Bundle bundle = event.extras(null);
+        switch (event) {
+            case WIFI_DIRECT_CONNECTION_CHANGED:
+                wifi.postValue(bundle);
+                break;
+        }
     }
 
     private List<Map<String, String>> networks() {
@@ -98,6 +113,6 @@ public class ServicesViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
-        EventBus.getDefault().cancelEventDelivery(serviceEventConsumer);
+        EventBus.getDefault().register(this);
     }
 }

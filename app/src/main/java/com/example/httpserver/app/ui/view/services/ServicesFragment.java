@@ -1,9 +1,13 @@
 package com.example.httpserver.app.ui.view.services;
 
+import android.net.NetworkInfo;
+import android.net.wifi.p2p.WifiP2pGroup;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -20,6 +24,10 @@ public class ServicesFragment extends Fragment {
     private RecyclerView networkContainer;
     private RecyclerView serviceContainer;
     private SwipeRefreshLayout refresh;
+
+    private TextView address;
+    private TextView password;
+    private TextView name;
 
     private NetworkAdapter networkAdapter;
     private ServiceAdapter serviceAdapter;
@@ -50,6 +58,9 @@ public class ServicesFragment extends Fragment {
         serviceContainer.setAdapter((serviceAdapter = new ServiceAdapter()));
         (refresh = view.findViewById(R.id.swipe_refresh))
                 .setOnRefreshListener(this::refresh);
+        address = view.findViewById(R.id.network_address);
+        password = view.findViewById(R.id.network_pass);
+        name = view.findViewById(R.id.network_name);
     }
 
     @Override
@@ -63,6 +74,20 @@ public class ServicesFragment extends Fragment {
         model.service().observe(getViewLifecycleOwner(), services -> {
             serviceAdapter.setServices(services);
             serviceAdapter.notifyDataSetChanged();
+        });
+        model.wifi().observe(getViewLifecycleOwner(), wifi -> {
+            if(wifi == null) {
+                return;
+            }
+            WifiP2pGroup group = wifi.getParcelable("group");
+            WifiP2pInfo info = wifi.getParcelable("info");
+            NetworkInfo network = wifi.getParcelable("network");
+            if(group != null) {
+                name.setText(group.getNetworkName());
+                password.setText(group.getPassphrase());
+                address.setText(group.getInterface());
+            }
+
         });
     }
 
