@@ -5,12 +5,10 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
-import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pGroup;
-import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.*;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.util.Log;
@@ -52,12 +50,7 @@ public class WifiDirectReceiver extends BroadcastReceiver {
                     @Override
                     public void onSuccess() {
                         Toast.makeText(context, "WiFi Direct Group Created", Toast.LENGTH_SHORT).show();
-                        manager.requestGroupInfo(channel, group -> {
-                            Log.d(TAG, "Interface: " + group.getInterface());
-                            Log.d(TAG, "Network Name: " + group.getNetworkName());
-                            Log.d(TAG, "Passphrase: " + group.getPassphrase());
-
-                        });
+                        Log.d(TAG, "Wifi Direct Group Created");
                     }
 
                     @Override
@@ -68,6 +61,7 @@ public class WifiDirectReceiver extends BroadcastReceiver {
                                 "Busy" : reason + "";
 
                         Toast.makeText(context, "WiFi Direct Group Creation Filed: " + str, Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Failed To Create WiFi Group: " + str);
                     }
                 });
 
@@ -86,10 +80,20 @@ public class WifiDirectReceiver extends BroadcastReceiver {
             // Connection state changed! We should probably do something about
             // that.
             Toast.makeText(context, "WiFi Direct Connection Changed", Toast.LENGTH_SHORT).show();
+            WifiP2pGroup wifiP2pGroup = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
+            WifiP2pInfo wifiP2pInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO);
+            NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+            if(wifiP2pGroup != null) {
+                String passphrase = wifiP2pGroup.getPassphrase();
+                String network = wifiP2pGroup.getNetworkName();
+                Log.d(TAG, "WiFi: " + network + ", " + passphrase);
+            }
+            Log.d(TAG, "Connection Changed: " + "\nWifiP2pInfo: " + wifiP2pInfo + "\nNetworkInfo: " + networkInfo + "\nWifiP2pGroupInfo: " + wifiP2pGroup);
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
             Toast.makeText(context, "WiFi Direct Self Changed", Toast.LENGTH_SHORT).show();
-        };
+            Log.d(TAG, "Device Changed: " + device);
+        }
     }
 }
