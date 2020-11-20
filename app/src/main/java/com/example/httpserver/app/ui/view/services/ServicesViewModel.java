@@ -1,12 +1,15 @@
 package com.example.httpserver.app.ui.view.services;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import androidx.core.app.BundleCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.httpserver.app.service.event.ServiceEvent;
 import com.example.httpserver.app.service.event.WifiDirectEvent;
+import com.example.httpserver.app.service.event.WifiDirectStatus;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -22,6 +25,16 @@ public class ServicesViewModel extends ViewModel {
     private final MutableLiveData<List<Map<String, String>>> services;
     private final MutableLiveData<List<Map<String, String>>> networks;
     private final MutableLiveData<Bundle> wifi = new MutableLiveData<>();
+    private final MutableLiveData<WifiDirectStatus> status = new MutableLiveData<>();
+
+    public static final String STATUS_ENABLE = "Enabled";
+    public static final String STATUS_DISABLE = "Disabled";
+    public static final String STATUS_OPENING = "Opening";
+    public static final String STATUS_CLOSING = "Closing";
+    public static final String STATUS_STARTING = "Starting";
+    public static final String STATUS_STARTED = "Started";
+    public static final String STATUS_OPENED = "Opened";
+    public static final String STATUS_CLOSED = "Closed";
 
     public ServicesViewModel() {
         networks = new MutableLiveData<>();
@@ -43,6 +56,10 @@ public class ServicesViewModel extends ViewModel {
         return wifi;
     }
 
+    public LiveData<WifiDirectStatus> status() {
+        return status;
+    }
+
     public void refresh() {
         network();
         service();
@@ -50,11 +67,29 @@ public class ServicesViewModel extends ViewModel {
 
 
     @Subscribe
+    public void onStatus(WifiDirectStatus status) {
+        this.status.postValue(status);
+    }
+
+    @Subscribe
     public void onEvent(WifiDirectEvent event) {
         Bundle bundle = event.extras(null);
         switch (event) {
             case WIFI_DIRECT_CONNECTION_CHANGED:
+                if(bundle == null) {
+                    return;
+                }
                 wifi.postValue(bundle);
+                break;
+            case WIFI_DIRECT_CHANNEL_CLOSED:
+            case WIFI_DIRECT_ENABLED:
+            case WIFI_DIRECT_DISABLED:
+            case WIFI_DIRECT_CHANNEL_OPEN:
+            case WIFI_DIRECT_PEERS_CHANGED:
+            case WIFI_DIRECT_DISCOVERY_CHANGED:
+            case WIFI_DIRECT_DEVICE_CHANGED:
+            case WIFI_DIRECT_GROUP_CREATE_ERROR:
+            case WIFI_DIRECT_GROUP_CREATE_SUCCESS:
                 break;
         }
     }

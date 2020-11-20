@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.util.Log;
 import androidx.room.Room;
 import com.example.httpserver.app.database.AppDatabase;
+import com.example.httpserver.app.service.event.ServiceEvent;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
@@ -12,7 +15,7 @@ import java.util.concurrent.Executors;
 
 public class App extends Application {
 
-    public static final String TAG = App.class.getName();
+    public static final String TAG = App.class.getSimpleName();
     private static App app;
     private AppDatabase db;
     private ExecutorService executor;
@@ -25,6 +28,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        EventBus.getDefault().register(this);
         setup();
         app = this;
     }
@@ -33,6 +37,7 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
+        EventBus.getDefault().unregister(this);
     }
 
     private void setup() {
@@ -53,5 +58,8 @@ public class App extends Application {
         return executor;
     }
 
-
+    @Subscribe
+    public void log(ServiceEvent event) {
+        Log.d(TAG, event.toString());
+    }
 }

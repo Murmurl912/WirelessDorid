@@ -28,6 +28,7 @@ public class ServicesFragment extends Fragment {
     private TextView address;
     private TextView password;
     private TextView name;
+    private TextView status;
 
     private NetworkAdapter networkAdapter;
     private ServiceAdapter serviceAdapter;
@@ -61,6 +62,8 @@ public class ServicesFragment extends Fragment {
         address = view.findViewById(R.id.network_address);
         password = view.findViewById(R.id.network_pass);
         name = view.findViewById(R.id.network_name);
+        status = view.findViewById(R.id.wifi_status);
+
     }
 
     @Override
@@ -88,6 +91,10 @@ public class ServicesFragment extends Fragment {
                 address.setText(group.getInterface());
             }
 
+        });
+
+        model.status().observe(getViewLifecycleOwner(), s -> {
+            status.setText(s.name());
         });
     }
 
