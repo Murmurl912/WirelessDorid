@@ -25,7 +25,24 @@
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
                                   android:orientation="horizontal"
-                                  android:padding="6dp">
+                                  android:paddingBottom="6dp">
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+                                  android:text="Status:        "/>
+                        <TextView android:id="@+id/wifi_status"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:singleLine="true"
+                                  android:paddingHorizontal="10dp"
+                                  tools:text="Disabled"
+                                  android:textAppearance="@style/TextAppearance.AppCompat.Menu" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:paddingBottom="6dp">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:textAppearance="@style/TextAppearance.AppCompat.Menu"
@@ -42,7 +59,7 @@
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
                                   android:orientation="horizontal"
-                                  android:padding="6dp">
+                                  android:paddingBottom="6dp">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:textAppearance="@style/TextAppearance.AppCompat.Menu"
@@ -58,8 +75,7 @@
 
                     <LinearLayout android:layout_width="match_parent"
                                   android:layout_height="wrap_content"
-                                  android:orientation="horizontal"
-                                  android:padding="6dp">
+                                  android:orientation="horizontal">
                         <TextView android:layout_width="wrap_content"
                                   android:layout_height="wrap_content"
                                   android:textAppearance="@style/TextAppearance.AppCompat.Menu"
@@ -85,6 +101,7 @@
                         android:layout_width="match_parent"
                         android:layout_marginHorizontal="12dp"
                         android:layout_marginVertical="12dp"
+                        android:paddingHorizontal="6dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
                         android:text="Networks"/>
@@ -130,6 +147,7 @@
                     android:orientation="vertical">
 
                 <TextView android:layout_width="match_parent"
+                          android:paddingHorizontal="6dp"
                           android:layout_marginHorizontal="12dp"
                           android:layout_marginVertical="12dp"
                           android:layout_height="wrap_content"

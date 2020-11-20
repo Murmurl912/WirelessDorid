@@ -16,11 +16,9 @@ public enum WifiDirectEvent implements ServiceEvent {
     WIFI_DIRECT_DISCOVERY_CHANGED(null);
 
     private Bundle extras;
-    private int type;
 
     WifiDirectEvent(Bundle extras) {
         this.extras = extras;
-        this.type = type;
     }
 
     @Override
