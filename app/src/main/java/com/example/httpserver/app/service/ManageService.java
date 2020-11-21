@@ -18,15 +18,16 @@ import org.greenrobot.eventbus.Subscribe;
 
 public class ManageService extends Service {
 
-    private WifiP2pManager manager;
-    private WifiP2pManager.Channel channel;
-    private volatile boolean channelAlive = false;
-    private WifiP2pReceiver receiver;
-    private volatile boolean groupCreating = false;
-    private volatile boolean groupCreated = false;
-    private volatile WifiDirectStatus status;
+    public static final String ACTION_START_ALL = "ACTION_START_ALL";
+    public static final String ACTION_STOP_ALL = "ACTION_STOP_ALL";
 
-    private WifiP2pGroup group;
+    public static final String ACTION_START_WIFI_DIRECT_SERVICE = "ACTION_START_WIFI_DIRECT_SERVICE";
+    public static final String ACTION_STOP_WIFI_DIRECT_SERVICE = "ACTION_STOP_WIFI_DIRECT_SERVICE";
+
+    public static final String ACTION_START_STORAGE_SERVICE = "ACTION_START_STORAGE_SERVICE";
+    public static final String ACTION_STOP_STORAGE_SERVICE = "ACTION_STOP_STORAGE_SERVICE";
+
+    private WifiDirectService wifi;
 
     @Nullable
     @Override
@@ -37,228 +38,74 @@ public class ManageService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        receiver = new WifiP2pReceiver();
-        receiver.register();
-
-        manager = getSystemService(WifiP2pManager.class);
-        status = WifiDirectStatus.STATUS_OPENING;
-
-        status = WifiDirectStatus.STATUS_OPENED;
+        notification();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        switch (status) {
-            case STATUS_CLOSED:
-            case STATUS_CLOSING:
-            case STATUS_OPENED:
-            case STATUS_OPENING:
-            case STATUS_STARTING:
-            case STATUS_STARTED:
-
+        String action = intent.getAction();
+        switch (action) {
+            default:
+                startDefault();
                 break;
+            case ACTION_STOP_ALL:
+                stopDefault();
+                break;
+
         }
-        notification();
-        wifi();
-        service();
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        receiver.unregister();
-        shutdownWifi();
+        stopDefault();
     }
 
+    protected void startDefault() {
+       startWifiDirect();
+    }
 
+    protected void stopDefault() {
+        stopWifiDirect();
+    }
 
     private void notification() {
 
     }
 
-    @SuppressLint("MissingPermission")
-    private void wifi() {
-        if(channel != null && channelAlive) {
-            // created
-            return;
+    private void startWifiDirect() {
+        if(wifi == null) {
+            wifi = new WifiDirectService(this);
         }
+        wifi.startup();
+    }
 
-        try {
-            EventBus.getDefault().post(WifiDirectStatus.STATUS_OPENING);
-            channel = manager.initialize(this, getMainLooper(), () -> {
-                channel = null;
-                channelAlive = false;
-                EventBus.getDefault().post(WifiDirectStatus.STATUS_CLOSED);
-            });
-            channelAlive = true;
-            EventBus.getDefault().post(WifiDirectStatus.STATUS_OPENED);
-        } catch (Exception e) {
-            // todo change bundle key
-            Bundle statusBundle = new Bundle();
-            statusBundle.putString("reason", e.toString());
-            WifiDirectStatus status = WifiDirectStatus.STATUS_ERROR;
-            status.extras(statusBundle);
-            EventBus.getDefault().post(status);
+    private void stopWifiDirect() {
+        if(wifi != null) {
+            wifi.shutdown();
         }
     }
 
-    private void service() {
+    private void startStorage() {
 
     }
 
-    private void shutdownWifi() {
-        if(manager == null || channel == null) {
-            return;
-        }
-        EventBus.getDefault().post(WifiDirectStatus.STATUS_CLOSING);
-        channel.close();
-    }
-
-    private void shutdownService() {
+    private void stopStorage() {
 
     }
 
-
-    @SuppressLint("MissingPermission")
-    private void createGroup() {
-        if (groupCreated || groupCreating) {
-            return;
-        }
-
-        groupCreating = true;
-        EventBus.getDefault().post(WifiDirectStatus.STATUS_STARTING);
-        manager.removeGroup(channel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                manager.createGroup(channel, new WifiP2pManager.ActionListener() {
-
-                    @Override
-                    public void onSuccess() {
-                        groupCreating = false;
-                        groupCreated = true;
-                        EventBus.getDefault().post(WifiDirectStatus.STATUS_STARTED);
-                    }
-
-                    @Override
-                    public void onFailure(int reason) {
-                        groupCreating = false;
-                        Bundle statusBundle = new Bundle();
-                        statusBundle.putString("reason", Integer.toString(reason));
-                        WifiDirectStatus status = WifiDirectStatus.STATUS_ERROR;
-                        status.extras(statusBundle);
-                        EventBus.getDefault().post(status);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(int i) {
-                EventBus.getDefault().post(WifiDirectStatus.STATUS_ERROR);
-            }
-        });
-
-    }
-
-    private class WifiP2pReceiver extends BroadcastReceiver {
-
-        public void register() {
-            IntentFilter filter = new IntentFilter();
-
-            // Indicates a change in the Wi-Fi P2P status.
-            filter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-
-            // Indicates a change in the list of available peers.
-            filter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-
-            // Indicates the state of Wi-Fi P2P connectivity has changed.
-            filter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-
-            // Indicates this device's details have changed.
-            filter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-
-            filter.addAction(WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION);
-
-            registerReceiver(this, filter);
-        }
-
-        public void unregister() {
-            unregisterReceiver(this);
-        }
-
-        @SuppressWarnings("MissingPermission")
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(action == null) {
-                // todo handle exception
-                return;
-            }
-            Bundle bundle = new Bundle();
-            WifiDirectEvent event;
-
-            switch (intent.getAction()) {
-                case WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION:
-                    int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, WifiP2pManager.WIFI_P2P_STATE_DISABLED);
-                    if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                        EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_ENABLED);
-                        createGroup();
-                        EventBus.getDefault().post(WifiDirectStatus.STATUS_ENABLED);
-                    } else {
-                        EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_DISABLED);
-                        EventBus.getDefault().post(WifiDirectStatus.STATUS_DISABLED);
-                    }
-                    break;
-                case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION:
-                    WifiP2pDeviceList peers = intent.getParcelableExtra(WifiP2pManager.EXTRA_P2P_DEVICE_LIST);
-                    bundle = new Bundle();
-                    bundle.putParcelable("peers", peers);
-                    event = WifiDirectEvent.WIFI_DIRECT_PEERS_CHANGED;
-                    event.extras(bundle);
-                    EventBus.getDefault().post(event);
-                    break;
-                case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION:
-                    WifiP2pGroup group = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP);
-                    WifiP2pInfo info = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO);
-                    NetworkInfo network = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
-                    bundle = new Bundle();
-                    bundle.putParcelable("group", group);
-                    bundle.putParcelable("info", info);
-                    bundle.putParcelable("network", network);
-                    event = WifiDirectEvent.WIFI_DIRECT_CONNECTION_CHANGED;
-                    event.extras(bundle);
-                    EventBus.getDefault().post(event);
-                    break;
-                case WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION:
-                    WifiP2pDevice device = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
-                    bundle = new Bundle();
-                    bundle.putParcelable("device", device);
-                    event = WifiDirectEvent.WIFI_DIRECT_DEVICE_CHANGED;
-                    event.extras(bundle);
-                    EventBus.getDefault().post(event);
-                    break;
-                case WifiP2pManager.WIFI_P2P_DISCOVERY_CHANGED_ACTION:
-                    int discovery = intent.getIntExtra(WifiP2pManager.EXTRA_DISCOVERY_STATE, WifiP2pManager.WIFI_P2P_DISCOVERY_STOPPED);
-                    bundle = new Bundle();
-                    bundle.putInt("discovery", discovery);
-                    event = WifiDirectEvent.WIFI_DIRECT_DISCOVERY_CHANGED;
-                    event.extras(bundle);
-                    EventBus.getDefault().post(event);
-                    break;
-                default:
-                    // todo handle exception
-            }
-        }
-    }
 
     public static void start(Context context) {
         Intent intent = new Intent(context, ManageService.class);
+        intent.setAction(ACTION_START_ALL);
         context.startForegroundService(intent);
     }
 
     public static void stop(Context context) {
         Intent intent = new Intent(context, ManageService.class);
+        intent.setAction(ACTION_STOP_ALL);
         context.stopService(intent);
     }
+
 }
