@@ -24,8 +24,7 @@ public class ManageService extends Service {
     private WifiP2pReceiver receiver;
     private volatile boolean groupCreating = false;
     private volatile boolean groupCreated = false;
-    private Handler handler;
-    private long createDelay = 1000;
+    private volatile WifiDirectStatus status;
 
     private WifiP2pGroup group;
 
@@ -38,14 +37,27 @@ public class ManageService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        manager = getSystemService(WifiP2pManager.class);
         receiver = new WifiP2pReceiver();
         receiver.register();
-        handler = new Handler(getMainLooper());
+
+        manager = getSystemService(WifiP2pManager.class);
+        status = WifiDirectStatus.STATUS_OPENING;
+
+        status = WifiDirectStatus.STATUS_OPENED;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        switch (status) {
+            case STATUS_CLOSED:
+            case STATUS_CLOSING:
+            case STATUS_OPENED:
+            case STATUS_OPENING:
+            case STATUS_STARTING:
+            case STATUS_STARTED:
+
+                break;
+        }
         notification();
         wifi();
         service();
@@ -58,6 +70,8 @@ public class ManageService extends Service {
         receiver.unregister();
         shutdownWifi();
     }
+
+
 
     private void notification() {
 
@@ -73,14 +87,11 @@ public class ManageService extends Service {
         try {
             EventBus.getDefault().post(WifiDirectStatus.STATUS_OPENING);
             channel = manager.initialize(this, getMainLooper(), () -> {
-                // todo create event builder
                 channel = null;
                 channelAlive = false;
-                EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_CHANNEL_CLOSED);
                 EventBus.getDefault().post(WifiDirectStatus.STATUS_CLOSED);
             });
             channelAlive = true;
-            EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_CHANNEL_OPEN);
             EventBus.getDefault().post(WifiDirectStatus.STATUS_OPENED);
         } catch (Exception e) {
             // todo change bundle key
@@ -124,7 +135,6 @@ public class ManageService extends Service {
 
                     @Override
                     public void onSuccess() {
-                        EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_GROUP_CREATE_SUCCESS);
                         groupCreating = false;
                         groupCreated = true;
                         EventBus.getDefault().post(WifiDirectStatus.STATUS_STARTED);
@@ -132,18 +142,11 @@ public class ManageService extends Service {
 
                     @Override
                     public void onFailure(int reason) {
-                        WifiDirectEvent event = WifiDirectEvent.WIFI_DIRECT_GROUP_CREATE_ERROR;
-
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("reason", reason);
-                        event.extras(bundle);
-                        EventBus.getDefault().post(event);
                         groupCreating = false;
-
                         Bundle statusBundle = new Bundle();
                         statusBundle.putString("reason", Integer.toString(reason));
                         WifiDirectStatus status = WifiDirectStatus.STATUS_ERROR;
-                        status.extras(bundle);
+                        status.extras(statusBundle);
                         EventBus.getDefault().post(status);
                     }
                 });
@@ -199,7 +202,7 @@ public class ManageService extends Service {
                     int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, WifiP2pManager.WIFI_P2P_STATE_DISABLED);
                     if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                         EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_ENABLED);
-                        handler.postDelayed(ManageService.this::createGroup, createDelay);
+                        createGroup();
                         EventBus.getDefault().post(WifiDirectStatus.STATUS_ENABLED);
                     } else {
                         EventBus.getDefault().post(WifiDirectEvent.WIFI_DIRECT_DISABLED);
@@ -249,4 +252,13 @@ public class ManageService extends Service {
         }
     }
 
+    public static void start(Context context) {
+        Intent intent = new Intent(context, ManageService.class);
+        context.startForegroundService(intent);
+    }
+
+    public static void stop(Context context) {
+        Intent intent = new Intent(context, ManageService.class);
+        context.stopService(intent);
+    }
 }
