@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+version 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // http
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'org.nanohttpd:nanohttpd-webserver:2.3.1'
+    implementation 'org.nanohttpd:nanohttpd-nanolets:2.3.1'
+    implementation 'org.nanohttpd:nanohttpd-apache-fileupload:2.3.1'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+
+    // http
+    implementation 'com.koushikdutta.async:androidasync:3.0.9'
+    implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+
+    // lombok
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    // jwt
+    compileOnly 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.11.2') {
+        exclude group: 'org.json', module: 'json' //provided by Android natively
+    }
+
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
