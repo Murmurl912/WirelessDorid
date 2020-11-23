@@ -1,5 +1,6 @@
 package com.example.wirelessdroid.app.service.ftp;
 
+import com.example.wirelessdroid.common.ServiceConfigurationRepository;
 import org.apache.ftpserver.ConnectionConfig;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;

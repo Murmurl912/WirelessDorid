@@ -132,6 +132,7 @@ public class WifiDirectService {
         });
         return group;
     }
+
     private class WifiP2pReceiver extends BroadcastReceiver {
 
         public void register() {

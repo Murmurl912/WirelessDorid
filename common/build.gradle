@@ -18,6 +18,9 @@ dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
     compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
+    // totp
+    implementation 'com.eatthepath:java-otp:0.2.0'
+
     // http
     implementation 'com.koushikdutta.async:androidasync:3.0.9'
     implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
@@ -33,5 +36,5 @@ dependencies {
         exclude group: 'org.json', module: 'json' //provided by Android natively
     }
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.13'
 }
