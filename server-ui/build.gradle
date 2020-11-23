@@ -1,0 +1,85 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.example.httpserver"
+        minSdkVersion 26
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
+
+}
+
+dependencies {
+    
+    implementation project(':common')
+    implementation project(':core-api')
+    implementation project(':core')
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.navigation:navigation-fragment:2.3.1'
+    implementation 'androidx.navigation:navigation-ui:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.preference:preference:1.1.1'
+
+    implementation "androidx.room:room-runtime:2.2.5"
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    annotationProcessor "androidx.room:room-compiler:2.2.5"
+
+    implementation 'com.google.android:flexbox:2.0.1'
+
+
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:2.2.5"
+
+    // ftp
+    // https://mvnrepository.com/artifact/org.apache.mina/mina-core
+    implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: "1.7.30"
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    implementation group: 'org.slf4j', name: 'slf4j-android', version: "1.7.25"
+    // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
+    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: "1.7.30"
+    // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
+    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0'
+    // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
+    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
+
+    // event bus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
+
+    // qr code
+    implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
+    implementation 'com.google.zxing:core:3.3.2'
+
+    // chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+}

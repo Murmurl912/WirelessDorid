@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core-api" />
+            <option value="$PROJECT_DIR$/server-ui" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
