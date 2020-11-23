@@ -27,6 +27,9 @@ android {
 }
 
 dependencies {
+    
+    implementation project(':common')
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
@@ -41,22 +44,10 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     annotationProcessor "androidx.room:room-compiler:2.2.5"
 
-    // http
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation 'org.nanohttpd:nanohttpd-webserver:2.3.1'
-    implementation 'org.nanohttpd:nanohttpd-nanolets:2.3.1'
-    implementation 'org.nanohttpd:nanohttpd-apache-fileupload:2.3.1'
-    implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
-    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
-
-    implementation 'com.koushikdutta.async:androidasync:3.0.9'
-
-    implementation group: 'javax.activation', name: 'activation', version: '1.1.1'
-
     implementation 'com.google.android:flexbox:2.0.1'
     implementation 'com.eatthepath:java-otp:0.2.0'
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:2.2.5"
 
@@ -77,14 +68,6 @@ dependencies {
     // event bus
     implementation 'org.greenrobot:eventbus:3.1.1'
 
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-    // jwt
-    api 'io.jsonwebtoken:jjwt-api:0.11.2'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
-    runtimeOnly('io.jsonwebtoken:jjwt-orgjson:0.11.2') {
-        exclude group: 'org.json', module: 'json' //provided by Android natively
-    }
 
     // qr code
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.4'
@@ -92,9 +75,6 @@ dependencies {
 
     // chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    // dynamic chart
-    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
 
 
     testImplementation 'junit:junit:4.13'

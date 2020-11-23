@@ -1,2 +1,6 @@
 include ':app'
 rootProject.name = "WirelessDroid"
+include 'common'
+include 'core-api'
+include 'core'
+

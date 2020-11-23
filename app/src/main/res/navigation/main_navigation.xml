@@ -7,21 +7,21 @@
 
     <fragment
             android:id="@+id/nav_home"
-            android:name="com.example.httpserver.app.ui.view.home.HomeFragment"
+            android:name="com.example.wirelessdroid.app.ui.view.home.HomeFragment"
             android:label="Home"
             tools:layout="@layout/fragment_home"/>
 
     <fragment android:id="@+id/nav_storage"
-              android:name="com.example.httpserver.app.ui.view.storage.StorageFragment"
+              android:name="com.example.wirelessdroid.app.ui.view.storage.StorageFragment"
               android:label="Storage"
               tools:layout="@layout/fragment_storage"/>
     <fragment android:id="@+id/nav_proxy"
-              android:name="com.example.httpserver.app.ui.view.proxy.ProxyFragment"
+              android:name="com.example.wirelessdroid.app.ui.view.proxy.ProxyFragment"
               android:label="Proxy"
               tools:layout="@layout/fragment_proxy"/>
 
     <fragment android:id="@+id/nav_setting"
-              android:name="com.example.httpserver.app.ui.view.setting.SettingFragment"
+              android:name="com.example.wirelessdroid.app.ui.view.setting.SettingFragment"
               android:label="Setting"/>
 
 

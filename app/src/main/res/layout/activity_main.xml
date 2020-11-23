@@ -8,7 +8,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:fitsSystemWindows="true"
         android:id="@+id/drawer_layout"
-        tools:context="com.example.httpserver.app.MainActivity">
+        tools:context="com.example.wirelessdroid.app.MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
